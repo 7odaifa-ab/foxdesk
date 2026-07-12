@@ -27,6 +27,8 @@ $time_work = function_exists('time_activity_work_model') ? time_activity_work_mo
     'period' => ['period' => 'this_month', 'label' => t('This month'), 'start' => null, 'end' => null, 'from_date' => '', 'to_date' => ''],
     'period_options' => [],
     'my_totals' => ['today' => 0, 'week' => 0, 'month' => 0, 'selected' => 0],
+    'display_totals' => ['today' => 0, 'week' => 0, 'month' => 0, 'selected' => 0],
+    'view_scope' => ['key' => 'mine', 'label' => t('My time'), 'can_view_team' => false, 'options' => []],
     'team' => [],
 ];
 $time_period = $time_work['period'];
@@ -44,6 +46,8 @@ $my_activity_filter = $time_work['my_activity_filter'] ?? [
 ];
 $team_activity_filter = $time_work['team_activity_filter'] ?? $my_activity_filter;
 $my_time_totals = $time_work['my_totals'];
+$display_time_totals = $time_work['display_totals'] ?? $my_time_totals;
+$time_view_scope = $time_work['view_scope'] ?? ['key' => 'mine', 'label' => t('My time'), 'can_view_team' => false, 'options' => []];
 $my_activity_entries = $time_work['my_entries'] ?? [];
 $team_time_rows = $time_work['team'];
 $week_chart = $time_work['week_chart'] ?? [
@@ -51,6 +55,7 @@ $week_chart = $time_work['week_chart'] ?? [
     'max_minutes' => 0,
     'total_minutes' => 0,
 ];
+$period_chart = $time_work['period_chart'] ?? $week_chart;
 $current_work_timers = [];
 if ($is_staff
     && function_exists('ticket_time_table_exists')
@@ -72,14 +77,15 @@ foreach ($current_work_timers as $timer) {
     }
 }
 $selected_period_key = (string) ($time_period['period'] ?? 'this_month');
+$selected_period_label = (string) ($time_period['label'] ?? t('This month'));
 $show_selected_period_metric = !in_array($selected_period_key, ['today', 'this_week', 'this_month'], true);
 
 $work_queue_url = static function (string $key): string {
     return url('work', $key === 'mine' ? [] : ['queue' => $key]);
 };
 
-$work_period_url = static function (string $period) use ($queue_key, $my_activity_filter, $team_activity_filter): string {
-    $params = ['period' => $period];
+$work_period_url = static function (string $period) use ($queue_key, $my_activity_filter, $team_activity_filter, $time_view_scope): string {
+    $params = ['period' => $period, 'time_scope' => (string) ($time_view_scope['key'] ?? 'mine')];
     if ($queue_key !== 'mine') {
         $params['queue'] = $queue_key;
     }
@@ -89,6 +95,18 @@ $work_period_url = static function (string $period) use ($queue_key, $my_activit
     if (($team_activity_filter['key'] ?? 'last3') !== 'last3') {
         $params['team_activity'] = (string) $team_activity_filter['key'];
     }
+    return url('work', $params);
+};
+
+$work_scope_url = static function (string $scope) use ($queue_key, $my_activity_filter, $team_activity_filter, $time_period): string {
+    $params = ['period' => (string) ($time_period['period'] ?? 'last_30_days'), 'time_scope' => $scope];
+    if (($time_period['period'] ?? '') === 'custom') {
+        $params['from_date'] = (string) ($time_period['from_date'] ?? '');
+        $params['to_date'] = (string) ($time_period['to_date'] ?? '');
+    }
+    if ($queue_key !== 'mine') $params['queue'] = $queue_key;
+    if (($my_activity_filter['key'] ?? 'last3') !== 'last3') $params['my_activity'] = (string) $my_activity_filter['key'];
+    if (($team_activity_filter['key'] ?? 'last3') !== 'last3') $params['team_activity'] = (string) $team_activity_filter['key'];
     return url('work', $params);
 };
 
@@ -248,6 +266,16 @@ require_once BASE_PATH . '/includes/header.php';
             <h2 class="fd-section-title work-overview-title"><?php echo e(t('Work overview')); ?></h2>
         </div>
         <div class="fd-section-actions work-range-controls">
+            <?php if (!empty($time_view_scope['can_view_team'])): ?>
+                <div class="fd-segmented work-scope-switch" aria-label="<?php echo e(t('Worked time')); ?>">
+                    <?php foreach (($time_view_scope['options'] ?? []) as $scope_key => $scope_label): ?>
+                        <a href="<?php echo e($work_scope_url((string) $scope_key)); ?>"
+                           class="fd-segmented__item work-period-link <?php echo ($time_view_scope['key'] ?? 'mine') === $scope_key ? 'is-active' : ''; ?>">
+                            <?php echo e($scope_label); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
             <div class="fd-segmented work-period-switch" aria-label="<?php echo e(t('Time period')); ?>">
                 <?php foreach ($time_period_options as $period_key => $period_label): ?>
                     <?php if ($period_key === 'custom') continue; ?>
@@ -260,6 +288,7 @@ require_once BASE_PATH . '/includes/header.php';
 
             <form method="get" class="work-custom-period">
                 <input type="hidden" name="page" value="work">
+                <input type="hidden" name="time_scope" value="<?php echo e((string) ($time_view_scope['key'] ?? 'mine')); ?>">
                 <?php if ($queue_key !== 'mine'): ?>
                     <input type="hidden" name="queue" value="<?php echo e($queue_key); ?>">
                 <?php endif; ?>
@@ -286,15 +315,15 @@ require_once BASE_PATH . '/includes/header.php';
     <div class="work-time-grid">
         <div class="work-time-metric">
             <span><?php echo e(t('Today')); ?></span>
-            <strong><?php echo e(format_duration_minutes((int) ($my_time_totals['today'] ?? 0))); ?></strong>
+            <strong><?php echo e(format_duration_minutes((int) ($display_time_totals['today'] ?? 0))); ?></strong>
         </div>
         <div class="work-time-metric">
             <span><?php echo e(t('This week')); ?></span>
-            <strong><?php echo e(format_duration_minutes((int) ($my_time_totals['week'] ?? 0))); ?></strong>
+            <strong><?php echo e(format_duration_minutes((int) ($display_time_totals['week'] ?? 0))); ?></strong>
         </div>
         <div class="work-time-metric">
-            <span><?php echo e(t('This month')); ?></span>
-            <strong><?php echo e(format_duration_minutes((int) ($my_time_totals['month'] ?? 0))); ?></strong>
+            <span><?php echo e($selected_period_label); ?></span>
+            <strong><?php echo e(format_duration_minutes((int) ($display_time_totals['selected'] ?? 0))); ?></strong>
         </div>
         <div class="work-time-metric work-time-metric--selected">
             <span><?php echo e(t('Active now')); ?></span>
@@ -303,15 +332,18 @@ require_once BASE_PATH . '/includes/header.php';
     </div>
 
     <?php
-    $chart_days = $week_chart['days'] ?? [];
-    $chart_max_minutes = max(1, (int) ($week_chart['max_minutes'] ?? 0));
+    $chart_days = $period_chart['days'] ?? [];
+    $chart_max_minutes = max(1, (int) ($period_chart['max_minutes'] ?? 0));
     ?>
     <div class="work-week-chart" data-work-week-chart>
         <div class="work-week-chart__header">
-            <h3><?php echo e(t('Weekly activity')); ?></h3>
-            <span><?php echo e(t('Last 7 days')); ?> · <?php echo e(format_duration_minutes((int) ($week_chart['total_minutes'] ?? 0))); ?></span>
+            <h3><?php echo e(t('Worked time')); ?></h3>
+            <span><?php echo e($selected_period_label); ?> · <?php echo e(format_duration_minutes((int) ($period_chart['total_minutes'] ?? 0))); ?></span>
         </div>
-        <div class="work-week-chart__bars" role="list" aria-label="<?php echo e(t('Hours by day')); ?>">
+        <div class="work-week-chart__bars"
+             style="--chart-day-count: <?php echo e((string) max(1, count($chart_days))); ?>;"
+             role="list"
+             aria-label="<?php echo e(t('Hours by day')); ?>">
             <?php foreach ($chart_days as $day): ?>
                 <?php
                 $day_minutes = (int) ($day['minutes'] ?? 0);

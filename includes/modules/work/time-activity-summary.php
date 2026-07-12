@@ -11,6 +11,7 @@ function time_activity_period_options(): array
     return [
         'today' => t('Today'),
         'this_week' => t('This week'),
+        'last_30_days' => t('Last 30 days'),
         'this_month' => t('This month'),
         'last_month' => t('Last month'),
         'custom' => t('Custom month'),
@@ -19,24 +20,63 @@ function time_activity_period_options(): array
 
 function time_activity_period_from_request(array $request): array
 {
-    $period = (string) ($request['period'] ?? 'this_month');
+    $session_key = 'foxdesk_work_time_period';
+    $stored_period = session_status() === PHP_SESSION_ACTIVE
+        ? (string) ($_SESSION[$session_key] ?? '')
+        : '';
+    $period = (string) ($request['period'] ?? ($stored_period !== '' ? $stored_period : 'last_30_days'));
     if (!array_key_exists($period, time_activity_period_options())) {
-        $period = 'this_month';
+        $period = 'last_30_days';
     }
 
-    $from_date = trim((string) ($request['from_date'] ?? ''));
-    $to_date = trim((string) ($request['to_date'] ?? ''));
+    $stored_from = session_status() === PHP_SESSION_ACTIVE
+        ? (string) ($_SESSION['foxdesk_work_time_from_date'] ?? '')
+        : '';
+    $stored_to = session_status() === PHP_SESSION_ACTIVE
+        ? (string) ($_SESSION['foxdesk_work_time_to_date'] ?? '')
+        : '';
+    $from_date = trim((string) ($request['from_date'] ?? ($period === 'custom' ? $stored_from : '')));
+    $to_date = trim((string) ($request['to_date'] ?? ($period === 'custom' ? $stored_to : '')));
+    if (session_status() === PHP_SESSION_ACTIVE && array_key_exists('period', $request)) {
+        $_SESSION[$session_key] = $period;
+        if ($period === 'custom') {
+            $_SESSION['foxdesk_work_time_from_date'] = $from_date;
+            $_SESSION['foxdesk_work_time_to_date'] = $to_date;
+        }
+    }
     $bounds = function_exists('get_time_range_bounds')
         ? get_time_range_bounds($period, $from_date, $to_date)
-        : ['range' => $period, 'start' => date('Y-m-01 00:00:00'), 'end' => date('Y-m-t 23:59:59')];
+        : ['range' => $period, 'start' => date('Y-m-d 00:00:00', strtotime('-29 days')), 'end' => date('Y-m-d 23:59:59')];
 
     return [
         'period' => (string) ($bounds['range'] ?? $period),
-        'label' => time_activity_period_options()[$period] ?? t('This month'),
+        'label' => time_activity_period_options()[$period] ?? t('Last 30 days'),
         'start' => $bounds['start'] ?? null,
         'end' => $bounds['end'] ?? null,
         'from_date' => $from_date,
         'to_date' => $to_date,
+    ];
+}
+
+function time_activity_view_scope_from_request(array $request, bool $can_view_team): array
+{
+    $session_key = 'foxdesk_work_time_scope';
+    $stored_scope = session_status() === PHP_SESSION_ACTIVE
+        ? (string) ($_SESSION[$session_key] ?? '')
+        : '';
+    $scope = (string) ($request['time_scope'] ?? ($stored_scope !== '' ? $stored_scope : 'mine'));
+    if (!in_array($scope, ['mine', 'team'], true) || (!$can_view_team && $scope === 'team')) {
+        $scope = 'mine';
+    }
+    if (session_status() === PHP_SESSION_ACTIVE && array_key_exists('time_scope', $request)) {
+        $_SESSION[$session_key] = $scope;
+    }
+
+    return [
+        'key' => $scope,
+        'label' => $scope === 'team' ? t('Team time') : t('My time'),
+        'can_view_team' => $can_view_team,
+        'options' => ['mine' => t('My time'), 'team' => t('Team time')],
     ];
 }
 
@@ -227,6 +267,7 @@ function time_activity_weekly_chart(int $viewer_user_id, bool $include_team = fa
 
         $days[$day_key]['minutes'] += $minutes;
         $days[$day_key]['users'][] = [
+            'user_id' => (int) ($row['user_id'] ?? 0),
             'name' => $name,
             'minutes' => $minutes,
         ];
@@ -245,6 +286,89 @@ function time_activity_weekly_chart(int $viewer_user_id, bool $include_team = fa
         'max_minutes' => $max_minutes,
         'total_minutes' => $total_minutes,
     ];
+}
+
+function time_activity_period_chart(int $viewer_user_id, bool $include_team, array $period): array
+{
+    $start = !empty($period['start']) ? strtotime((string) $period['start']) : strtotime('-6 days 00:00:00');
+    $end = !empty($period['end']) ? strtotime((string) $period['end']) : time();
+    if ($start === false || $end === false || $start > $end) {
+        return time_activity_weekly_chart($viewer_user_id, $include_team);
+    }
+
+    $start = strtotime(date('Y-m-d 00:00:00', $start));
+    $end = strtotime(date('Y-m-d 23:59:59', $end));
+    $max_days = 62;
+    if ((int) floor(($end - $start) / 86400) + 1 > $max_days) {
+        $start = strtotime('-' . ($max_days - 1) . ' days', $end);
+        $start = strtotime(date('Y-m-d 00:00:00', $start));
+    }
+
+    $days = [];
+    for ($cursor = $start; $cursor <= $end; $cursor = strtotime('+1 day', $cursor)) {
+        $date = date('Y-m-d', $cursor);
+        $days[$date] = [
+            'key' => $date,
+            'label' => function_exists('format_date_localized') ? format_date_localized($date, 'd.m.') : date('d.m.', $cursor),
+            'full_label' => function_exists('format_date_localized') ? format_date_localized($date, 'l, j. F') : date('l, M j', $cursor),
+            'minutes' => 0,
+            'users' => [],
+        ];
+    }
+
+    if (!function_exists('ticket_time_table_exists') || !ticket_time_table_exists()) {
+        return ['days' => array_values($days), 'max_minutes' => 0, 'total_minutes' => 0];
+    }
+
+    $duration_sql = time_activity_duration_sql();
+    $params = [date('Y-m-d H:i:s', $start), date('Y-m-d H:i:s', $end)];
+    $tenant_filter = time_activity_tenant_filter('tickets', 't', $params);
+    $user_filter = '';
+    if (!$include_team) {
+        $params[] = max(0, $viewer_user_id);
+        $user_filter = 'AND tte.user_id = ?';
+    }
+
+    $rows = db_fetch_all("
+        SELECT DATE(tte.started_at) AS day_key, tte.user_id,
+               u.first_name, u.last_name, u.email,
+               SUM({$duration_sql}) AS minutes
+        FROM ticket_time_entries tte
+        JOIN tickets t ON t.id = tte.ticket_id
+        LEFT JOIN users u ON u.id = tte.user_id
+        WHERE tte.started_at >= ? AND tte.started_at <= ?
+          {$tenant_filter} {$user_filter}
+        GROUP BY DATE(tte.started_at), tte.user_id, u.first_name, u.last_name, u.email
+        ORDER BY day_key ASC, minutes DESC
+    ", $params);
+
+    foreach ($rows as $row) {
+        $day_key = (string) ($row['day_key'] ?? '');
+        if (!isset($days[$day_key])) {
+            continue;
+        }
+        $minutes = (int) round((float) ($row['minutes'] ?? 0));
+        $name = trim((string) (($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? '')));
+        if ($name === '') {
+            $name = (string) ($row['email'] ?? t('Agent'));
+        }
+        $days[$day_key]['minutes'] += $minutes;
+        $days[$day_key]['users'][] = [
+            'user_id' => (int) ($row['user_id'] ?? 0),
+            'name' => $name,
+            'minutes' => $minutes,
+        ];
+    }
+
+    $max_minutes = 0;
+    $total_minutes = 0;
+    foreach ($days as $day) {
+        $minutes = (int) ($day['minutes'] ?? 0);
+        $max_minutes = max($max_minutes, $minutes);
+        $total_minutes += $minutes;
+    }
+
+    return ['days' => array_values($days), 'max_minutes' => $max_minutes, 'total_minutes' => $total_minutes];
 }
 
 function time_activity_user_totals(int $user_id, array $period): array
@@ -384,6 +508,17 @@ function time_activity_team_summary(array $period, int $limit = 50, ?int $entry_
     return $rows;
 }
 
+function time_activity_team_totals(array $team): array
+{
+    $totals = time_activity_empty_totals();
+    foreach ($team as $row) {
+        foreach (array_keys($totals) as $key) {
+            $totals[$key] += (int) ($row['totals'][$key] ?? 0);
+        }
+    }
+    return $totals;
+}
+
 function time_activity_work_model(array $user, array $request): array
 {
     $period = time_activity_period_from_request($request);
@@ -393,10 +528,17 @@ function time_activity_work_model(array $user, array $request): array
     $team_activity_period = time_activity_period_for_log_filter($team_activity_filter['key']);
     $user_id = (int) ($user['id'] ?? 0);
     $is_admin_user = function_exists('is_admin') ? is_admin() : (($user['role'] ?? '') === 'admin');
+    $view_scope = time_activity_view_scope_from_request($request, $is_admin_user);
+    $team = $is_admin_user
+        ? time_activity_team_summary($period, 80, $team_activity_filter['limit'], $team_activity_period)
+        : [];
+    $my_totals = time_activity_user_totals($user_id, $period);
+    $team_totals = time_activity_team_totals($team);
 
     return [
         'period' => $period,
         'period_options' => time_activity_period_options(),
+        'view_scope' => $view_scope,
         'activity_scope' => [
             'key' => $my_activity_filter['key'],
             'limit' => $my_activity_filter['limit'],
@@ -404,9 +546,12 @@ function time_activity_work_model(array $user, array $request): array
         ],
         'my_activity_filter' => $my_activity_filter,
         'team_activity_filter' => $team_activity_filter,
-        'my_totals' => time_activity_user_totals($user_id, $period),
+        'my_totals' => $my_totals,
+        'team_totals' => $team_totals,
+        'display_totals' => $view_scope['key'] === 'team' ? $team_totals : $my_totals,
         'my_entries' => time_activity_user_entries($user_id, $my_activity_period, $my_activity_filter['limit']),
-        'team' => $is_admin_user ? time_activity_team_summary($period, 80, $team_activity_filter['limit'], $team_activity_period) : [],
-        'week_chart' => time_activity_weekly_chart($user_id, $is_admin_user),
+        'team' => $team,
+        'period_chart' => time_activity_period_chart($user_id, $view_scope['key'] === 'team', $period),
+        'week_chart' => time_activity_weekly_chart($user_id, $view_scope['key'] === 'team'),
     ];
 }

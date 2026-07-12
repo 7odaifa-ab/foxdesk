@@ -8019,11 +8019,18 @@ display: flex;
 align-items: flex-end;
 justify-content: flex-end;
 gap: 0.65rem;
-flex-wrap: nowrap;
+flex-wrap: wrap;
 max-width: min(100%, 1120px);
 min-width: 0;
 }
 .work-period-switch {
+display: flex;
+align-items: flex-end;
+justify-content: flex-end;
+gap: 0.125rem;
+flex-wrap: nowrap;
+}
+.work-scope-switch {
 display: flex;
 align-items: flex-end;
 justify-content: flex-end;
@@ -8119,10 +8126,11 @@ white-space: nowrap;
 }
 .work-week-chart__bars {
 display: grid;
-grid-template-columns: repeat(7, minmax(0, 1fr));
+grid-template-columns: repeat(var(--chart-day-count, 7), minmax(1.5rem, 1fr));
 align-items: end;
 gap: 0.5rem;
 min-height: 156px;
+overflow-x: auto;
 }
 .work-week-chart__day {
 display: grid;
@@ -8401,6 +8409,9 @@ flex-wrap: wrap;
 width: 100%;
 }
 .work-period-switch {
+justify-content: flex-start;
+}
+.work-scope-switch {
 justify-content: flex-start;
 }
 .work-activity-switch {
