@@ -6,17 +6,41 @@ $helper = file_get_contents($root . '/includes/components/ticket-detail-surface.
 $sidebar = file_get_contents($root . '/includes/components/ticket-detail-sidebar.php');
 $composer = file_get_contents($root . '/includes/components/ticket-detail-composer.php');
 $modals = file_get_contents($root . '/includes/components/ticket-detail-modals.php');
+$ticketContent = file_get_contents($root . '/includes/components/ticket-detail-content.php');
 $detailContext = file_get_contents($root . '/includes/modules/tickets/ticket-detail-context.php');
 $readModel = file_get_contents($root . '/includes/modules/tickets/ticket-detail-read-model.php');
 $shareState = file_get_contents($root . '/includes/modules/tickets/ticket-share-state.php');
 $ticketBulkActions = file_get_contents($root . '/includes/modules/tickets/ticket-bulk-actions.php');
 $ticketListFilters = file_get_contents($root . '/includes/modules/tickets/ticket-list-filters.php');
 $ticketRowViewModel = file_get_contents($root . '/includes/modules/tickets/ticket-row-view-model.php');
+$ticketListSurface = file_get_contents($root . '/includes/components/ticket-list-page.php');
+$ticketListBoard = file_get_contents($root . '/includes/components/ticket-list-board.php');
+$ticketListTable = file_get_contents($root . '/includes/components/ticket-list-table.php');
+$ticketListAssets = file_get_contents($root . '/includes/components/ticket-list-assets.php');
 $ticketListJs = file_get_contents($root . '/assets/js/ticket-list.js');
-$ticketDetailJs = file_get_contents($root . '/assets/js/ticket-detail.js');
+$ticketListActionsJs = file_get_contents($root . '/assets/js/ticket-list-actions.js');
+$ticketDetailJsPaths = [
+    'assets/js/ticket-detail-core.js',
+    'assets/js/ticket-detail-workflow.js',
+    'assets/js/ticket-detail-records.js',
+    'assets/js/ticket-detail-admin.js',
+    'assets/js/ticket-detail.js',
+];
+$ticketDetailJs = '';
+foreach ($ticketDetailJsPaths as $ticketDetailJsPath) {
+    $source = file_get_contents($root . '/' . $ticketDetailJsPath);
+    if ($source === false) {
+        fwrite(STDERR, 'Missing ticket detail JS module: ' . $ticketDetailJsPath . PHP_EOL);
+        exit(1);
+    }
+    $ticketDetailJs .= "\n" . $source;
+}
 $bootstrap = file_get_contents($root . '/includes/modules/bootstrap.php');
 $ticketPage = file_get_contents($root . '/pages/ticket-detail.php');
 $ticketListPage = file_get_contents($root . '/pages/tickets.php');
+$newTicketPage = file_get_contents($root . '/pages/new-ticket.php');
+$newTicketForm = file_get_contents($root . '/includes/components/new-ticket-form.php');
+$newTicketAssets = file_get_contents($root . '/includes/components/new-ticket-assets.php');
 $clientPage = file_get_contents($root . '/pages/client.php');
 $theme = file_get_contents($root . '/theme.css');
 $header = file_get_contents($root . '/includes/header.php');
@@ -34,17 +58,26 @@ $assert($helper !== false, 'ticket detail surface helper must be readable.');
 $assert($sidebar !== false, 'ticket detail sidebar component must be readable.');
 $assert($composer !== false, 'ticket detail composer component must be readable.');
 $assert($modals !== false, 'ticket detail modals component must be readable.');
+$assert($ticketContent !== false, 'ticket detail content component must be readable.');
 $assert($detailContext !== false, 'ticket detail context module must be readable.');
 $assert($readModel !== false, 'ticket detail read model must be readable.');
 $assert($shareState !== false, 'ticket share state module must be readable.');
 $assert($ticketBulkActions !== false, 'ticket bulk actions module must be readable.');
 $assert($ticketListFilters !== false, 'ticket list filters module must be readable.');
 $assert($ticketRowViewModel !== false, 'ticket row view model module must be readable.');
+$assert($ticketListSurface !== false, 'ticket list surface component must be readable.');
+$assert($ticketListBoard !== false, 'ticket list board component must be readable.');
+$assert($ticketListTable !== false, 'ticket list table component must be readable.');
+$assert($ticketListAssets !== false, 'ticket list assets component must be readable.');
 $assert($ticketListJs !== false, 'ticket list JS asset must be readable.');
+$assert($ticketListActionsJs !== false, 'ticket list action JS asset must be readable.');
 $assert($ticketDetailJs !== false, 'ticket detail JS asset must be readable.');
 $assert($bootstrap !== false, 'module bootstrap must be readable.');
 $assert($ticketPage !== false, 'pages/ticket-detail.php must be readable.');
 $assert($ticketListPage !== false, 'pages/tickets.php must be readable.');
+$assert($newTicketPage !== false, 'pages/new-ticket.php must be readable.');
+$assert($newTicketForm !== false, 'new ticket form component must be readable.');
+$assert($newTicketAssets !== false, 'new ticket assets component must be readable.');
 $assert($clientPage !== false, 'pages/client.php must be readable.');
 $assert($theme !== false, 'theme.css must be readable.');
 $assert($header !== false, 'includes/header.php must be readable.');
@@ -123,9 +156,16 @@ foreach ([
 
 $assert(str_contains($ticketListPage, 'ticket_list_filter_state_from_request($_GET, $_COOKIE, $is_archive)'), 'Tickets page must consume extracted filter state.');
 $assert(str_contains($ticketListPage, 'ticket_handle_bulk_actions('), 'Tickets page must delegate bulk actions.');
-$assert(str_contains($ticketListPage, 'ticket_registry_split_model($statuses, $tickets, $status_id, $ticket_list_view)'), 'Tickets page must consume row split model.');
-$assert(str_contains($ticketListPage, 'ticket_registry_kanban_model('), 'Tickets page must consume kanban model.');
-$assert(str_contains($ticketListPage, 'assets/js/ticket-list.js'), 'Tickets page must load extracted ticket list JS.');
+$assert(str_contains($ticketListPage, 'includes/components/ticket-list-page.php'), 'Tickets route must delegate rendering to the page component.');
+$assert(str_contains($ticketListSurface, 'ticket_registry_split_model($statuses, $tickets, $status_id, $ticket_list_view)'), 'Ticket list surface must consume row split model.');
+$assert(str_contains($ticketListSurface, 'ticket_registry_kanban_model('), 'Ticket list surface must consume kanban model.');
+$assert(str_contains($ticketListSurface, 'includes/components/ticket-list-board.php'), 'Ticket list surface must delegate the board view.');
+$assert(str_contains($ticketListSurface, 'includes/components/ticket-list-table.php'), 'Ticket list surface must delegate the list and table view.');
+$assert(str_contains($ticketListBoard, 'data-kanban-scope="main"'), 'Ticket list board component must own kanban markup.');
+$assert(str_contains($ticketListTable, 'tickets-table'), 'Ticket list table component must own table markup.');
+$assert(str_contains($ticketListSurface, 'includes/components/ticket-list-assets.php'), 'Ticket list surface must delegate scripts and templates.');
+$assert(str_contains($ticketListAssets, 'assets/js/ticket-list.js'), 'Ticket list assets component must load extracted ticket list JS.');
+$assert(str_contains($ticketListAssets, 'assets/js/ticket-list-actions.js'), 'Ticket list assets component must load extracted action JS.');
 $assert(!str_contains($ticketListPage, '$collect_editable_tickets = function'), 'Tickets page must not own editable ticket collection.');
 $assert(!str_contains($ticketListPage, "isset(\$_POST['bulk_update'])"), 'Tickets page must not own bulk update handling.');
 $assert(!str_contains($ticketListPage, '$statuses_by_id = [];'), 'Tickets page must not rebuild status lookup inline.');
@@ -133,32 +173,53 @@ $assert(!str_contains($ticketListPage, '$normalize_tag_filters ='), 'Tickets pag
 $assert(!str_contains($ticketListPage, '$allowed_sorts ='), 'Tickets page must not own sort allow-list logic.');
 $assert(!str_contains($ticketListPage, 'function applyHeaderSort'), 'Tickets page must not own ticket list JS behavior.');
 $assert(str_contains($ticketListJs, 'window.applyHeaderSort'), 'Ticket list JS must own header sort behavior.');
+$assert(str_contains($ticketListActionsJs, 'function bindInlineLogTime'), 'Ticket list action JS must own inline time behavior.');
+$assert(count(file($root . '/pages/tickets.php') ?: []) < 700, 'Tickets route must remain below 700 lines.');
+$assert(count(file($root . '/pages/new-ticket.php') ?: []) < 700, 'New ticket route must remain below 700 lines.');
+$assert(count(file($root . '/assets/js/ticket-list.js') ?: []) < 900, 'Ticket list core JS must remain below 900 lines.');
+$assert(count(file($root . '/assets/js/ticket-list-actions.js') ?: []) < 900, 'Ticket list action JS must remain below 900 lines.');
+$assert(str_contains($newTicketPage, 'includes/components/new-ticket-form.php'), 'New ticket route must delegate rendering to the form component.');
+$assert(str_contains($newTicketForm, 'assets/css/new-ticket.css'), 'New ticket form must load its extracted stylesheet.');
+$assert(str_contains($newTicketForm, 'includes/components/new-ticket-assets.php'), 'New ticket form must delegate browser behavior to its asset component.');
+$assert(str_contains($newTicketAssets, 'FoxDeskAttachmentPasteDrop.bind'), 'New ticket assets must preserve paste/drop behavior.');
+$assert(!str_contains($newTicketForm, '<style>'), 'New ticket form component must not own local CSS blocks.');
+
+foreach ([
+    'ticket_detail_context($ticket_id, $ticket, $user, $_SESSION)',
+    'ticket_detail_visible_comments($all_comments, is_agent())',
+    'ticket_detail_visible_attachments($attachments, $visible_comment_ids, is_agent())',
+    'window.FoxDeskTicketDetailConfig',
+    "/includes/components/ticket-detail-content.php",
+    'assets/css/ticket-detail.css',
+] as $needle) {
+    $assert(str_contains($ticketPage, $needle), 'Ticket detail page must use extracted surface contract: ' . $needle);
+}
 
 foreach ([
     'ticket_detail_render_status_pill($ticket, $statuses)',
     'ticket_detail_primary_action_class($action)',
-    'ticket_detail_visible_comments($all_comments, is_agent())',
-    'ticket_detail_visible_attachments($attachments, $visible_comment_ids, is_agent())',
     'ticket_detail_initial_attachments($attachments)',
     'ticket_detail_build_timeline($comments, $time_entries)',
     "ticket_detail_comment_attachments(\$attachments, (int) \$comment['id'])",
-    'ticket_detail_context($ticket_id, $ticket, $user, $_SESSION)',
-    'window.FoxDeskTicketDetailConfig',
-    'assets/js/ticket-detail.js',
     "/includes/components/ticket-detail-sidebar.php",
     "/includes/components/ticket-detail-composer.php",
     "/includes/components/ticket-detail-modals.php",
     'ticket-primary-action-form',
     'ticket-primary-action__timer',
 ] as $needle) {
-    $assert(str_contains($ticketPage, $needle), 'Ticket detail page must use extracted surface contract: ' . $needle);
+    $assert(str_contains($ticketContent, $needle), 'Ticket detail content component missing surface contract: ' . $needle);
+}
+
+foreach ($ticketDetailJsPaths as $ticketDetailJsPath) {
+    $assert(str_contains($ticketPage, $ticketDetailJsPath), 'Ticket detail page must load extracted JS module: ' . $ticketDetailJsPath);
 }
 
 $assert(!str_contains($ticketPage, "'ticket-primary-action ticket-primary-action--' . e("), 'Ticket action classes must not be rebuilt inline.');
 $assert(!str_contains($ticketPage, "style=\"background-color: <?php echo e(\$ticket['status_color']); ?>15;"), 'Top status pill must not use inline DB colors.');
-$assert(!str_contains($ticketPage, 'data-ticket-sidebar-surface'), 'Ticket sidebar surface must stay inside the sidebar component.');
-$assert(!str_contains($ticketPage, 'data-ticket-composer-surface'), 'Ticket composer surface must stay inside the composer component.');
-$assert(!str_contains($ticketPage, '<div id="edit-ticket-modal"'), 'Ticket modals must stay inside the modals component.');
+$assert(!str_contains($ticketPage, 'data-ticket-detail-surface'), 'Ticket detail markup must stay inside the content component.');
+$assert(!str_contains($ticketContent, 'data-ticket-sidebar-surface'), 'Ticket sidebar surface must stay inside the sidebar component.');
+$assert(!str_contains($ticketContent, 'data-ticket-composer-surface'), 'Ticket composer surface must stay inside the composer component.');
+$assert(!str_contains($ticketContent, '<div id="edit-ticket-modal"'), 'Ticket modals must stay inside the modals component.');
 $assert(!str_contains($ticketPage, 'array_filter($attachments, function ($attachment) use ($visible_comment_ids)'), 'Ticket attachment visibility must stay in the read model.');
 $assert(!str_contains($ticketPage, '$timeline_items = [];'), 'Ticket timeline assembly must stay in the read model.');
 $assert(!str_contains($ticketPage, '$latest_share = get_latest_ticket_share($ticket_id);'), 'Ticket share state must stay in the share-state module.');
@@ -231,5 +292,43 @@ $assert(str_contains($header, 'class="app-topbar desktop-header'), 'Desktop head
 $assert(str_contains($header, 'class="app-topbar mobile-header'), 'Mobile header must use app topbar class.');
 $assert(str_contains($header, 'class="app-content"'), 'Page content must be wrapped in app-content.');
 $assert(str_contains($headerJs, '--app-sidebar-compact-width'), 'Header JS must read compact width from CSS token.');
+
+$reportRoute = file_get_contents($root . '/pages/admin/reports.php');
+$reportController = file_get_contents($root . '/includes/modules/reports/report-page-controller.php');
+$reportViewModel = file_get_contents($root . '/includes/modules/reports/report-page-view-model.php');
+$reportRenderer = file_get_contents($root . '/includes/modules/reports/report-page-render.php');
+$reportPageView = file_get_contents($root . '/includes/modules/reports/views/page.php');
+$reportPageJs = file_get_contents($root . '/assets/js/report-page.js');
+
+foreach ([
+    'reports route' => $reportRoute,
+    'reports controller' => $reportController,
+    'reports view model' => $reportViewModel,
+    'reports renderer' => $reportRenderer,
+    'reports page view' => $reportPageView,
+    'reports browser module' => $reportPageJs,
+] as $label => $contents) {
+    $assert($contents !== false, ucfirst($label) . ' must be readable.');
+}
+
+foreach ([
+    '/reports/report-page-view-model.php',
+    '/reports/report-page-controller.php',
+    '/reports/report-page-render.php',
+] as $needle) {
+    $assert(str_contains($bootstrap, $needle), 'Report extraction module must be loaded by bootstrap: ' . $needle);
+}
+$assert(str_contains($reportRoute, 'report_admin_page_context($_GET, $_POST, $_SERVER)'), 'Reports route must delegate request orchestration.');
+$assert(str_contains($reportRoute, 'report_render_admin_page($report_context)'), 'Reports route must delegate rendering.');
+$assert(!str_contains($reportRoute, '<form'), 'Reports route must not own form markup.');
+$assert(!str_contains($reportRoute, '<script'), 'Reports route must not own browser behavior.');
+$assert(str_contains($reportController, 'report_query_time_entries($report_filter_state'), 'Reports controller must delegate report queries.');
+$assert(str_contains($reportController, 'report_handle_admin_post_actions($post, $rounding)'), 'Reports controller must delegate POST actions.');
+$assert(str_contains($reportViewModel, 'function report_page_active_filters'), 'Reports view model must own active filter presentation.');
+$assert(str_contains($reportRenderer, 'function report_render_partial'), 'Reports renderer must own partial dispatch.');
+$assert(str_contains($reportPageView, 'assets/js/report-page.js'), 'Reports page view must load the extracted browser module.');
+$assert(str_contains($reportPageJs, 'window.openEntryModal'), 'Reports browser module must own entry modal behavior.');
+$assert(count(file($root . '/pages/admin/reports.php') ?: []) < 700, 'Reports route must remain below 700 lines.');
+$assert(count(file($root . '/assets/js/report-page.js') ?: []) < 900, 'Reports browser module must remain below 900 lines.');
 
 echo "Module extraction contract OK\n";

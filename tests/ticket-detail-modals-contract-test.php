@@ -2,6 +2,7 @@
 
 $root = dirname(__DIR__);
 $page = file_get_contents($root . '/pages/ticket-detail.php');
+$content = file_get_contents($root . '/includes/components/ticket-detail-content.php');
 $modals = file_get_contents($root . '/includes/components/ticket-detail-modals.php');
 
 $assert = static function (bool $condition, string $message): void {
@@ -11,8 +12,9 @@ $assert = static function (bool $condition, string $message): void {
     }
 };
 
-$assert($page !== false && $modals !== false, 'Ticket modal surface files must be readable.');
-$assert(str_contains($page, "/includes/components/ticket-detail-modals.php"), 'Ticket detail page must include the modal component.');
+$assert($page !== false && $content !== false && $modals !== false, 'Ticket modal surface files must be readable.');
+$assert(str_contains($page, "/includes/components/ticket-detail-content.php"), 'Ticket detail route must delegate its content surface.');
+$assert(str_contains($content, "/includes/components/ticket-detail-modals.php"), 'Ticket detail content must include the modal component.');
 
 foreach ([
     'id="edit-ticket-modal"',
@@ -30,6 +32,7 @@ foreach ([
     '<div id="edit-time-modal"',
 ] as $needle) {
     $assert(!str_contains($page, $needle), 'Ticket modal markup must not live in the route file: ' . $needle);
+    $assert(!str_contains($content, $needle), 'Ticket modal markup must not move into the content composition file: ' . $needle);
 }
 
 echo "Ticket detail modals contract OK\n";

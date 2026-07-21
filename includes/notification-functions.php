@@ -24,71 +24,17 @@ function notifications_table_exists(): bool
     return $exists;
 }
 
-/**
- * Auto-create notifications table if missing (rolling upgrade support).
- */
+/** Verify notification schema installed by the database upgrade. */
 function ensure_notifications_table(): void
 {
     static $done = false;
     if ($done) return;
     $done = true;
 
-    if (notifications_table_exists()) {
-        // Ensure actor_id column exists (may be missing from manually created tables)
-        if (!column_exists('notifications', 'actor_id')) {
-            try {
-                db_query("ALTER TABLE notifications ADD COLUMN actor_id INT NULL AFTER type");
-            } catch (Throwable $e) { /* ignore */ }
-        }
-        if (!column_exists('notifications', 'data')) {
-            try {
-                db_query("ALTER TABLE notifications ADD COLUMN data JSON NULL AFTER actor_id");
-            } catch (Throwable $e) { /* ignore */ }
-        }
-        if (!column_exists('notifications', 'is_resolved')) {
-            try {
-                db_query("ALTER TABLE notifications ADD COLUMN is_resolved TINYINT(1) NOT NULL DEFAULT 0 AFTER is_read");
-                // One-time: resolve stale action notifications for already-closed tickets
-                db_execute("UPDATE notifications n JOIN tickets t ON n.ticket_id = t.id
-                    JOIN statuses s ON t.status_id = s.id
-                    SET n.is_resolved = 1
-                    WHERE s.is_closed = 1 AND n.is_resolved = 0
-                    AND n.type IN ('assigned_to_you','due_date_reminder')");
-            } catch (Throwable $e) { /* ignore */ }
-        }
-        // Ensure last_notifications_seen_at on users
-        if (!column_exists('users', 'last_notifications_seen_at')) {
-            try {
-                db_query("ALTER TABLE users ADD COLUMN last_notifications_seen_at DATETIME NULL");
-            } catch (Throwable $e) { /* ignore */ }
-        }
-        return;
-    }
-
-    try {
-        db_query("CREATE TABLE notifications (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            ticket_id INT NULL,
-            type VARCHAR(50) NOT NULL DEFAULT 'info',
-            actor_id INT NULL,
-            data JSON NULL,
-            is_read TINYINT(1) NOT NULL DEFAULT 0,
-            is_resolved TINYINT(1) NOT NULL DEFAULT 0,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_user (user_id),
-            INDEX idx_user_read (user_id, is_read),
-            INDEX idx_ticket (ticket_id),
-            INDEX idx_created (created_at)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-
-        // Ensure last_notifications_seen_at on users
-        if (!column_exists('users', 'last_notifications_seen_at')) {
-            db_query("ALTER TABLE users ADD COLUMN last_notifications_seen_at DATETIME NULL");
-        }
-    } catch (Throwable $e) {
-        // Silently ignore — next page load will retry
-    }
+    schema_require('notifications', ['notifications'], [
+        'notifications' => ['user_id', 'ticket_id', 'type', 'actor_id', 'data', 'is_read', 'is_resolved', 'created_at'],
+        'users' => ['last_notifications_seen_at'],
+    ]);
 }
 
 // ── Create ───────────────────────────────────────────────────────────────────
@@ -193,12 +139,7 @@ function ensure_notification_preferences_column(): void
     if ($done) return;
     $done = true;
 
-    try {
-        $cols = db_fetch_all("SHOW COLUMNS FROM users LIKE 'notification_preferences'");
-        if (empty($cols)) {
-            db_query("ALTER TABLE users ADD COLUMN notification_preferences TEXT NULL");
-        }
-    } catch (Throwable $e) { /* ignore */ }
+    schema_require('notification preferences', [], ['users' => ['notification_preferences']]);
 }
 
 /**

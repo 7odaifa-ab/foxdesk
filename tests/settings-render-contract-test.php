@@ -10,6 +10,21 @@ $assert = static function (bool $condition, string $message): void {
 };
 
 $page = file_get_contents($root . '/pages/admin/settings.php');
+$viewFiles = [
+    'general',
+    'email',
+    'templates',
+    'system',
+    'logs',
+    'workflow',
+    'security',
+];
+$views = '';
+foreach ($viewFiles as $viewFile) {
+    $view = file_get_contents($root . '/includes/modules/settings/views/' . $viewFile . '.php');
+    $assert($view !== false, 'Settings view must be readable: ' . $viewFile);
+    $views .= "\n" . $view;
+}
 $bootstrap = file_get_contents($root . '/includes/modules/bootstrap.php');
 $functions = file_get_contents($root . '/includes/functions.php');
 $templates = file_get_contents($root . '/includes/modules/settings/settings-templates.php');
@@ -29,7 +44,7 @@ foreach ([
     'admin_workflow_cards()',
     'render_admin_workflow_card($workflow_card)',
 ] as $needle) {
-    $assert(str_contains($page, $needle), 'Settings page must delegate render logic: ' . $needle);
+    $assert(str_contains($page . $views, $needle), 'Settings surface must delegate render logic: ' . $needle);
 }
 
 foreach ([
@@ -39,7 +54,7 @@ foreach ([
     "include BASE_PATH . '/pages/admin/priorities-content.php';",
     "include BASE_PATH . '/pages/admin/ticket-types-content.php';",
 ] as $needle) {
-    $assert(!str_contains($page, $needle), 'Settings page must not own extracted render logic: ' . $needle);
+    $assert(!str_contains($page, $needle), 'Settings controller must not own extracted render logic: ' . $needle);
 }
 
 foreach ([

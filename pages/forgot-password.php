@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo e(t('Reset password')); ?> - <?php echo e($app_name); ?></title>
     <link href="tailwind.min.css" rel="stylesheet">
-    <link href="theme.css" rel="stylesheet">
+    <link href="assets/css/theme.min.css" rel="stylesheet">
     <script>
         (function() {
             const saved = localStorage.getItem('theme') || 'light';

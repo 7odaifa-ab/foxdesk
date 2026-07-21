@@ -20,7 +20,7 @@ $assert = static function (bool $condition, string $message): void {
 
 $bootstrap = $read('includes/modules/bootstrap.php');
 $module = $read('includes/modules/reports/time-overview.php');
-$reports = $read('pages/admin/reports.php');
+$reports = $read('includes/modules/reports/views/time.php');
 $theme = $read('theme.css');
 $cs = $read('includes/lang/cs.php');
 

@@ -80,10 +80,14 @@ assert_ticket_list_view(ticket_list_view_shows_closed_inline('done'), 'Done view
 assert_ticket_list_view(ticket_list_view_shows_closed_inline('all'), 'All view should show closed tickets inline.');
 assert_ticket_list_view(ticket_list_view_shows_closed_inline('open', true), 'Explicit closed status filter should show closed tickets inline.');
 
-$tickets_page = file_get_contents($root . '/pages/tickets.php');
+$tickets_route = file_get_contents($root . '/pages/tickets.php');
+$tickets_surface = file_get_contents($root . '/includes/components/ticket-list-page.php');
+$tickets_board = file_get_contents($root . '/includes/components/ticket-list-board.php');
+$tickets_table = file_get_contents($root . '/includes/components/ticket-list-table.php');
+$tickets_page = implode("\n", [(string) $tickets_route, (string) $tickets_surface, (string) $tickets_board, (string) $tickets_table]);
 $ticket_row_model = file_get_contents($root . '/includes/modules/tickets/ticket-row-view-model.php');
 $ticket_registry_surface = file_get_contents($root . '/includes/components/ticket-registry-surface.php');
-assert_ticket_list_view($tickets_page !== false, 'Tickets page must be readable.');
+assert_ticket_list_view($tickets_route !== false && $tickets_surface !== false && $tickets_board !== false && $tickets_table !== false, 'Tickets route and surfaces must be readable.');
 assert_ticket_list_view($ticket_row_model !== false, 'Ticket row model must be readable.');
 assert_ticket_list_view($ticket_registry_surface !== false, 'Ticket registry surface must be readable.');
 assert_ticket_list_view(str_contains($tickets_page, 'ticket_registry_render_view_tabs'), 'Tickets page should render view tabs through the registry surface component.');

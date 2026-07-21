@@ -5,7 +5,7 @@ the same scoped API permissions as the user who created the token.
 
 ## 1. Create a key
 
-Open **Profile -> API access**, create a key, and select only the scopes the
+Open **Settings -> API & agents**, create a key, and select only the scopes the
 assistant needs. For the examples below, use:
 
 - `tickets:write`
@@ -31,9 +31,19 @@ Do not open the FoxDesk login page when using these examples. The URL in
 
 ## 3. Run examples
 
+Start by loading the live instructions and capabilities for the current token:
+
+```bash
+curl -fsS "$FOXDESK_BASE_URL/index.php?page=api&action=agent-docs" \
+  -H "Authorization: Bearer $FOXDESK_API_TOKEN"
+```
+
 ```bash
 sh examples/agent-api/create-ticket.sh
 FOXDESK_TICKET_ID=123 sh examples/agent-api/add-comment.sh
+FOXDESK_TICKET_ID=123 FOXDESK_DURATION_MINUTES=30 \
+  FOXDESK_COMMENT='<p>Completed the requested update.</p>' \
+  sh examples/agent-api/comment-with-time.sh
 FOXDESK_TICKET_ID=123 sh examples/agent-api/log-time.sh
 FOXDESK_ORGANIZATION_ID=1 sh examples/agent-api/prepare-report.sh
 ```
@@ -41,7 +51,7 @@ FOXDESK_ORGANIZATION_ID=1 sh examples/agent-api/prepare-report.sh
 ## Raw curl shape
 
 ```bash
-curl -fsS -X POST "$FOXDESK_BASE_URL/index.php?page=api&action=app-create-ticket" \
+curl -fsS -X POST "$FOXDESK_BASE_URL/index.php?page=api&action=agent-create-ticket" \
   -H "Authorization: Bearer $FOXDESK_API_TOKEN" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: manual-create-ticket-1" \

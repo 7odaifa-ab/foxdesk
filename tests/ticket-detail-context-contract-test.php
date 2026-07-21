@@ -25,6 +25,8 @@ function is_agent(): bool { return (bool) $GLOBALS['test_is_agent']; }
 function is_admin(): bool { return (bool) $GLOBALS['test_is_admin']; }
 function get_ticket_comments(int $ticket_id): array { return [['id' => 1, 'ticket_id' => $ticket_id]]; }
 function get_ticket_attachments(int $ticket_id): array { return [['id' => 2, 'ticket_id' => $ticket_id]]; }
+function get_ticket_time_entries(int $ticket_id, bool $strict = false): array { return [['id' => 3, 'ticket_id' => $ticket_id]]; }
+function get_ticket_time_breakdown(int $ticket_id, bool $strict = false): array { return ['total' => 15, 'human' => 15, 'ai' => 0]; }
 function get_statuses(): array { return [['id' => 1, 'name' => 'Open']]; }
 function ticket_tags_column_exists(): bool { return true; }
 function get_ticket_tags_array(string $tags): array { return array_filter(array_map('trim', explode(',', $tags))); }
@@ -56,6 +58,8 @@ $session = ['share_token' => 'token-1', 'share_token_ticket_id' => 42];
 $context = ticket_detail_context(42, $ticket, $user, $session);
 $assert(count($context['all_comments']) === 1, 'Context must include comments.');
 $assert(count($context['attachments']) === 1, 'Context must include attachments.');
+$assert(count($context['time_entries']) === 1, 'Context must include time entries from the shared activity model.');
+$assert($context['time_breakdown']['total'] === 15, 'Context must include the shared time breakdown.');
 $assert($context['statuses'][0]['name'] === 'Open', 'Context must include statuses.');
 $assert($context['tags_supported'] === true, 'Context must include tag support state.');
 $assert($context['ticket_tags'] === ['alpha', 'beta'], 'Context must parse ticket tags.');

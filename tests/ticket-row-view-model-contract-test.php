@@ -50,9 +50,13 @@ $assert(str_contains(ticket_registry_status_accent_class($tickets[1], $statuses)
 $assert(ticket_registry_status_dot_class('waiting', 'kanban-dot') === 'kanban-dot kanban-dot--waiting', 'Status dot helper must compose base and group.');
 $assert(ticket_registry_priority_badge_class('Urgent') === 'badge-inline ticket-priority-inline ticket-priority-inline--medium', 'Priority helper must compose fallback priority badge class.');
 
-$page = file_get_contents($root . '/pages/tickets.php');
+$route = file_get_contents($root . '/pages/tickets.php');
+$surface = file_get_contents($root . '/includes/components/ticket-list-page.php');
+$boardSurface = file_get_contents($root . '/includes/components/ticket-list-board.php');
+$tableSurface = file_get_contents($root . '/includes/components/ticket-list-table.php');
+$page = implode("\n", [(string) $route, (string) $surface, (string) $boardSurface, (string) $tableSurface]);
 $bootstrap = file_get_contents($root . '/includes/modules/bootstrap.php');
-$assert($page !== false && $bootstrap !== false, 'Ticket registry files must be readable.');
+$assert($route !== false && $surface !== false && $boardSurface !== false && $tableSurface !== false && $bootstrap !== false, 'Ticket registry files must be readable.');
 $assert(str_contains($bootstrap, '/tickets/ticket-row-view-model.php'), 'Module bootstrap must load row view model.');
 $assert(str_contains($page, 'ticket_registry_split_model($statuses, $tickets, $status_id, $ticket_list_view'), 'Tickets page must use split view model.');
 $assert(str_contains($page, '$show_closed_tickets_inline)'), 'Tickets page must pass the shared closed visibility decision into the split view model.');

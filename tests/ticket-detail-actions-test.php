@@ -5,12 +5,14 @@ $root = dirname(__DIR__);
 $module = file_get_contents($root . '/includes/modules/tickets/ticket-detail-actions.php');
 $bootstrap = file_get_contents($root . '/includes/modules/bootstrap.php');
 $page = file_get_contents($root . '/pages/ticket-detail.php');
+$content = file_get_contents($root . '/includes/components/ticket-detail-content.php');
 $sidebar = file_get_contents($root . '/includes/components/ticket-detail-sidebar.php');
 $handlers = file_get_contents($root . '/includes/components/ticket-form-handlers.php');
+$status_transition = file_get_contents($root . '/includes/modules/tickets/ticket-status-transition.php');
 $time_functions = file_get_contents($root . '/includes/ticket-time-functions.php');
-$detail_js = file_get_contents($root . '/assets/js/ticket-detail.js');
+$detail_js = file_get_contents($root . '/assets/js/ticket-detail-workflow.js');
 
-if ($module === false || $bootstrap === false || $page === false || $sidebar === false || $handlers === false || $time_functions === false || $detail_js === false) {
+if ($module === false || $bootstrap === false || $page === false || $content === false || $sidebar === false || $handlers === false || $status_transition === false || $time_functions === false || $detail_js === false) {
     fwrite(STDERR, "Unable to read ticket detail action files.\n");
     exit(1);
 }
@@ -29,16 +31,18 @@ $assert(str_contains($module, "'key' => 'start_work'"), 'Start work must be a pr
 $assert(str_contains($module, "'key' => 'assign'"), 'Assign must be a primary action.');
 $assert(str_contains($module, "'key' => 'complete'"), 'Complete must be a primary action.');
 $assert(str_contains($page, 'ticket_detail_primary_actions('), 'Ticket detail page must consume the action model.');
-$assert(str_contains($page, 'class="card ticket-work-panel"'), 'Ticket detail must render the work panel.');
+$assert(str_contains($page, '/includes/components/ticket-detail-content.php'), 'Ticket detail route must delegate its content surface.');
+$assert(str_contains($content, 'class="card ticket-work-panel"'), 'Ticket detail content must render the work panel.');
 $assert(str_contains($module, "'id' => 'toolbar-timer-btn'"), 'Timer button id must stay stable in the action model.');
 $assert(str_contains($detail_js, "document.getElementById('toolbar-timer-btn')"), 'Existing timer JS must still target toolbar-timer-btn.');
-$assert(str_contains($page, "/includes/components/ticket-detail-sidebar.php"), 'Ticket detail page must include the side properties panel component.');
+$assert(str_contains($content, "/includes/components/ticket-detail-sidebar.php"), 'Ticket detail content must include the side properties panel component.');
 $assert(str_contains($sidebar, 'id="ticket-side-panel"'), 'Assign action must target the side properties panel.');
 $assert(str_contains($sidebar, "t('Ticket properties')"), 'Side panel must have a clear properties heading.');
-$assert(str_contains($page, 'title="<?php echo e($action_title); ?>"'), 'Primary actions must expose mouse-over help text.');
-$assert(str_contains($page, 'aria-label="<?php echo e($action_title); ?>"'), 'Primary actions must expose accessible labels.');
+$assert(str_contains($content, 'title="<?php echo e($action_title); ?>"'), 'Primary actions must expose mouse-over help text.');
+$assert(str_contains($content, 'aria-label="<?php echo e($action_title); ?>"'), 'Primary actions must expose accessible labels.');
 $assert(str_contains($time_functions, 'function stop_active_ticket_timer'), 'Shared active timer stop helper is missing.');
-$assert(str_contains($handlers, 'stop_active_ticket_timer($ticket_id, $user[\'id\'])'), 'Standalone status changes must stop an active timer when completing work.');
+$assert(str_contains($handlers, 'ticket_transition_status('), 'Status changes must use the shared transactional transition helper.');
+$assert(str_contains($status_transition, 'stop_active_ticket_timer($ticket_id, $actor_id)'), 'The shared status transition must stop an active timer when completing work.');
 
 if (!function_exists('ticket_status_group_from_status')) {
     function ticket_status_group_from_status(array $status): string

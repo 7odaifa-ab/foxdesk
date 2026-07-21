@@ -90,15 +90,25 @@ $pages = [
     'pages/inbox.php' => ["redirect('work'", "'triage' => 'unassigned'"],
     'pages/tickets.php' => ['ticket_list_view_from_request', 'ticket_list_view_apply_filters', 'ticket_registry_render_view_tabs'],
     'pages/client.php' => ['client_overview(', 'ticket_list_view_normalize'],
-    'pages/admin/reports.php' => ['reporting_flow_steps()', 'billing_review_adjustment_actions()', 'billing_review_bulk_adjustment_actions()'],
     'pages/ticket-detail.php' => ['ticket_detail_primary_actions('],
 ];
 
 foreach ($pages as $path => $needles) {
     $contents = read_shared_workflow_file($root, $path);
+    if ($path === 'pages/tickets.php') {
+        $contents .= "\n" . read_shared_workflow_file($root, 'includes/components/ticket-list-page.php')
+            . "\n" . read_shared_workflow_file($root, 'includes/components/ticket-list-board.php')
+            . "\n" . read_shared_workflow_file($root, 'includes/components/ticket-list-table.php');
+    }
     foreach ($needles as $needle) {
         assert_shared_workflow(str_contains($contents, $needle), $path . ' must use shared workflow contract: ' . $needle);
     }
+}
+
+$report_surface = read_shared_workflow_file($root, 'includes/modules/reports/views/page.php')
+    . "\n" . read_shared_workflow_file($root, 'includes/modules/reports/views/billing.php');
+foreach (['reporting_flow_steps()', 'billing_review_adjustment_actions()', 'billing_review_bulk_adjustment_actions()'] as $needle) {
+    assert_shared_workflow(str_contains($report_surface, $needle), 'Extracted reports surface must use shared workflow contract: ' . $needle);
 }
 
 $registry = read_shared_workflow_file($root, 'includes/components/ticket-registry-surface.php');

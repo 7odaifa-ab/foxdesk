@@ -237,23 +237,14 @@ function remember_me_allowed_for_user(array $user): bool
     return !$totp_enabled && !$role_requires_2fa;
 }
 
-/**
- * Ensure the remember_token column exists on users table (auto-migration).
- */
+/** Ensure the installed schema supports remember-me tokens. */
 function ensure_remember_token_column()
 {
     static $checked = false;
     if ($checked) return true;
     $checked = true;
 
-    if (!column_exists('users', 'remember_token')) {
-        try {
-            db_query("ALTER TABLE users ADD COLUMN remember_token VARCHAR(64) DEFAULT NULL");
-        } catch (Throwable $e) {
-            return false;
-        }
-    }
-    return true;
+    return schema_is_ready('remember-me authentication', [], ['users' => ['remember_token']]);
 }
 
 /**
@@ -513,6 +504,7 @@ function api_token_scope_catalog(array $user = null): array
     }
     if ($is_staff) {
         $catalog['time:write'] = 'Add and control time entries';
+        $catalog['delete:write'] = 'Delete comments and time entries; permanent ticket deletion also requires explicit user permission';
     }
     if (($user['role'] ?? '') === 'admin' || $can_time) {
         $catalog['reports:read'] = 'Read report billing reviews';
@@ -596,6 +588,7 @@ function api_token_required_scope_for_action(string $action): ?string
 {
     $map = [
         'upload' => 'attachments:write',
+        'agent-docs' => null,
         'agent-me' => 'work:read',
         'agent-list-statuses' => 'tickets:read',
         'agent-list-priorities' => 'tickets:read',
@@ -604,8 +597,12 @@ function api_token_required_scope_for_action(string $action): ?string
         'agent-list-tickets' => 'tickets:read',
         'agent-get-ticket' => 'tickets:read',
         'agent-add-comment' => 'comments:write',
+        'agent-add-update' => 'comments:write',
+        'agent-add-work-entry' => 'comments:write',
         'agent-update-status' => 'tickets:write',
         'agent-log-time' => 'time:write',
+        'agent-delete-ticket-preflight' => 'tickets:read',
+        'agent-delete-ticket-permanently' => 'delete:write',
         'app-shell' => 'work:read',
         'app-home' => 'work:read',
         'app-ticket-list' => 'tickets:read',
@@ -697,10 +694,63 @@ function api_idempotency_replay_if_available(string $action): void
         return;
     }
     $request_hash = api_idempotency_request_hash($action);
-    $GLOBALS['api_idempotency'] = ['key' => $key, 'request_hash' => $request_hash, 'action' => $action];
-    $row = db_fetch_one("SELECT * FROM api_idempotency_keys WHERE token_id = ? AND action = ? AND idempotency_key = ? AND expires_at > NOW() LIMIT 1", [(int) $token['id'], $action, $key]);
-    if (!$row) {
+    $GLOBALS['api_idempotency'] = [
+        'key' => $key,
+        'request_hash' => $request_hash,
+        'action' => $action,
+        'owns_reservation' => false,
+    ];
+    $reservation = [
+        'token_id' => (int) $token['id'],
+        'user_id' => (int) $token['user_id'],
+        'idempotency_key' => $key,
+        'action' => $action,
+        'request_hash' => $request_hash,
+        'response_json' => null,
+        'status_code' => 0,
+        'created_at' => date('Y-m-d H:i:s'),
+        'expires_at' => date('Y-m-d H:i:s', time() + 300),
+    ];
+    $db = get_db();
+    try {
+        if (!$db->inTransaction()) {
+            $db->beginTransaction();
+            $GLOBALS['api_idempotency']['transaction_started'] = true;
+        }
+        $reservation_id = (int) db_insert('api_idempotency_keys', $reservation);
+        $GLOBALS['api_idempotency']['reservation_id'] = $reservation_id;
+        $GLOBALS['api_idempotency']['owns_reservation'] = true;
         return;
+    } catch (Throwable $e) {
+        if (!empty($GLOBALS['api_idempotency']['transaction_started']) && $db->inTransaction()) {
+            $db->rollBack();
+        }
+        $GLOBALS['api_idempotency']['transaction_started'] = false;
+        // A concurrent request may already own the unique key.
+    }
+
+    $row = db_fetch_one("SELECT * FROM api_idempotency_keys WHERE token_id = ? AND action = ? AND idempotency_key = ? LIMIT 1", [(int) $token['id'], $action, $key]);
+    if ($row && strtotime((string) ($row['expires_at'] ?? '')) <= time()) {
+        db_delete('api_idempotency_keys', 'id = ? AND expires_at <= NOW()', [(int) $row['id']]);
+        try {
+            if (!$db->inTransaction()) {
+                $db->beginTransaction();
+                $GLOBALS['api_idempotency']['transaction_started'] = true;
+            }
+            $reservation_id = (int) db_insert('api_idempotency_keys', $reservation);
+            $GLOBALS['api_idempotency']['reservation_id'] = $reservation_id;
+            $GLOBALS['api_idempotency']['owns_reservation'] = true;
+            return;
+        } catch (Throwable $e) {
+            if (!empty($GLOBALS['api_idempotency']['transaction_started']) && $db->inTransaction()) {
+                $db->rollBack();
+            }
+            $GLOBALS['api_idempotency']['transaction_started'] = false;
+            $row = db_fetch_one("SELECT * FROM api_idempotency_keys WHERE token_id = ? AND action = ? AND idempotency_key = ? LIMIT 1", [(int) $token['id'], $action, $key]);
+        }
+    }
+    if (!$row) {
+        api_error('Unable to reserve idempotency key.', 503);
     }
     if (!hash_equals((string) $row['request_hash'], $request_hash)) {
         api_error('Idempotency key was already used with a different request.', 409);
@@ -712,6 +762,8 @@ function api_idempotency_replay_if_available(string $action): void
         echo $row['response_json'];
         exit;
     }
+    header('Retry-After: 1');
+    api_error('A request with this idempotency key is already in progress.', 409);
 }
 
 function api_idempotency_store_success(array $response): void
@@ -721,24 +773,62 @@ function api_idempotency_store_success(array $response): void
     if (!$token || !is_array($state) || empty($state['key']) || !table_exists('api_idempotency_keys')) {
         return;
     }
+    if (empty($state['owns_reservation']) || empty($state['reservation_id'])) {
+        return;
+    }
     try {
-        db_insert('api_idempotency_keys', [
-            'token_id' => (int) $token['id'],
-            'user_id' => (int) $token['user_id'],
-            'idempotency_key' => (string) $state['key'],
-            'action' => (string) $state['action'],
-            'request_hash' => (string) $state['request_hash'],
+        db_update('api_idempotency_keys', [
             'response_json' => json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             'status_code' => http_response_code() ?: 200,
-            'created_at' => date('Y-m-d H:i:s'),
-            'expires_at' => date('Y-m-d H:i:s', time() + 86400),
-        ]);
+            'expires_at' => date('Y-m-d H:i:s', time() + 2592000),
+        ], 'id = ? AND request_hash = ?', [(int) $state['reservation_id'], (string) $state['request_hash']]);
+        $db = get_db();
+        if (!empty($state['transaction_started']) && $db->inTransaction()) {
+            $db->commit();
+        }
+        if (function_exists('ticket_permanent_delete_run_after_commit_callbacks')) {
+            ticket_permanent_delete_run_after_commit_callbacks();
+        }
+        $GLOBALS['api_idempotency']['owns_reservation'] = false;
+        $GLOBALS['api_idempotency']['transaction_started'] = false;
     } catch (Throwable $e) {
+        $db = get_db();
+        if (!empty($state['transaction_started']) && $db->inTransaction()) {
+            $db->rollBack();
+        }
+        $GLOBALS['api_idempotency']['owns_reservation'] = false;
+        $GLOBALS['api_idempotency']['transaction_started'] = false;
+        $GLOBALS['ticket_after_commit_callbacks'] = [];
+        throw new RuntimeException('FoxDesk could not atomically persist the API operation.', 0, $e);
     }
+}
+
+function api_idempotency_release_pending(): void
+{
+    $state = $GLOBALS['api_idempotency'] ?? null;
+    if (!is_array($state) || empty($state['owns_reservation']) || empty($state['reservation_id'])) {
+        return;
+    }
+    try {
+        $db = get_db();
+        if (!empty($state['transaction_started']) && $db->inTransaction()) {
+            $db->rollBack();
+            $GLOBALS['ticket_after_commit_callbacks'] = [];
+        } else {
+            db_delete('api_idempotency_keys', 'id = ? AND response_json IS NULL', [(int) $state['reservation_id']]);
+        }
+    } catch (Throwable $e) {
+        error_log('FoxDesk could not release pending idempotency key: ' . $e->getMessage());
+    }
+    $GLOBALS['api_idempotency']['owns_reservation'] = false;
+    $GLOBALS['api_idempotency']['transaction_started'] = false;
 }
 
 function api_token_resource_from_response(string $action, array $response): array
 {
+    if ($action === 'agent-delete-ticket-permanently') {
+        return ['ticket_deletion', null];
+    }
     foreach (['ticket_id' => 'ticket', 'comment_id' => 'comment', 'time_entry_id' => 'time_entry', 'attachment_id' => 'attachment'] as $key => $type) {
         if (isset($response[$key])) {
             return [$type, (int) $response[$key]];
@@ -874,6 +964,7 @@ function generate_api_token($user_id, $name, $expires_at = null, $scopes = null)
     }
 
     $granted_scopes = api_token_normalize_scopes($scopes, $token_user);
+    $expires_at = $expires_at !== null && trim((string) $expires_at) !== '' ? $expires_at : null;
     $raw_token = 'fdx_' . bin2hex(random_bytes(24));
     $token_hash = hash('sha256', $raw_token);
     $token_prefix = substr($raw_token, 0, 8);

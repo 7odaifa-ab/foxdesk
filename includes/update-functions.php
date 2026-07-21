@@ -822,7 +822,47 @@ function create_backup(): array
 }
 
 /**
- * Create ZIP backup of application files
+ * Root files that belong to a deployable FoxDesk release.
+ * Deployment-specific configuration and secrets are deliberately excluded.
+ */
+function update_release_managed_root_files(): array
+{
+    return [
+        '.htaccess',
+        'attachment.php',
+        'image.php',
+        'index.php',
+        'manifest.php',
+        'pwa-icon.php',
+        'rescue.php',
+        'sw.js',
+        'tailwind.min.css',
+        'theme.css',
+        'upgrade.php',
+        'version.json',
+    ];
+}
+
+function update_release_managed_directories(): array
+{
+    return ['assets', 'includes', 'pages'];
+}
+
+function update_release_path_is_managed(string $relative_path): bool
+{
+    $relative_path = trim(str_replace('\\', '/', $relative_path), '/');
+    if ($relative_path === '') {
+        return false;
+    }
+    if (!str_contains($relative_path, '/')) {
+        return in_array($relative_path, update_release_managed_root_files(), true);
+    }
+    $top_level = strtok($relative_path, '/');
+    return $top_level !== false && in_array($top_level, update_release_managed_directories(), true);
+}
+
+/**
+ * Create ZIP backup of application files.
  */
 function create_files_backup($zip_path): bool
 {
@@ -832,30 +872,30 @@ function create_files_backup($zip_path): bool
     }
 
     $base = BASE_PATH;
-    $exclude = ['backups', 'uploads', 'storage', '.git', 'node_modules', 'vendor', 'build'];
+    foreach (update_release_managed_root_files() as $relative) {
+        $path = $base . DIRECTORY_SEPARATOR . $relative;
+        if (is_file($path)) {
+            $zip->addFile($path, $relative);
+        }
+    }
 
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($base, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::SELF_FIRST
-    );
-
-    foreach ($iterator as $file) {
-        $path = $file->getPathname();
-        $relative = substr($path, strlen($base) + 1);
-
-        // Skip only top-level runtime/dependency directories. Do not skip files
-        // such as includes/storage-functions.php just because their filename
-        // contains an excluded directory name.
-        $normalized_relative = str_replace('\\', '/', $relative);
-        $top_level = strtok($normalized_relative, '/');
-        if ($top_level !== false && in_array($top_level, $exclude, true)) {
+    foreach (update_release_managed_directories() as $directory) {
+        $path = $base . DIRECTORY_SEPARATOR . $directory;
+        if (!is_dir($path)) {
             continue;
         }
-
-        if ($file->isDir()) {
-            $zip->addEmptyDir($relative);
-        } else {
-            $zip->addFile($path, $relative);
+        $zip->addEmptyDir($directory);
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($iterator as $file) {
+            $relative = $directory . '/' . str_replace('\\', '/', $iterator->getSubPathName());
+            if ($file->isDir()) {
+                $zip->addEmptyDir($relative);
+            } else {
+                $zip->addFile($file->getPathname(), $relative);
+            }
         }
     }
 
@@ -1219,39 +1259,8 @@ function apply_update($zip_path, $backup_id = null, bool $dry_run = false): arra
  */
 function run_migrations($migrations_dir): array
 {
-    $result = [
-        'success' => true,
-        'messages' => [],
-        'errors' => []
-    ];
-
-    $files = glob($migrations_dir . '/*.sql');
-    sort($files); // Ensure order
-
-    foreach ($files as $file) {
-        $filename = basename($file);
-        try {
-            $sql = file_get_contents($file);
-            $db = get_db();
-            $statements = split_sql_statements((string) $sql);
-
-            foreach ($statements as $statement) {
-                if (!empty($statement)) {
-                    $db->exec($statement);
-                }
-            }
-
-            $result['messages'][] = t('Migration {file} applied.', ['file' => $filename]);
-        } catch (Throwable $e) {
-            $result['errors'][] = t('Migration {file} failed: {error}', [
-                'file' => $filename,
-                'error' => $e->getMessage()
-            ]);
-            $result['success'] = false;
-        }
-    }
-
-    return $result;
+    require_once __DIR__ . '/schema-migration-runner.php';
+    return foxdesk_run_versioned_migrations((string) $migrations_dir);
 }
 
 /**
@@ -1316,7 +1325,7 @@ function rollback_update($backup_id, $restore_database = false): array
                 // Remove files added after the backup was taken, then copy
                 // the backed-up files over the remaining tree.
                 $removed = prune_files_not_in_manifest(BASE_PATH, $backup_files);
-                $copied = copy_directory($temp_dir, BASE_PATH);
+                $copied = copy_release_manifest_files($temp_dir, BASE_PATH, $backup_files);
                 delete_directory($temp_dir);
                 ensure_runtime_directories();
 
@@ -1755,10 +1764,47 @@ function get_zip_file_manifest(ZipArchive $zip): array
             continue;
         }
 
-        $files[$name] = true;
+        if (update_release_path_is_managed($name)) {
+            $files[$name] = true;
+        }
     }
 
     return $files;
+}
+
+function copy_release_manifest_files(string $source, string $dest, array $manifest): int
+{
+    $count = 0;
+    $has_opcache = function_exists('opcache_invalidate');
+    $paths = array_keys($manifest);
+    sort($paths, SORT_STRING);
+
+    foreach ($paths as $relative) {
+        if (!is_string($relative) || !update_release_path_is_managed($relative)) {
+            continue;
+        }
+        $relative = trim(str_replace('\\', '/', $relative), '/');
+        $source_path = $source . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+        if (!is_file($source_path)) {
+            continue;
+        }
+        $target_path = $dest . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+        $target_directory = dirname($target_path);
+        if (!is_dir($target_directory) && !mkdir($target_directory, 0755, true) && !is_dir($target_directory)) {
+            throw new RuntimeException('Unable to create release restore directory.');
+        }
+        if (!copy($source_path, $target_path)) {
+            throw new RuntimeException('Unable to restore a release file.');
+        }
+        $count++;
+        if ($has_opcache && str_ends_with($target_path, '.php')) {
+            @opcache_invalidate($target_path, true);
+        }
+    }
+    if (function_exists('opcache_reset')) {
+        @opcache_reset();
+    }
+    return $count;
 }
 
 /**
@@ -1767,36 +1813,41 @@ function get_zip_file_manifest(ZipArchive $zip): array
 function prune_files_not_in_manifest(string $base_path, array $manifest): int
 {
     $removed = 0;
-    $exclude = ['backups', 'uploads', 'storage', '.git', 'node_modules', 'vendor', 'build'];
-    $exclude_lookup = array_fill_keys($exclude, true);
 
     if (!is_dir($base_path)) {
         return 0;
     }
 
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($base_path, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::CHILD_FIRST
-    );
+    foreach (update_release_managed_root_files() as $relative) {
+        $path = $base_path . DIRECTORY_SEPARATOR . $relative;
+        if (is_file($path) && !isset($manifest[$relative]) && @unlink($path)) {
+            $removed++;
+        }
+    }
 
-    foreach ($iterator as $item) {
-        $relative = str_replace('\\', '/', substr($item->getPathname(), strlen($base_path) + 1));
-        $top_level = strtok($relative, '/');
-        if ($top_level !== false && isset($exclude_lookup[$top_level])) {
+    foreach (update_release_managed_directories() as $directory) {
+        $directory_path = $base_path . DIRECTORY_SEPARATOR . $directory;
+        if (!is_dir($directory_path)) {
             continue;
         }
 
-        if ($item->isFile() && !isset($manifest[$relative])) {
-            if (@unlink($item->getPathname())) {
-                $removed++;
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory_path, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($iterator as $item) {
+            $relative = $directory . '/' . str_replace('\\', '/', $iterator->getSubPathName());
+            if ($item->isFile() && !isset($manifest[$relative])) {
+                if (@unlink($item->getPathname())) {
+                    $removed++;
+                }
+                continue;
             }
-            continue;
-        }
-
-        if ($item->isDir()) {
-            $children = @scandir($item->getPathname());
-            if (is_array($children) && count($children) === 2) {
-                @rmdir($item->getPathname());
+            if ($item->isDir()) {
+                $children = @scandir($item->getPathname());
+                if (is_array($children) && count($children) === 2) {
+                    @rmdir($item->getPathname());
+                }
             }
         }
     }

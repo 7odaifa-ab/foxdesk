@@ -48,6 +48,10 @@ CREATE TABLE IF NOT EXISTS users (
     totp_enabled TINYINT(1) DEFAULT 0,
     totp_backup_codes TEXT NULL,
     last_notifications_seen_at DATETIME NULL,
+    remember_token VARCHAR(64) NULL,
+    notification_preferences TEXT NULL,
+    is_ai_agent TINYINT(1) NOT NULL DEFAULT 0,
+    ai_model VARCHAR(100) NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
     INDEX idx_email (email),
@@ -354,6 +358,10 @@ CREATE TABLE IF NOT EXISTS recurring_tasks (
     assigned_user_id INT,
     priority_id INT,
     status_id INT NOT NULL,
+    due_days INT NOT NULL DEFAULT 7,
+    paused_at DATETIME NULL,
+    resume_date DATE NULL,
+    tags TEXT NULL,
     recurrence_type ENUM('daily', 'weekly', 'monthly', 'yearly') DEFAULT 'weekly',
     recurrence_interval INT DEFAULT 1,
     recurrence_day_of_week TINYINT,
@@ -378,6 +386,17 @@ CREATE TABLE IF NOT EXISTS recurring_tasks (
     INDEX idx_next_run (next_run_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS recurring_task_runs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recurring_task_id INT NOT NULL,
+    ticket_id INT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'success',
+    error_message TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_recurring_ticket (ticket_id),
+    INDEX idx_recurring_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Report templates table
 CREATE TABLE IF NOT EXISTS report_templates (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -400,6 +419,14 @@ CREATE TABLE IF NOT EXISTS report_templates (
     is_draft TINYINT(1) DEFAULT 1,
     is_archived TINYINT(1) DEFAULT 0,
     expires_at DATETIME NULL,
+    tags TEXT NULL,
+    agent_ids TEXT NULL,
+    schedule_enabled TINYINT(1) NOT NULL DEFAULT 0,
+    schedule_interval VARCHAR(20) NOT NULL DEFAULT 'monthly',
+    schedule_day INT NOT NULL DEFAULT 1,
+    schedule_recipients TEXT NULL,
+    schedule_last_sent DATETIME NULL,
+    schedule_next_due DATE NULL,
     last_generated_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -519,12 +546,17 @@ CREATE TABLE IF NOT EXISTS email_ingest_logs (
     mailbox VARCHAR(120) NOT NULL,
     uid INT NOT NULL,
     message_id VARCHAR(255) NULL,
+    sender_email VARCHAR(255) NULL,
+    subject VARCHAR(255) NULL,
+    ticket_id INT NULL,
     status ENUM('processed','skipped','failed') NOT NULL,
     reason VARCHAR(100) NULL,
     error TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uniq_mailbox_uid (mailbox, uid),
     INDEX idx_message_id (message_id),
+    INDEX idx_sender_email (sender_email),
+    INDEX idx_ticket_id (ticket_id),
     INDEX idx_status_created (status, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -594,6 +626,53 @@ CREATE TABLE IF NOT EXISTS api_idempotency_keys (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Minimal tombstones and retryable object cleanup for irreversible ticket deletion.
+CREATE TABLE IF NOT EXISTS ticket_deletion_receipts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT NOT NULL DEFAULT 0,
+    ticket_id INT NOT NULL,
+    ticket_code_hash CHAR(64) NOT NULL,
+    deleted_by INT NOT NULL,
+    request_id VARCHAR(64) NULL,
+    deleted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_ticket_deletion_receipt (tenant_id, ticket_id),
+    INDEX idx_deleted_at (deleted_at),
+    INDEX idx_deleted_by (deleted_by)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ticket_storage_deletion_outbox (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT NOT NULL DEFAULT 0,
+    ticket_id INT NOT NULL,
+    attachment_payload JSON NOT NULL,
+    attempts INT NOT NULL DEFAULT 0,
+    last_error VARCHAR(500) NULL,
+    processed_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_pending (processed_at, created_at),
+    INDEX idx_ticket (tenant_id, ticket_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Notifications table
+CREATE TABLE IF NOT EXISTS pending_deletions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tenant_id INT NOT NULL DEFAULT 0,
+    user_id INT NOT NULL,
+    ticket_id INT NOT NULL,
+    resource_type VARCHAR(30) NOT NULL,
+    resource_id BIGINT NOT NULL,
+    token_hash CHAR(64) NOT NULL,
+    payload_json LONGTEXT NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_pending_deletion_token (token_hash),
+    INDEX idx_pending_deletions_expiry (expires_at),
+    INDEX idx_pending_deletions_ticket (ticket_id),
+    INDEX idx_pending_deletions_user (user_id),
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Notifications table
 CREATE TABLE IF NOT EXISTS notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -603,6 +682,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     actor_id INT NULL,
     data JSON NULL,
     is_read TINYINT(1) NOT NULL DEFAULT 0,
+    is_resolved TINYINT(1) NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
@@ -611,6 +691,32 @@ CREATE TABLE IF NOT EXISTS notifications (
     INDEX idx_user_read (user_id, is_read),
     INDEX idx_ticket (ticket_id),
     INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ticket_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id INT NOT NULL,
+    user_id INT NOT NULL,
+    field_name VARCHAR(100) NOT NULL,
+    old_value TEXT NULL,
+    new_value TEXT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_ticket (ticket_id),
+    INDEX idx_user (user_id),
+    INDEX idx_created (created_at),
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    endpoint TEXT NOT NULL,
+    p256dh VARCHAR(255) NOT NULL DEFAULT '',
+    auth_key VARCHAR(255) NOT NULL DEFAULT '',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_push_user (user_id),
+    INDEX idx_push_endpoint (endpoint(255))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Persistent application sessions

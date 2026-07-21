@@ -7,7 +7,7 @@ giving it more power than the person who created the key.
 
 Implemented v1:
 
-- Profile API key creation/revocation with scoped permissions and expiry.
+- Settings API key creation/revocation with scoped permissions and optional expiry.
 - Bearer-token authentication for agent/app/upload API actions.
 - Scope enforcement, rate limiting metadata, idempotency keys for write retries,
   and write audit logging.
@@ -18,18 +18,20 @@ Implemented v1:
   adding comments, logging time, timer actions, and uploads.
 - Practical quickstart examples for Codex, Claude, and curl live in
   `docs/AGENT_API_QUICKSTART.md` and `examples/agent-api/`.
+- The authenticated `agent-docs` endpoint exposes the canonical ticket workflow
+  in English, Czech, German, Spanish, and Italian.
 - A local stdio MCP server wrapper lives in `examples/agent-api/mcp-server.js`
   and is documented in `docs/AGENT_MCP_SERVER.md`.
 - Agent tool manifest, MCP write dry-run/confirmation, and local agent smoke
   gates are tracked in `docs/AGENT_API_MILESTONES.md`.
 
-Still future-facing:
-
-- Destructive write endpoints beyond ticket/comment/time workflows.
+Permanent ticket deletion is available only with `tickets:read`, `delete:write`,
+the creator's permanent-delete permission, preflight, and an exact ticket-code
+confirmation. Partial and bulk permanent deletion are intentionally unsupported.
 
 ## User Flow
 
-1. A user opens **Profile -> API access**.
+1. A user opens **Settings -> API & agents**.
 2. The user creates an API key for an assistant, CLI, or MCP client.
 3. The user chooses an expiry and optional scopes such as tickets, comments,
    time entries, reports, clients, attachments, or read-only access.
@@ -47,14 +49,8 @@ FOXDESK_API_TOKEN=fdx_...
    page. It must not open `/index.php?page=login` or wait for cookies; every
    request uses `Authorization: Bearer $FOXDESK_API_TOKEN`.
 
-Important distinction:
-
-- **Profile -> API access** creates scoped personal assistant/API keys.
-- **Admin -> Users -> AI agents** manages AI-agent records, rate metadata, and
-  workspace-level AI-agent administration.
-
-External tools such as Codex, Claude, curl scripts, and MCP clients should use
-Profile API keys. They should not require a separate admin-only setup path.
+The same **API & agents** page is the single setup path for Codex, Claude, curl,
+MCP clients, automations, and tracked AI-agent identities.
 
 ## Permission Model
 
@@ -86,6 +82,8 @@ Profile API keys. They should not require a separate admin-only setup path.
   id.
 - Write endpoints accept idempotency keys to avoid duplicate ticket/comment/time
   creation when an agent retries.
+- A concurrent request with the same key returns `409` and `Retry-After`; the
+  agent must retry the unchanged request instead of generating another key.
 - MCP write actions require `confirm:true` and support `dry_run:true`.
 - Destructive actions need explicit scopes and should support dry-run before
   they are exposed.

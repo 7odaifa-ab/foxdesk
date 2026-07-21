@@ -33,6 +33,8 @@ $assert(str_contains($page, 'settings_handle_post_request($settings_audit)'), 'S
 $assert(str_contains($page, 'settings_handle_workflow_post($tab, $_POST)'), 'Settings page must delegate workflow POST actions.');
 $assert(str_contains($page, 'settings_tab_from_request($_GET)'), 'Settings page must use settings tab view model.');
 $assert(str_contains($page, 'render_admin_settings_tabs($tab)'), 'Settings page must render tabs through the component.');
+$assert(str_contains($page, 'settings_view_file($tab)'), 'Settings page must resolve an allowlisted view partial.');
+$assert(count(file($root . '/pages/admin/settings.php') ?: []) < 700, 'Settings controller must remain below 700 lines.');
 
 foreach ([
     "if (isset(\$_POST['save_email'])",
@@ -56,6 +58,8 @@ foreach ([
 
 $assert(str_contains($workflow, 'function settings_handle_workflow_post'), 'Settings workflow module must expose workflow handler.');
 $assert(str_contains($viewModel, 'function settings_tab_from_request'), 'Settings view model must expose tab helper.');
+$assert(str_contains($viewModel, 'function settings_view_file'), 'Settings view model must expose an allowlisted view resolver.');
+$assert(!str_contains($viewModel, '$tab . \'.php\''), 'Settings view resolver must not build a file path from untrusted tab input.');
 $assert(str_contains($tabs, 'function render_admin_settings_tabs'), 'Settings tabs component must expose renderer.');
 $assert(str_contains($tabs, 'class="settings-section-card'), 'Settings renderer must use compact section cards.');
 $assert(!str_contains($tabs, 'class="admin-tab'), 'Settings renderer must not use horizontal admin tabs.');

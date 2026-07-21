@@ -197,7 +197,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo e(t('Sign in')); ?> - <?php echo e($app_name); ?></title>
     <link href="tailwind.min.css" rel="stylesheet">
-    <link href="theme.css" rel="stylesheet">
+    <link href="assets/css/theme.min.css" rel="stylesheet">
     <script>
         // Apply theme immediately to prevent flash
         (function () {

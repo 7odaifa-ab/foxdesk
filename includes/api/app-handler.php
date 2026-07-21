@@ -40,6 +40,58 @@ function api_app_require_timer_functions(): void
     }
 }
 
+function api_app_normalize_datetime_for_time($value, string $field): string
+{
+    if (!function_exists('foxdesk_normalize_backdated_datetime_input')) {
+        api_error('Date normalization is not available.', 500);
+    }
+
+    $normalized = foxdesk_normalize_backdated_datetime_input($value);
+    if ($normalized === false || $normalized === null) {
+        api_error($field . ' is invalid.', 422);
+    }
+
+    return $normalized;
+}
+
+function api_app_resolve_log_time_input(array $input): array
+{
+    $duration = (int) ($input['duration_minutes'] ?? 0);
+    if ($duration < 1 || $duration > 1440) {
+        api_error('duration_minutes must be between 1 and 1440.', 422);
+    }
+
+    $started_raw = trim((string) ($input['started_at'] ?? ''));
+    $ended_raw = trim((string) ($input['ended_at'] ?? ''));
+    $started_at = $started_raw !== '' ? api_app_normalize_datetime_for_time($started_raw, 'started_at') : null;
+    $ended_at = $ended_raw !== '' ? api_app_normalize_datetime_for_time($ended_raw, 'ended_at') : null;
+
+    if ($started_at !== null && $ended_at !== null) {
+        $start_ts = strtotime($started_at);
+        $end_ts = strtotime($ended_at);
+        if (!$start_ts || !$end_ts || $end_ts <= $start_ts) {
+            api_error('ended_at must be after started_at.', 422);
+        }
+        $computed_duration = max(1, (int) floor(($end_ts - $start_ts) / 60));
+        if ($computed_duration !== $duration) {
+            api_error('duration_minutes must match started_at and ended_at.', 422);
+        }
+    } elseif ($started_at !== null) {
+        $ended_at = date('Y-m-d H:i:s', strtotime($started_at) + ($duration * 60));
+    } elseif ($ended_at !== null) {
+        $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+    } else {
+        $ended_at = date('Y-m-d H:i:s');
+        $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+    }
+
+    return [
+        'started_at' => $started_at,
+        'ended_at' => $ended_at,
+        'duration_minutes' => $duration,
+    ];
+}
+
 function api_app_resolve_ticket(array $source, array $user)
 {
     $hash = trim((string) ($source['hash'] ?? $source['ticket_hash'] ?? ''));
@@ -475,20 +527,17 @@ function api_app_log_time()
     }
 
     $input = get_json_input();
-    $duration = (int) ($input['duration_minutes'] ?? 0);
-    if ($duration < 1) {
-        api_error('Duration must be at least one minute.', 422);
-    }
+    $time_input = api_app_resolve_log_time_input($input);
+    $duration = (int) $time_input['duration_minutes'];
 
     $ticket = api_app_resolve_ticket($input, $user);
     if (!function_exists('add_manual_time_entry')) {
         api_error('Time tracking is not available.', 400);
     }
 
-    $started_at = !empty($input['started_at']) ? (string) $input['started_at'] : date('Y-m-d H:i:s');
     $entry_id = add_manual_time_entry((int) $ticket['id'], (int) $user['id'], [
-        'started_at' => $started_at,
-        'ended_at' => !empty($input['ended_at']) ? (string) $input['ended_at'] : date('Y-m-d H:i:s', strtotime($started_at) + ($duration * 60)),
+        'started_at' => $time_input['started_at'],
+        'ended_at' => $time_input['ended_at'],
         'duration_minutes' => $duration,
         'summary' => $input['summary'] ?? null,
         'is_billable' => isset($input['is_billable']) ? (!empty($input['is_billable']) ? 1 : 0) : 1,

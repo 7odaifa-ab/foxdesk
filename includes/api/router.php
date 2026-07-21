@@ -25,6 +25,8 @@ require_once __DIR__ . '/app-handler.php';
  * Route API requests to appropriate handlers
  */
 function route_api_request($action) {
+    api_validate_utf8_values($_GET);
+    api_validate_utf8_values($_POST);
     $GLOBALS['api_current_action'] = (string) $action;
 
     // Define public actions that don't require authentication
@@ -49,6 +51,10 @@ function route_api_request($action) {
     // Check authentication for non-public endpoints
     if (!in_array($action, $public_actions) && !is_logged_in()) {
         api_error('Unauthorized', 401);
+    }
+
+    if (!in_array($action, $public_actions, true) && function_exists('ticket_undo_finalize_expired')) {
+        ticket_undo_finalize_expired();
     }
 
     if (!empty($GLOBALS['is_api_token_auth'])) {
@@ -81,10 +87,16 @@ function route_api_request($action) {
         'discard-timer' => 'api_discard_timer',
         'cancel-ticket' => 'api_cancel_ticket',
         'delete-time-entry' => 'api_delete_time_entry',
+        'restore-time-entry' => 'api_restore_time_entry',
         'update-time-inline' => 'api_update_time_inline',
         'quick-log-time' => 'api_quick_log_time',
         'edit-comment' => 'api_edit_comment',
         'delete-comment' => 'api_delete_comment',
+        'restore-comment' => 'api_restore_comment',
+        'delete-attachment' => 'api_delete_attachment',
+        'restore-attachment' => 'api_restore_attachment',
+        'permanent-delete-ticket-preflight' => 'api_permanent_delete_ticket_preflight',
+        'permanent-delete-ticket' => 'api_permanent_delete_ticket',
 
         // Quick-edit (AJAX, no page reload)
         'quick-assign' => 'api_quick_assign',
@@ -139,6 +151,7 @@ function route_api_request($action) {
         'test-smtp' => 'api_test_smtp',
 
         // --- Agent / external API endpoints ---
+        'agent-docs' => 'api_agent_docs',
         'agent-me' => 'api_agent_me',
         'agent-list-statuses' => 'api_agent_list_statuses',
         'agent-list-priorities' => 'api_agent_list_priorities',
@@ -147,8 +160,12 @@ function route_api_request($action) {
         'agent-list-tickets' => 'api_agent_list_tickets',
         'agent-get-ticket' => 'api_agent_get_ticket',
         'agent-add-comment' => 'api_agent_add_comment',
+        'agent-add-update' => 'api_agent_add_comment',
+        'agent-add-work-entry' => 'api_agent_add_comment',
         'agent-update-status' => 'api_agent_update_status',
         'agent-log-time' => 'api_agent_log_time',
+        'agent-delete-ticket-preflight' => 'api_agent_delete_ticket_preflight',
+        'agent-delete-ticket-permanently' => 'api_agent_delete_ticket_permanently',
 
         // --- Timeline endpoint ---
         'get-timeline' => 'api_get_timeline',

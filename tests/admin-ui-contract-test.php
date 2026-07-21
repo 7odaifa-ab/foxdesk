@@ -19,12 +19,18 @@ function read_admin_ui_file(string $root, string $path): string
 
 $header = read_admin_ui_file($root, 'includes/header.php');
 $theme = read_admin_ui_file($root, 'theme.css');
-$tickets = read_admin_ui_file($root, 'pages/tickets.php');
+$tickets = read_admin_ui_file($root, 'pages/tickets.php')
+    . "\n" . read_admin_ui_file($root, 'includes/components/ticket-list-page.php')
+    . "\n" . read_admin_ui_file($root, 'includes/components/ticket-list-board.php')
+    . "\n" . read_admin_ui_file($root, 'includes/components/ticket-list-table.php');
 $page_header = read_admin_ui_file($root, 'includes/components/page-header.php');
 $admin_nav = read_admin_ui_file($root, 'includes/components/admin-nav.php');
 $admin_settings_tabs = read_admin_ui_file($root, 'includes/components/admin-settings-tabs.php');
 $admin_settings = read_admin_ui_file($root, 'pages/admin/settings.php');
 $admin_users = read_admin_ui_file($root, 'pages/admin/users.php');
+$admin_users .= "\n" . read_admin_ui_file($root, 'includes/components/team/users-surface.php');
+$admin_users .= "\n" . read_admin_ui_file($root, 'includes/components/team/user-edit-surface.php');
+$admin_users .= "\n" . read_admin_ui_file($root, 'includes/components/team/ai-agents-surface.php');
 $admin_clients = read_admin_ui_file($root, 'pages/admin/clients.php');
 $ui_css = $theme . "\n" . $tickets;
 

@@ -85,9 +85,7 @@ function report_template_column_exists($column_name) {
     return column_exists('report_templates', $column_name);
 }
 
-/**
- * Auto-migrate: add custom billable rate override to report templates.
- */
+/** Verify custom report rate support installed by the database upgrade. */
 function ensure_report_custom_billable_rate_column(): void
 {
     static $checked = false;
@@ -96,15 +94,7 @@ function ensure_report_custom_billable_rate_column(): void
     }
     $checked = true;
 
-    if (report_template_column_exists('custom_billable_rate')) {
-        return;
-    }
-
-    try {
-        db_query("ALTER TABLE report_templates ADD COLUMN custom_billable_rate DECIMAL(10,2) NULL DEFAULT NULL AFTER show_cost_breakdown");
-    } catch (Throwable $e) {
-        // Ignore duplicate/unsupported migrations.
-    }
+    schema_require('custom report rates', [], ['report_templates' => ['custom_billable_rate']]);
 }
 
 /**
@@ -261,9 +251,7 @@ function update_report_template($id, $data) {
     return $result;
 }
 
-/**
- * Auto-migrate: add public report expiration support.
- */
+/** Verify public report expiration support installed by the database upgrade. */
 function ensure_report_expiration_column(): void
 {
     static $checked = false;
@@ -272,15 +260,7 @@ function ensure_report_expiration_column(): void
     }
     $checked = true;
 
-    if (report_template_column_exists('expires_at')) {
-        return;
-    }
-
-    try {
-        db_query("ALTER TABLE report_templates ADD COLUMN expires_at DATETIME NULL DEFAULT NULL AFTER is_archived");
-    } catch (Throwable $e) {
-        // Ignore duplicate/unsupported migrations.
-    }
+    schema_require('report expiration', [], ['report_templates' => ['expires_at']]);
 }
 
 /**
@@ -690,31 +670,19 @@ function create_report_template_share($report_template_id, $organization_id, $ex
 
 // ── RP10/RP11: Scheduled Reports & Email Delivery ───────────────────────────
 
-/**
- * Auto-migrate: add schedule columns to report_templates.
- */
+/** Verify scheduled-report support installed by the database upgrade. */
 function ensure_report_schedule_columns(): void
 {
     static $done = false;
     if ($done) return;
     $done = true;
 
-    $cols = [
-        'schedule_enabled'    => "TINYINT(1) NOT NULL DEFAULT 0",
-        'schedule_interval'   => "VARCHAR(20) NOT NULL DEFAULT 'monthly'",
-        'schedule_day'        => "INT NOT NULL DEFAULT 1",
-        'schedule_recipients' => "TEXT NULL",
-        'schedule_last_sent'  => "DATETIME NULL",
-        'schedule_next_due'   => "DATE NULL",
-    ];
-
-    foreach ($cols as $col => $def) {
-        if (!report_template_column_exists($col)) {
-            try {
-                db_query("ALTER TABLE report_templates ADD COLUMN {$col} {$def}");
-            } catch (Throwable $e) { /* ignore */ }
-        }
-    }
+    schema_require('scheduled reports', [], [
+        'report_templates' => [
+            'schedule_enabled', 'schedule_interval', 'schedule_day', 'schedule_recipients',
+            'schedule_last_sent', 'schedule_next_due',
+        ],
+    ]);
 }
 
 /**

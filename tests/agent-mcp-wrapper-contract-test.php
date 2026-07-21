@@ -46,6 +46,7 @@ $package = $read('package.json');
 
 foreach ([
     'foxdesk_agent_manifest',
+    'foxdesk_agent_docs',
     'TOOL_POLICY',
     'TOOL_MANIFEST',
     'tools/list',
@@ -60,13 +61,15 @@ foreach ([
     'foxdesk_get_ticket',
     'foxdesk_create_ticket',
     'foxdesk_add_comment',
+    'foxdesk_add_work_entry',
     'foxdesk_log_time',
     'foxdesk_prepare_report',
-    'app-ticket-list',
-    'app-ticket-detail',
-    'app-create-ticket',
-    'app-add-comment',
-    'app-log-time',
+    'agent-list-tickets',
+    'agent-get-ticket',
+    'agent-create-ticket',
+    'agent-add-update',
+    'agent-add-work-entry',
+    'agent-log-time',
     'app-reporting-review',
     'agentDryRunRequested',
     'requireWriteConfirmation',
@@ -86,7 +89,9 @@ foreach ([
     'FOXDESK_AGENT_CONFIRM_WRITES',
     'mcpServers',
     'foxdesk_agent_manifest',
+    'foxdesk_agent_docs',
     'foxdesk_create_ticket',
+    'foxdesk_add_work_entry',
     'foxdesk_log_time',
     'foxdesk_prepare_report',
     'tickets:write',
@@ -107,6 +112,7 @@ $assert(str_contains($milestones, 'Milník 4'), 'Milestone evidence must include
 $assert(str_contains($milestones, 'Milník 5'), 'Milestone evidence must include Milník 5.');
 $assert(str_contains($milestones, 'Milník 6'), 'Milestone evidence must include Milník 6.');
 $assert(str_contains($manifest, 'foxdesk_agent_manifest'), 'Tool manifest must include the manifest tool.');
+$assert(str_contains($manifest, 'foxdesk_agent_docs'), 'Tool manifest must include the live docs tool.');
 $assert(str_contains($manifest, '"writes_require_confirmation": true'), 'Tool manifest must require write confirmation.');
 $assert(str_contains($manifest, '"supports_dry_run": true'), 'Tool manifest must mark write dry-run support.');
 $assert(str_contains($smoke, 'dry_run: true'), 'MCP smoke must test dry-run writes.');

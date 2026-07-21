@@ -200,8 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ['Testing', 'testing', '#5e5ce6', 2, 0, 0],
                     ['Waiting for customer', 'waiting', '#ff9f0a', 3, 0, 0],
                     ['In progress', 'processing', '#30b0c7', 4, 0, 0],
-                    ['Done', 'done', '#34c759', 5, 0, 1],
-                    ['Cancelled', 'cancelled', '#ff3b30', 6, 0, 1]
+                    ['Done', 'done', '#34c759', 5, 0, 1]
                 ];
                 
                 $stmt = $pdo->prepare("INSERT INTO statuses (name, slug, color, sort_order, is_default, is_closed) VALUES (?, ?, ?, ?, ?, ?)");

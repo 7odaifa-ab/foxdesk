@@ -13,8 +13,17 @@ function assert(condition, message) {
 
 const theme = read('theme.css');
 const work = read('pages/work.php');
-const tickets = read('pages/tickets.php');
-const reports = read('pages/admin/reports.php');
+const tickets = [
+  'pages/tickets.php',
+  'includes/components/ticket-list-page.php',
+  'includes/components/ticket-list-board.php',
+  'includes/components/ticket-list-table.php',
+].map(read).join('\n');
+const reports = [
+  'includes/modules/reports/views/page.php',
+  'includes/modules/reports/views/time.php',
+  'includes/modules/reports/views/billing.php',
+].map(read).join('\n');
 const workspaceSurface = read('includes/components/workspace-surface.php');
 
 for (const token of [

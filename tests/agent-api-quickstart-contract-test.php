@@ -28,6 +28,7 @@ foreach ([
     'examples/agent-api/_common.sh',
     'examples/agent-api/create-ticket.sh',
     'examples/agent-api/add-comment.sh',
+    'examples/agent-api/comment-with-time.sh',
     'examples/agent-api/log-time.sh',
     'examples/agent-api/prepare-report.sh',
     'examples/agent-api/codex-instructions.md',
@@ -52,13 +53,15 @@ $package = $read('package.json');
 $assert(str_contains($gitignore, 'examples/agent-api/.env'), 'Real Agent API .env must be ignored.');
 
 foreach ([
-    'Profile -> API access',
+    'Settings -> API & agents',
+    'agent-docs',
     'API access, not browser login',
     'do not open the web',
     '/index.php?page=login',
     'Authorization: Bearer',
     'cp examples/agent-api/.env.example examples/agent-api/.env',
     'create-ticket.sh',
+    'comment-with-time.sh',
     'log-time.sh',
     'prepare-report.sh',
     'Codex',
@@ -76,7 +79,8 @@ $assert(str_contains($control, 'AGENT_API_QUICKSTART.md'), 'Agent API control do
 $assert(!str_contains($control, 'Customer-facing examples for Claude/Codex configs.'), 'Agent examples must not remain listed as future-facing.');
 
 $assert(str_contains($env, 'FOXDESK_BASE_URL=' . $expectedBaseUrl), 'Env example must use the expected base URL.');
-$assert(str_contains($env, 'FOXDESK_API_TOKEN=fdx_replace_with_token_from_profile'), 'Env example must use a placeholder token.');
+$assert(str_contains($env, 'FOXDESK_API_TOKEN=fdx_replace_with_token_from_settings'), 'Env example must use a placeholder token.');
+$assert(!str_contains($quickstart . $control . $env . $readme . $codex . $claude, 'Profile -> API access'), 'Agent API docs must point to Settings -> API & agents, not profile.');
 foreach (['sk_live_', 'sk_test_', 'fdx_live_', 'fdx_test_', 'Bearer fdx_'] as $secretNeedle) {
     $assert(!str_contains($env, $secretNeedle), 'Env example must not contain a real-looking secret: ' . $secretNeedle);
 }
@@ -91,9 +95,10 @@ foreach ([
 }
 
 foreach ([
-    'examples/agent-api/create-ticket.sh' => 'app-create-ticket',
-    'examples/agent-api/add-comment.sh' => 'app-add-comment',
-    'examples/agent-api/log-time.sh' => 'app-log-time',
+    'examples/agent-api/create-ticket.sh' => 'agent-create-ticket',
+    'examples/agent-api/add-comment.sh' => 'agent-add-update',
+    'examples/agent-api/comment-with-time.sh' => 'agent-add-work-entry',
+    'examples/agent-api/log-time.sh' => 'agent-log-time',
     'examples/agent-api/prepare-report.sh' => 'app-reporting-review',
 ] as $script => $action) {
     $assert(str_contains($read($script), $action), $script . ' must call ' . $action);
@@ -101,7 +106,8 @@ foreach ([
 
 foreach ([
     'curl -fsS -X POST',
-    'app-create-ticket',
+    'agent-docs',
+    'agent-create-ticket',
     'Authorization: Bearer $FOXDESK_API_TOKEN',
     'Idempotency-Key',
 ] as $needle) {
@@ -113,9 +119,11 @@ foreach ([$codex, $claude] as $agentDoc) {
         'Never print FOXDESK_API_TOKEN',
         '/index.php?page=login',
         'Authorization: Bearer',
+        'agent-docs',
         '401',
         '403',
         'create-ticket.sh',
+        'comment-with-time.sh',
         'log-time.sh',
         'prepare-report.sh',
     ] as $needle) {

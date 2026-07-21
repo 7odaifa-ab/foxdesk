@@ -20,11 +20,16 @@ $assert = static function (bool $condition, string $message): void {
 
 $theme = $read('theme.css');
 $workspace = $read('includes/components/workspace-surface.php');
-$tickets = $read('pages/tickets.php');
-$ticketDetail = $read('pages/ticket-detail.php');
+$tickets = $read('pages/tickets.php')
+    . "\n" . $read('includes/components/ticket-list-page.php')
+    . "\n" . $read('includes/components/ticket-list-board.php')
+    . "\n" . $read('includes/components/ticket-list-table.php');
+$ticketDetail = $read('pages/ticket-detail.php')
+    . "\n" . $read('includes/components/ticket-detail-content.php');
 $ticketSidebar = $read('includes/components/ticket-detail-sidebar.php');
 $client = $read('pages/client.php');
-$reports = $read('pages/admin/reports.php');
+$reports = $read('includes/modules/reports/views/page.php')
+    . "\n" . $read('includes/modules/reports/views/filters.php');
 
 foreach ([
     '.workflow-surface',

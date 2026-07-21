@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'color' => $color,
                 'sort_order' => $new_order,
                 'is_default' => 0,
-                'is_closed' => isset($_POST['is_closed']) ? 1 : 0
+                'is_closed' => 0
             ]);
 
             flash(t('Status added.'), 'success');
@@ -61,10 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $color = $_POST['color'] ?? '#3b82f6';
 
         if (!empty($name) && $id > 0) {
+            $existing_status = get_status($id);
             db_update('statuses', [
                 'name' => $name,
                 'color' => $color,
-                'is_closed' => isset($_POST['is_closed']) ? 1 : 0
+                'is_closed' => strtolower((string) ($existing_status['slug'] ?? '')) === 'done' ? 1 : 0
             ], 'id = ?', [$id]);
 
             flash(t('Status updated.'), 'success');
@@ -219,13 +220,6 @@ include BASE_PATH . '/includes/components/page-header.php';
                     </select>
                 </div>
 
-                <div>
-                    <label class="flex items-center text-sm text-gray-600">
-                        <input type="checkbox" name="is_closed" class="mr-2 rounded">
-                        <?php echo e(t('Mark as closed status')); ?>
-                    </label>
-                </div>
-
                 <button type="submit" name="add_status" class="btn btn-primary w-full">
                     <?php echo e(t('Add status')); ?>
                 </button>
@@ -254,13 +248,6 @@ include BASE_PATH . '/includes/components/page-header.php';
                        class="w-full h-10 rounded-lg cursor-pointer border border-gray-200">
             </div>
 
-            <div>
-                <label class="flex items-center text-sm text-gray-600">
-                    <input type="checkbox" name="is_closed" id="edit_status_is_closed" class="mr-2 rounded">
-                    <?php echo e(t('Mark as closed status')); ?>
-                </label>
-            </div>
-
             <div class="flex justify-end gap-3 pt-4 border-t">
                 <button type="button" onclick="closeEditStatusModal()" class="btn btn-secondary">
                     <?php echo e(t('Cancel')); ?>
@@ -281,7 +268,6 @@ include BASE_PATH . '/includes/components/page-header.php';
         document.getElementById('edit_status_id').value = status.id;
         document.getElementById('edit_status_name').value = status.name;
         document.getElementById('edit_status_color').value = status.color;
-        document.getElementById('edit_status_is_closed').checked = status.is_closed;
 
         const modal = document.getElementById('editStatusModal');
         modal.classList.remove('hidden');

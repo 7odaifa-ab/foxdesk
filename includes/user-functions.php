@@ -35,6 +35,7 @@ function get_user_permissions($user_id = null)
         'ticket_scope' => $default_scope,
         'organization_ids' => [],
         'can_archive' => false,
+        'can_delete_tickets_permanently' => false,
         'can_view_edit_history' => false,
         'can_import_md' => false,
         'can_view_time' => ($user['role'] === 'agent'),
@@ -47,6 +48,25 @@ function get_user_permissions($user_id = null)
 
     $permissions = json_decode($user['permissions'], true);
     return is_array($permissions) ? array_merge($default, $permissions) : $default;
+}
+
+/**
+ * Permanent ticket deletion is intentionally separate from ordinary delete
+ * scopes used for comments and time entries.
+ */
+function can_permanently_delete_tickets($user = null): bool
+{
+    $user = $user ?: current_user();
+    if (!$user) {
+        return false;
+    }
+
+    if (($user['role'] ?? '') === 'admin') {
+        return true;
+    }
+
+    $permissions = get_user_permissions((int) $user['id']);
+    return !empty($permissions['can_delete_tickets_permanently']);
 }
 
 /**
@@ -123,6 +143,37 @@ function can_view_time($user = null)
     }
 
     return !empty($permissions['can_view_time']);
+}
+
+/** Check whether a user can edit or delete a visible comment. */
+function can_manage_comment($comment, $user = null): bool
+{
+    if ($user === null) {
+        $user = current_user();
+    }
+    if (!$user || !is_array($comment)) {
+        return false;
+    }
+    if (($user['role'] ?? '') === 'admin') {
+        return true;
+    }
+    return (int) ($comment['user_id'] ?? 0) === (int) ($user['id'] ?? 0);
+}
+
+/** Check whether a user can edit or delete a visible time entry. */
+function can_manage_time_entry($entry, $user = null): bool
+{
+    if ($user === null) {
+        $user = current_user();
+    }
+    if (!$user || !is_array($entry)) {
+        return false;
+    }
+    if (($user['role'] ?? '') === 'admin') {
+        return true;
+    }
+    return (int) ($entry['user_id'] ?? 0) === (int) ($user['id'] ?? 0)
+        && can_view_time($user);
 }
 
 /**
@@ -394,6 +445,7 @@ function set_user_organization_memberships($user_id, $organization_ids, $primary
         'ticket_scope' => $default_scope,
         'organization_ids' => [],
         'can_archive' => $user['role'] === 'admin',
+        'can_delete_tickets_permanently' => $user['role'] === 'admin',
         'can_view_edit_history' => $user['role'] === 'admin',
         'can_import_md' => $user['role'] === 'admin'
     ], $permissions);

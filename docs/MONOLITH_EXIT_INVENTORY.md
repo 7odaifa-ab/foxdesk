@@ -27,10 +27,10 @@ platform, billing, tenant, R2, or Cloudflare managed-service controls.
 | Page | Lines | Status | Owner Track | Next Step |
 | --- | ---: | --- | --- | --- |
 | `pages/tickets.php` | 2319 | needs module extraction | shared customer workflow | Filters, bulk actions, row view model, and ticket-list JS are extracted; continue with search result mapping only if API payload grows. |
-| `pages/ticket-detail.php` | 1298 | needs module extraction | shared customer workflow | Context, share state, read model, surfaces, and detail JS are extracted; continue only with smaller rendering slices if the route grows again. |
-| `pages/admin/reports.php` | 2163 | needs module extraction | shared customer workflow | Query, totals, billing adjustments, CSV export, and billing review JS are extracted; continue only if report rendering grows again. |
-| `pages/admin/settings.php` | 2006 | needs module extraction | self-hosted maintenance plus shared settings | Main POST actions, workflow POST router, tab view model, tab navigation, templates, and workflow cards are extracted; continue splitting only large rendering sections. |
-| `pages/admin/users.php` | 2409 | needs module extraction | shared customer workflow | Team permission payloads, filters, organization assignment, list read model, time totals, and AI-agent token read model are extracted; continue invite/reset rendering only if it grows. |
+| `pages/ticket-detail.php` | 290 | already modular | shared customer workflow | Thin route keeps access/context/configuration; rendering, scoped CSS, and browser behavior are delegated to focused components and modules. |
+| `pages/admin/reports.php` | 15 | already modular | shared customer workflow | Thin route delegates request orchestration, presentation models, partial rendering, print CSS, and browser behavior to focused report modules. |
+| `pages/admin/settings.php` | 162 | already modular | self-hosted maintenance plus shared settings | Controller delegates actions and renders allowlisted tab partials; SMTP, IMAP, update, backup, logs, workflow, and security views remain isolated by tab. |
+| `pages/admin/users.php` | 94 | already modular | shared customer workflow | Controller composes the team action module and focused user/AI-agent components; keep each extracted file below 700 lines. |
 | `pages/dashboard.php` | 2361 | needs module extraction | shared customer workflow | Dashboard compatibility helpers are extracted; keep dashboard as an analytics view, not a competing work model. |
 | `pages/new-ticket.php` | 1474 | needs module extraction | shared customer workflow | Extract ticket create form model and assignment defaults. |
 | `pages/notifications.php` | 1067 | needs module extraction | shared customer workflow | Move notification list/read actions into notification module. |
@@ -67,15 +67,15 @@ platform, billing, tenant, R2, or Cloudflare managed-service controls.
 | --- | --- | --- |
 | App/dashboard | `includes/modules/app/app-shell.php`, `includes/modules/app/app-feed.php`, `includes/modules/app/dashboard-compat.php` | App/mobile contract, first-screen feed, dashboard tags, selected-agent activity, and dashboard CSS class helpers. |
 | Work and inbox | `includes/modules/work/work-queues.php`, `includes/modules/inbox/inbox-service.php` | Queue model and triage flow. |
-| Tickets | `includes/modules/tickets/ticket-bulk-actions.php`, `includes/modules/tickets/ticket-detail-actions.php`, `includes/modules/tickets/ticket-detail-context.php`, `includes/modules/tickets/ticket-detail-read-model.php`, `includes/modules/tickets/ticket-share-state.php`, `includes/modules/tickets/ticket-events.php`, `includes/modules/tickets/ticket-list-filters.php`, `includes/modules/tickets/ticket-list-views.php`, `includes/modules/tickets/ticket-row-view-model.php`, `includes/modules/tickets/ticket-status-groups.php`, `assets/js/ticket-list.js`, `assets/js/ticket-detail.js` | Bulk actions, action state, detail context, visibility/read models, share state, event metadata, list filters, list views, row/board view models, status grouping, ticket-list and ticket-detail browser behavior. |
-| Reports | `includes/modules/reports/reporting-flow.php`, `includes/modules/reports/billing-review.php`, `includes/modules/reports/report-filters.php`, `includes/modules/reports/report-query.php`, `includes/modules/reports/report-totals.php`, `includes/modules/reports/report-adjustments.php`, `includes/modules/reports/report-export.php` | Report navigation, billing review calculations, filters, query/aggregation, POST adjustments, and CSV export. |
-| Settings | `includes/modules/settings/settings-actions.php`, `includes/modules/settings/settings-email.php`, `includes/modules/settings/settings-updates.php`, `includes/modules/settings/settings-security.php`, `includes/modules/settings/settings-workflow.php`, `includes/modules/settings/settings-view-model.php`, `includes/modules/settings/settings-templates.php`, `includes/components/admin-settings-tabs.php`, `includes/components/admin-workflow-card.php` | Settings POST routing, action metadata, workflow CRUD routing, tab normalization, email-template display rows, tab navigation, and workflow card rendering. |
+| Tickets | `includes/modules/tickets/ticket-bulk-actions.php`, `includes/modules/tickets/ticket-detail-actions.php`, `includes/modules/tickets/ticket-detail-context.php`, `includes/modules/tickets/ticket-detail-read-model.php`, `includes/modules/tickets/ticket-share-state.php`, `includes/modules/tickets/ticket-events.php`, `includes/modules/tickets/ticket-list-filters.php`, `includes/modules/tickets/ticket-list-views.php`, `includes/modules/tickets/ticket-row-view-model.php`, `includes/modules/tickets/ticket-status-groups.php`, `includes/components/ticket-detail-content.php`, `assets/css/ticket-detail.css`, `assets/js/ticket-list.js`, `assets/js/ticket-detail-core.js`, `assets/js/ticket-detail-workflow.js`, `assets/js/ticket-detail-records.js`, `assets/js/ticket-detail-admin.js`, `assets/js/ticket-detail.js` | Bulk actions, action state, detail context, visibility/read models, share state, event metadata, list filters/views, row/board view models, status grouping, composed rendering, scoped styling, and split browser behavior. |
+| Reports | `includes/modules/reports/reporting-flow.php`, `includes/modules/reports/billing-review.php`, `includes/modules/reports/report-filters.php`, `includes/modules/reports/report-query.php`, `includes/modules/reports/report-totals.php`, `includes/modules/reports/report-adjustments.php`, `includes/modules/reports/report-export.php`, `includes/modules/reports/report-page-controller.php`, `includes/modules/reports/report-page-view-model.php`, `includes/modules/reports/report-page-render.php`, `includes/modules/reports/views/*.php`, `assets/js/report-page.js`, `assets/js/report-billing-review.js` | Report navigation, request orchestration, presentation models, partial rendering, browser behavior, billing review calculations, filters, query/aggregation, POST adjustments, and CSV export. |
+| Settings | `includes/modules/settings/settings-actions.php`, `includes/modules/settings/settings-email.php`, `includes/modules/settings/settings-updates.php`, `includes/modules/settings/settings-security.php`, `includes/modules/settings/settings-workflow.php`, `includes/modules/settings/settings-view-model.php`, `includes/modules/settings/settings-templates.php`, `includes/modules/settings/views/*.php`, `includes/components/admin-settings-tabs.php`, `includes/components/admin-workflow-card.php` | Settings POST routing, action metadata, workflow CRUD routing, tab normalization, allowlisted tab views, email-template display rows, tab navigation, and workflow card rendering. |
 | Workflow CRUD | `includes/admin-crud-helper.php` | Shared status, priority, and ticket-type slugging, sort order, default clearing, tenant-aware record lookup/update/delete, and usage-guarded deletion. Covered by `tests/workflow-crud-contract-test.php`. |
 | Search | `includes/modules/search/global-search.php` | Global search model. |
 | Email | `includes/modules/email/email-renderer.php` | Transactional email rendering. |
 | Notifications | `includes/modules/notifications/notification-policy.php` | Notification noise reduction policy. |
 | Clients | `includes/modules/clients/client-overview.php` | Client detail summary. |
-| Team | `includes/modules/team/team-users.php` | Users/team filter state, organization assignment normalization, permission payloads, user list read model, time totals, and AI-agent token read model. |
+| Team | `includes/modules/team/team-users.php`, `includes/modules/team/team-users-actions.php`, `includes/components/team/team-tabs.php`, `includes/components/team/ai-agents-surface.php`, `includes/components/team/users-surface.php`, `includes/components/team/user-edit-surface.php` | Users/team filter state, organization assignment normalization, permission payloads, queries, POST actions, tabs, list/create surfaces, and edit dialogs. |
 
 ## Priority Extractions
 
@@ -86,6 +86,9 @@ Target modules/components:
 - `includes/modules/tickets/ticket-detail-context.php`
 - `includes/modules/tickets/ticket-detail-timeline.php`
 - `includes/modules/tickets/ticket-share-state.php`
+- `includes/components/ticket-detail-content.php` composes the ticket surface,
+  sidebar, composer, and modals without moving markup back into the route.
+- `includes/components/ticket-detail-content.php`
 - `includes/components/ticket-detail-composer.php` already exists and should stay
   the rendering boundary for reply/internal note/time logging controls.
 - `includes/components/ticket-detail-modals.php` already exists and should stay
@@ -94,7 +97,17 @@ Target modules/components:
   the rendering boundary for sidebar metadata.
 - `includes/components/ticket-detail-surface.php` already exists and should stay
   the rendering boundary for status/actions.
-- `assets/js/ticket-detail.js`
+- `assets/css/ticket-detail.css`
+- `assets/js/ticket-detail-core.js`
+- `assets/js/ticket-detail-workflow.js`
+- `assets/js/ticket-detail-records.js`
+- `assets/js/ticket-detail-admin.js`
+- `assets/css/ticket-detail.css`
+- `assets/js/ticket-detail-core.js`
+- `assets/js/ticket-detail-workflow.js`
+- `assets/js/ticket-detail-records.js`
+- `assets/js/ticket-detail-admin.js`
+- `assets/js/ticket-detail.js` remains the small ordered bootstrap.
 
 Contract tests:
 
@@ -110,10 +123,11 @@ Contract tests:
 Done when:
 
 - route delegates comment/attachment visibility to `ticket-detail-read-model.php`
-- route includes sidebar through `includes/components/ticket-detail-sidebar.php`
+- route stays below 700 lines and delegates rendering to `includes/components/ticket-detail-content.php`
+- content composition includes sidebar through `includes/components/ticket-detail-sidebar.php`
 - composer markup stays in `includes/components/ticket-detail-composer.php`
 - modal markup stays in `includes/components/ticket-detail-modals.php`
-- inline detail JS is moved to `assets/js/ticket-detail.js`
+- detail browser modules stay below 900 lines and load core before feature modules and bootstrap
 - existing create/detail/comment/attachment flow stays green
 
 ### 2. `pages/admin/reports.php`
@@ -125,12 +139,26 @@ Target modules/components:
 - `includes/modules/reports/report-totals.php`
 - `includes/modules/reports/report-adjustments.php`
 - `includes/modules/reports/report-export.php`
+- `includes/modules/reports/report-page-controller.php`
+- `includes/modules/reports/report-page-view-model.php`
+- `includes/modules/reports/report-page-render.php`
+- `includes/modules/reports/views/page.php`
+- `includes/modules/reports/views/filters.php`
+- `includes/modules/reports/views/time.php`
+- `includes/modules/reports/views/weekly.php`
+- `includes/modules/reports/views/billing.php`
+- `includes/modules/reports/views/worklog.php`
+- `includes/modules/reports/views/rates.php`
+- `includes/modules/reports/views/published.php`
+- `includes/modules/reports/views/entry-modal.php`
 - `includes/modules/reports/billing-review.php` already exists and remains the
   billing review calculation boundary.
+- `assets/js/report-page.js`
 - `assets/js/report-billing-review.js`
 
 Contract tests:
 
+- `tests/report-page-extraction-contract-test.php`
 - `tests/reporting-flow-contract-test.php`
 - `tests/report-rate-parity-contract-test.php`
 - `tests/report-filter-contract-test.php`
@@ -139,6 +167,11 @@ Contract tests:
 
 Done when:
 
+- route stays below 700 lines and delegates request handling to
+  `report-page-controller.php`
+- presentation-only data stays in `report-page-view-model.php`
+- report modes render through focused files in `includes/modules/reports/views/`
+- shared browser behavior stays in `assets/js/report-page.js`, below 900 lines
 - route delegates item/bulk price adjustments to `report-adjustments.php`
 - route delegates report query/totals to `report-query.php` and `report-totals.php`
 - route delegates CSV export to `report-export.php`
@@ -156,6 +189,13 @@ Target modules/components:
 - `includes/modules/settings/settings-security.php`
 - `includes/modules/settings/settings-view-model.php`
 - `includes/modules/settings/settings-templates.php`
+- `includes/modules/settings/views/general.php`
+- `includes/modules/settings/views/email.php`
+- `includes/modules/settings/views/templates.php`
+- `includes/modules/settings/views/system.php`
+- `includes/modules/settings/views/logs.php`
+- `includes/modules/settings/views/workflow.php`
+- `includes/modules/settings/views/security.php`
 - `includes/components/admin-settings-tabs.php`
 - `includes/components/admin-workflow-card.php`
 - `includes/admin-crud-helper.php`
@@ -174,6 +214,7 @@ Contract tests:
 
 Done when:
 
+- route remains below 700 lines and resolves only allowlisted tab partials
 - route delegates POST handlers by tab/action to modules
 - route delegates email-template display rows and workflow card rendering to
   modules/components
@@ -186,16 +227,22 @@ Done when:
 Target modules/components:
 
 - `includes/modules/team/team-users.php`
+- `includes/modules/team/team-users-actions.php`
+- `includes/components/team/team-tabs.php`
+- `includes/components/team/ai-agents-surface.php`
+- `includes/components/team/users-surface.php`
+- `includes/components/team/user-edit-surface.php`
 
 Contract tests:
 
 - `tests/team-users-contract-test.php`
 
-Done when:
+Done:
 
 - route delegates table capability flags, filter state, organization assignment,
-  permission payloads, user list query, time totals, and AI-agent token queries
-  to `team-users.php`
+  permission payloads, queries, and foreign-key metadata to `team-users.php`
+- POST actions live in `team-users-actions.php`; markup and browser behavior are
+  split into focused components; the route remains below 700 lines
 - SaaS tenant filtering stays inside the module and self-hosted keeps a simple
   single-workspace query model
 - email ingest manual run/test remains available for self-hosted installations
@@ -233,7 +280,7 @@ Done when:
    `tests/ticket-list-js-contract-test.php`. Keep
    `tests/shared-workflow-contract-test.php` and
    `tests/core-ux-flow-parity-contract-test.php` green.
-2. `pages/admin/users.php`: team permissions, invite/reset flows, row view model.
+2. `pages/admin/users.php`: complete; preserve the action/model/component boundaries.
 3. `pages/dashboard.php`: continue extracting widget rendering and inline CSS.
 4. Workflow content pages: merge statuses/priorities/types into one reusable CRUD surface.
 5. `pages/admin/organizations.php`: client access rules and client billing-rate forms.

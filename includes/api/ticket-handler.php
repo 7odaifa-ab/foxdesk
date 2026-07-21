@@ -132,24 +132,25 @@ function api_change_status() {
         api_error('Forbidden', 403);
     }
 
-    $old_status = get_status($ticket['status_id']);
+    $old_status = get_status($ticket['status_id']) ?: [];
     $old_status_name = $old_status['name'] ?? t('Unknown');
     $new_status_name = $new_status['name'] ?? t('Unknown');
 
-    db_update('tickets', ['status_id' => $status_id], 'id = ?', [$ticket_id]);
-    log_activity(
-        $ticket_id,
-        $user['id'],
-        'status_changed',
-        "Status changed from '{$old_status_name}' to '{$new_status_name}'"
+    $transition = ticket_transition_status(
+        $ticket,
+        $old_status,
+        $new_status,
+        (int) $user['id']
     );
 
     // Send notification
-    require_once BASE_PATH . '/includes/mailer.php';
-    send_status_change_notification($ticket, $old_status, $new_status);
+    if (!empty($transition['status_changed'])) {
+        require_once BASE_PATH . '/includes/mailer.php';
+        send_status_change_notification($ticket, $old_status, $new_status);
+    }
 
     // In-app notification for status change
-    if (function_exists('ticket_event_dispatch_in_app')) {
+    if (!empty($transition['status_changed']) && function_exists('ticket_event_dispatch_in_app')) {
         ticket_event_dispatch_in_app('ticket.status_changed', $ticket_id, $user['id'], [
             'old_status' => $old_status_name,
             'new_status' => $new_status_name,
@@ -161,7 +162,10 @@ function api_change_status() {
         resolve_action_notifications($ticket_id);
     }
 
-    api_success(['status' => $new_status]);
+    api_success([
+        'status' => $new_status,
+        'timer_stopped' => !empty($transition['timer_stopped']),
+    ]);
 }
 
 /**
@@ -244,48 +248,14 @@ function api_quick_start() {
         api_error(t('Time tracking is not available.'), 400);
     }
 
-    require_once BASE_PATH . '/includes/ticket-crud-functions.php';
-
-    // Create ticket with minimal data
-    $ticket_id = create_ticket([
-        'title' => t('Quick ticket'),
-        'description' => '',
-        'user_id' => $user['id'],
-        'organization_id' => null,
-        'assignee_id' => $user['id'],
-    ]);
-
-    if (!$ticket_id) {
-        api_error('Failed to create ticket', 500);
+    try {
+        $result = quick_start_work_create($user);
+    } catch (Throwable $e) {
+        error_log('Quick start failed: ' . $e->getMessage());
+        api_error(t('Could not start work.'), 500);
     }
 
-    $ticket = get_ticket($ticket_id);
-
-    // Start timer (same logic as api_start_timer)
-    $user_cost_rate = (float)($user['cost_rate'] ?? 0);
-    $ticket_billable_rate = function_exists('get_ticket_effective_billable_rate')
-        ? get_ticket_effective_billable_rate($ticket, (int) $user['id'])
-        : 0.0;
-
-    db_insert('ticket_time_entries', [
-        'ticket_id' => $ticket_id,
-        'user_id' => $user['id'],
-        'started_at' => date('Y-m-d H:i:s'),
-        'ended_at' => null,
-        'duration_minutes' => 0,
-        'is_billable' => 1,
-        'billable_rate' => $ticket_billable_rate,
-        'cost_rate' => $user_cost_rate,
-        'is_manual' => 0,
-        'created_at' => date('Y-m-d H:i:s')
-    ]);
-
-    log_activity($ticket_id, $user['id'], 'time_started', 'Timer started');
-
-    api_success([
-        'ticket_id' => $ticket_id,
-        'url' => ticket_url($ticket),
-    ]);
+    api_success($result + ['message' => t('Work started. Add a title and client.')]);
 }
 
 /**
@@ -508,16 +478,58 @@ function api_cancel_ticket() {
     require_once BASE_PATH . '/includes/ticket-time-functions.php';
     discard_ticket_timer($ticket_id, $user['id']);
 
-    // Delete the ticket entirely
-    require_once BASE_PATH . '/includes/ticket-crud-functions.php';
-    delete_ticket($ticket_id);
+    // Cancellation is intentionally non-destructive. Permanent deletion is a
+    // separate, privileged flow with a typed ticket-code confirmation.
+    if (!column_exists('tickets', 'is_archived')) {
+        api_error(t('Archive is not available on this installation yet.'), 409);
+    }
+    if (!db_update('tickets', [
+        'is_archived' => 1,
+        'updated_at' => date('Y-m-d H:i:s'),
+    ], 'id = ?', [$ticket_id])) {
+        api_error(t('Ticket could not be archived.'), 500);
+    }
+    log_activity($ticket_id, (int) $user['id'], 'archived', 'Ticket archived after cancellation');
 
-    api_success(['message' => t('Ticket cancelled.')]);
+    api_success(['message' => t('Ticket cancelled.'), 'archived' => true]);
 }
 
 // ===================================================================
 // AJAX Quick-Edit Endpoints (used by ticket-detail sidebar)
 // ===================================================================
+
+function api_permanent_delete_ticket_preflight(): void
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') { api_error('Method not allowed', 405); }
+    require_csrf_token(true);
+    $user = current_user();
+    if (!$user || !can_permanently_delete_tickets($user)) { api_error('Forbidden', 403); }
+    $ticket_id = (int) ($_POST['ticket_id'] ?? 0);
+    $ticket = get_ticket($ticket_id);
+    if (!$ticket || !can_see_ticket($ticket, $user)) { api_error('Ticket not found', 404); }
+    $preflight = ticket_permanent_delete_preflight($ticket_id);
+    if (!$preflight) { api_error('Ticket not found', 404); }
+    api_success(['preflight' => $preflight]);
+}
+
+function api_permanent_delete_ticket(): void
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') { api_error('Method not allowed', 405); }
+    require_csrf_token(true);
+    $user = current_user();
+    if (!$user || !can_permanently_delete_tickets($user)) { api_error('Forbidden', 403); }
+    $ticket_id = (int) ($_POST['ticket_id'] ?? 0);
+    $confirmation = trim((string) ($_POST['confirmation'] ?? ''));
+    $ticket = get_ticket($ticket_id);
+    if (!$ticket || !can_see_ticket($ticket, $user)) { api_error('Ticket not found', 404); }
+    try {
+        api_success(ticket_permanent_delete($ticket_id, $confirmation, $user));
+    } catch (InvalidArgumentException $e) {
+        api_error($e->getMessage(), 422);
+    } catch (Throwable $e) {
+        api_error('Ticket could not be deleted safely.', 500);
+    }
+}
 
 /**
  * Quick-edit: Assign agent (AJAX, no page reload)
@@ -839,16 +851,89 @@ function api_delete_time_entry() {
     if (!$ticket || !can_see_ticket($ticket, $user)) {
         api_error('Forbidden', 403);
     }
-    if (!is_admin() && (int)($entry['user_id'] ?? 0) !== (int)$user['id']) {
+    if (!can_manage_time_entry($entry, $user)) {
         api_error('Forbidden', 403);
     }
 
     require_once BASE_PATH . '/includes/ticket-time-functions.php';
-    if (delete_time_entry($entry_id)) {
+    $db = get_db();
+    $db->beginTransaction();
+    try {
+        $undo_token = api_ticket_store_undo_action('time_entry', ['entry' => $entry], (int) $entry['ticket_id']);
+        if (!delete_time_entry($entry_id)) {
+            throw new RuntimeException('Time entry could not be deleted.');
+        }
+        $db->commit();
         log_activity($entry['ticket_id'], $user['id'], 'time_deleted', "Deleted time entry (" . format_duration_minutes($entry['duration_minutes'] ?? 0) . ")");
-        api_success(['message' => t('Time entry deleted.')]);
-    } else {
+        api_success([
+            'message' => t('Time entry deleted.'),
+            'undo_token' => $undo_token,
+            'undo_action' => 'restore-time-entry',
+            'undo_label' => t('Undo'),
+            'undo_seconds' => FOXDESK_TICKET_UNDO_SECONDS,
+        ]);
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
         api_error(t('Failed to delete time entry.'), 500);
+    }
+}
+
+function api_ticket_store_undo_action(string $type, array $payload, int $ticket_id): string
+{
+    $resource = $payload[$type] ?? $payload[match ($type) {
+        'time_entry' => 'entry',
+        default => $type,
+    }] ?? [];
+    $user = current_user();
+    return ticket_undo_stage(
+        $type,
+        (int) ($resource['id'] ?? 0),
+        $ticket_id,
+        (int) ($user['id'] ?? 0),
+        $payload
+    );
+}
+
+function api_ticket_consume_undo_action(string $type, string $token): ?array
+{
+    return ticket_undo_find($type, $token);
+}
+
+function api_restore_time_entry() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        api_error('Method not allowed', 405);
+    }
+    require_csrf_token(true);
+
+    $user = current_user();
+    if (!$user || (!is_agent() && !is_admin())) {
+        api_error('Unauthorized', 401);
+    }
+    $action = api_ticket_consume_undo_action('time_entry', trim((string) ($_POST['undo_token'] ?? '')));
+    if (!$action) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $entry = $action['payload']['entry'] ?? null;
+    if (!is_array($entry) || empty($entry['id']) || empty($entry['ticket_id'])) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $ticket = get_ticket((int) $entry['ticket_id']);
+    if (!$ticket || !can_see_ticket($ticket, $user) || !can_manage_time_entry($entry, $user)) {
+        api_error('Forbidden', 403);
+    }
+    if (db_fetch_one('SELECT id FROM ticket_time_entries WHERE id = ?', [(int) $entry['id']])) {
+        api_error(t('This item has already been restored.'), 409);
+    }
+
+    try {
+        db_insert('ticket_time_entries', $entry);
+        ticket_undo_forget((int) ($action['id'] ?? 0));
+        log_activity((int) $entry['ticket_id'], (int) $user['id'], 'time_restored', 'Time entry restored');
+        api_success(['message' => t('Time entry restored.'), 'ticket_id' => (int) $entry['ticket_id']]);
+    } catch (Throwable $e) {
+        api_error(t('Failed to restore time entry.'), 500);
     }
 }
 
@@ -1060,7 +1145,7 @@ function api_update_time_inline() {
         api_error(t('Time tracking is not available.'), 400);
     }
 
-    $input = json_decode(file_get_contents('php://input'), true);
+    $input = get_json_input();
     $entry_id   = (int) ($input['entry_id']   ?? 0);
     $entry_date = $input['entry_date']         ?? date('Y-m-d');
     $start_time = $input['start_time']         ?? '';
@@ -1186,7 +1271,7 @@ function api_delete_comment() {
     require_csrf_token(true);
 
     $user = current_user();
-    if (!$user || (!is_agent() && !is_admin())) {
+    if (!$user) {
         api_error('Unauthorized', 401);
     }
 
@@ -1199,7 +1284,11 @@ function api_delete_comment() {
     }
 
     $linked_attachments = db_fetch_all(
-        "SELECT original_name, filename FROM attachments WHERE comment_id = ?",
+        "SELECT id, original_name, filename FROM attachments WHERE comment_id = ?",
+        [$comment_id]
+    );
+    $linked_time_entries = db_fetch_all(
+        "SELECT id FROM ticket_time_entries WHERE comment_id = ?",
         [$comment_id]
     );
 
@@ -1209,8 +1298,7 @@ function api_delete_comment() {
         api_error('Forbidden', 403);
     }
 
-    // Agents can only delete their own comments; admins can delete any
-    if (is_agent() && !is_admin() && (int)$comment['user_id'] !== (int)$user['id']) {
+    if (!can_manage_comment($comment, $user)) {
         api_error('Forbidden', 403);
     }
 
@@ -1231,7 +1319,15 @@ function api_delete_comment() {
             }
         }
 
+        $db = get_db();
+        $db->beginTransaction();
+        $undo_token = api_ticket_store_undo_action('comment', [
+            'comment' => $comment,
+            'attachment_ids' => array_values(array_map(static fn($row) => (int) $row['id'], $linked_attachments)),
+            'time_entry_ids' => array_values(array_map(static fn($row) => (int) $row['id'], $linked_time_entries)),
+        ], (int) $comment['ticket_id']);
         db_delete('comments', 'id = ?', [$comment_id]);
+        $db->commit();
 
         // Log the activity
         log_activity(
@@ -1242,10 +1338,163 @@ function api_delete_comment() {
         );
 
         api_success([
-            'message' => t('Comment deleted.')
+            'message' => t('Comment deleted.'),
+            'undo_token' => $undo_token,
+            'undo_action' => 'restore-comment',
+            'undo_label' => t('Undo'),
+            'undo_seconds' => FOXDESK_TICKET_UNDO_SECONDS,
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
+        if (isset($db) && $db->inTransaction()) {
+            $db->rollBack();
+        }
         api_error(t('Failed to delete comment.'), 500);
+    }
+}
+
+function api_restore_comment() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        api_error('Method not allowed', 405);
+    }
+    require_csrf_token(true);
+    $user = current_user();
+    if (!$user) {
+        api_error('Unauthorized', 401);
+    }
+    $action = api_ticket_consume_undo_action('comment', trim((string) ($_POST['undo_token'] ?? '')));
+    if (!$action) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $comment = $action['payload']['comment'] ?? null;
+    if (!is_array($comment) || empty($comment['id']) || empty($comment['ticket_id'])) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $ticket = get_ticket((int) $comment['ticket_id']);
+    if (!$ticket || !can_see_ticket($ticket, $user) || !can_manage_comment($comment, $user)) {
+        api_error('Forbidden', 403);
+    }
+    if (db_fetch_one('SELECT id FROM comments WHERE id = ?', [(int) $comment['id']])) {
+        api_error(t('This item has already been restored.'), 409);
+    }
+
+    $db = get_db();
+    try {
+        $db->beginTransaction();
+        db_insert('comments', $comment);
+        foreach (($action['payload']['attachment_ids'] ?? []) as $attachment_id) {
+            db_update('attachments', ['comment_id' => (int) $comment['id']], 'id = ?', [(int) $attachment_id]);
+        }
+        foreach (($action['payload']['time_entry_ids'] ?? []) as $entry_id) {
+            db_update('ticket_time_entries', ['comment_id' => (int) $comment['id']], 'id = ?', [(int) $entry_id]);
+        }
+        ticket_undo_forget((int) ($action['id'] ?? 0));
+        $db->commit();
+        log_activity((int) $comment['ticket_id'], (int) $user['id'], 'comment_restored', 'Comment restored');
+        api_success(['message' => t('Comment restored.'), 'ticket_id' => (int) $comment['ticket_id']]);
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        api_error(t('Failed to restore comment.'), 500);
+    }
+}
+
+function api_delete_attachment() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        api_error('Method not allowed', 405);
+    }
+    require_csrf_token(true);
+    $user = current_user();
+    if (!$user) {
+        api_error('Unauthorized', 401);
+    }
+
+    $attachment_id = (int) ($_POST['attachment_id'] ?? 0);
+    $attachment = $attachment_id > 0 && function_exists('get_attachment') ? get_attachment($attachment_id) : null;
+    if (!$attachment) {
+        api_error(t('Attachment not found.'), 404);
+    }
+    if (!attachment_user_can_delete($attachment, $user)) {
+        api_error('Forbidden', 403);
+    }
+
+    $message_links = table_exists('ticket_message_attachments')
+        ? db_fetch_all('SELECT * FROM ticket_message_attachments WHERE attachment_id = ?', [$attachment_id])
+        : [];
+    $ticket_id = (int) ($attachment['ticket_id'] ?? 0);
+    $db = get_db();
+    try {
+        $db->beginTransaction();
+        $undo_token = api_ticket_store_undo_action('attachment', [
+            'attachment' => $attachment,
+            'message_links' => $message_links,
+        ], $ticket_id);
+        if ($message_links) {
+            db_delete('ticket_message_attachments', 'attachment_id = ?', [$attachment_id]);
+        }
+        db_delete('attachments', 'id = ?', [$attachment_id]);
+        $db->commit();
+        log_activity($ticket_id, (int) $user['id'], 'attachment_deleted', t('Attachment deleted'));
+        api_success([
+            'message' => t('Attachment deleted.'),
+            'attachment_id' => $attachment_id,
+            'undo_token' => $undo_token,
+            'undo_action' => 'restore-attachment',
+            'undo_label' => t('Undo'),
+            'undo_seconds' => FOXDESK_TICKET_UNDO_SECONDS,
+        ]);
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        api_error(t('Failed to delete attachment.'), 500);
+    }
+}
+
+function api_restore_attachment(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        api_error('Method not allowed', 405);
+    }
+    require_csrf_token(true);
+    $user = current_user();
+    if (!$user) {
+        api_error('Unauthorized', 401);
+    }
+    $action = api_ticket_consume_undo_action('attachment', trim((string) ($_POST['undo_token'] ?? '')));
+    if (!$action) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $attachment = $action['payload']['attachment'] ?? null;
+    if (!is_array($attachment) || empty($attachment['id']) || empty($attachment['ticket_id'])) {
+        api_error(t('Undo is no longer available.'), 410);
+    }
+    $ticket = get_ticket((int) $attachment['ticket_id']);
+    if (!$ticket || !can_see_ticket($ticket, $user) || !attachment_user_can_delete($attachment, $user)) {
+        api_error('Forbidden', 403);
+    }
+    if (db_fetch_one('SELECT id FROM attachments WHERE id = ?', [(int) $attachment['id']])) {
+        api_error(t('This item has already been restored.'), 409);
+    }
+
+    $db = get_db();
+    try {
+        $db->beginTransaction();
+        db_insert('attachments', $attachment);
+        foreach (($action['payload']['message_links'] ?? []) as $link) {
+            if (is_array($link)) {
+                db_insert('ticket_message_attachments', $link);
+            }
+        }
+        ticket_undo_forget((int) ($action['id'] ?? 0));
+        $db->commit();
+        log_activity((int) $attachment['ticket_id'], (int) $user['id'], 'attachment_restored', 'Attachment restored');
+        api_success(['message' => t('Attachment restored.'), 'ticket_id' => (int) $attachment['ticket_id']]);
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        api_error(t('Failed to restore attachment.'), 500);
     }
 }
 

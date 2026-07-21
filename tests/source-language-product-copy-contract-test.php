@@ -49,7 +49,8 @@ foreach ([
     assert_product_copy(!str_contains($reporting, $forbidden), 'Reporting flow still contains verbose copy: ' . $forbidden);
 }
 
-$settings = read_product_file($root, 'pages/admin/settings.php');
+$settings = read_product_file($root, 'pages/admin/settings.php')
+    . read_product_file($root, 'includes/modules/settings/views/system.php');
 assert_product_copy(
     !str_contains($settings, 'Versions, updates, backups, background tasks, and upload limits in one place.'),
     'System settings must not use generic one-place copy.'

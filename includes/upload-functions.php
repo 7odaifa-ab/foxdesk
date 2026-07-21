@@ -418,3 +418,29 @@ function attachment_download_url($attachment, $share_token = null) {
 
     return $url;
 }
+
+/** Check whether the current user may delete an attachment they can access. */
+function attachment_user_can_delete($attachment, $user = null): bool
+{
+    if (!attachment_user_can_access($attachment, $user)) {
+        return false;
+    }
+    if ($user === null) {
+        $user = current_user();
+    }
+    if (!$user) {
+        return false;
+    }
+    if (in_array((string) ($user['role'] ?? ''), ['admin', 'agent'], true)) {
+        return true;
+    }
+    return !empty($attachment['uploaded_by'])
+        && (int) $attachment['uploaded_by'] === (int) ($user['id'] ?? 0);
+}
+
+/** Permanently remove the file after the undo window expires. */
+function delete_attachment_storage(array $attachment): bool
+{
+    $filename = (string) ($attachment['filename'] ?? '');
+    return $filename !== '' && delete_attachment_file($filename);
+}

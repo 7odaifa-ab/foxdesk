@@ -12,12 +12,15 @@ $assert = function ($condition, string $message): void {
 $user_functions = file_get_contents($root . '/includes/user-functions.php');
 $theme = file_get_contents($root . '/theme.css');
 $header = file_get_contents($root . '/includes/header.php');
-$ticket_detail = file_get_contents($root . '/pages/ticket-detail.php');
-$admin_users = file_get_contents($root . '/pages/admin/users.php');
+$ticket_detail_page = file_get_contents($root . '/pages/ticket-detail.php');
+$ticket_detail_content = file_get_contents($root . '/includes/components/ticket-detail-content.php');
+$ticket_detail = (string) $ticket_detail_page . "\n" . (string) $ticket_detail_content;
+$admin_users = file_get_contents($root . '/includes/components/team/users-surface.php');
 $dashboard = file_get_contents($root . '/pages/dashboard.php');
 
 $assert($user_functions !== false, 'User functions must be readable.');
 $assert($theme !== false, 'Theme CSS must be readable.');
+$assert($ticket_detail_page !== false && $ticket_detail_content !== false, 'Ticket detail composition files must be readable.');
 $assert(str_contains($user_functions, 'function render_user_avatar'), 'A shared user avatar renderer must exist.');
 $assert(str_contains($user_functions, 'user-avatar__initials'), 'Avatar renderer must always render text initials fallback.');
 $assert(str_contains($user_functions, 'user-avatar__image'), 'Avatar renderer may render an image above initials.');

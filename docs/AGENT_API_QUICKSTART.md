@@ -6,15 +6,13 @@ giving the assistant more access than the user who created the key.
 ## Steps
 
 1. Sign in as the user whose permissions the assistant should inherit.
-2. Open **Profile -> API access**.
+2. Open **Settings -> API & agents**.
 3. Create a scoped key with a clear name, for example `Codex local assistant`.
 4. Select only the scopes the assistant needs.
 5. Copy the key once.
 
-Do not use **Admin -> Users -> AI agents** for normal Codex/Claude access. That
-admin area manages AI-agent records and cost/rate metadata. Scoped API keys for
-external assistants live in **Profile -> API access** because the key must inherit
-the permissions of the person creating it.
+Use this single page for Codex, Claude, automations, and AI-agent access. The
+key always inherits the permissions of the person creating it.
 
 6. Configure the local example env:
 
@@ -46,6 +44,21 @@ curl -fsS "$FOXDESK_BASE_URL/index.php?page=api&action=agent-me" \
   -H "Authorization: Bearer $FOXDESK_API_TOKEN"
 ```
 
+Every agent session starts by loading the live instructions and then verifying
+the token identity:
+
+```bash
+curl -fsS "$FOXDESK_BASE_URL/index.php?page=api&action=agent-docs&instruction_language=en" \
+  -H "Authorization: Bearer $FOXDESK_API_TOKEN"
+
+curl -fsS "$FOXDESK_BASE_URL/index.php?page=api&action=agent-me" \
+  -H "Authorization: Bearer $FOXDESK_API_TOKEN"
+```
+
+The canonical ticket and tracked-work workflow is documented in
+`docs/AGENT_TICKET_WORKFLOW.md`. Localized API instructions are available in
+English, Czech, German, Spanish, and Italian.
+
 If a browser request redirects to login, switch back to the API endpoint. It
 means the request was missing the bearer header or was sent to the web UI
 instead of `/index.php?page=api&action=...`.
@@ -60,14 +73,19 @@ FOXDESK_TICKET_DESCRIPTION="The office printer is offline." \
 sh examples/agent-api/create-ticket.sh
 ```
 
-Add time to an existing ticket:
+Log time only when the user explicitly requests a tracked-time workflow:
 
 ```bash
 FOXDESK_TICKET_ID=123 \
 FOXDESK_DURATION_MINUTES=45 \
-FOXDESK_TIME_SUMMARY="Diagnosed printer network settings." \
-sh examples/agent-api/log-time.sh
+FOXDESK_MANUAL_DATE=2026-07-20 \
+FOXDESK_MANUAL_START_TIME=09:00 \
+FOXDESK_MANUAL_END_TIME=09:45 \
+FOXDESK_COMMENT='<p>Diagnosed printer network settings.</p>' \
+sh examples/agent-api/comment-with-time.sh
 ```
+
+Use `log-time.sh` only when the work genuinely has no related comment.
 
 Prepare a report review:
 
@@ -92,8 +110,9 @@ npm run agent:mcp
 ## Required scopes
 
 - Create ticket: `tickets:write`
-- Add comment: `comments:write`
-- Log time: `time:write`
+- Add comment: `tickets:read`, `comments:write`
+- Add tracked work: `tickets:read`, `comments:write`, `time:write`
+- Log standalone time: `tickets:read`, `time:write`
 - Prepare report review: `reports:read`
 - Upload attachment: `attachments:write`
 

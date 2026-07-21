@@ -134,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // API access
     if (isset($_POST['create_api_token']) && function_exists('generate_api_token')) {
         $token_name = trim((string) ($_POST['api_token_name'] ?? ''));
-        $expiry = (string) ($_POST['api_token_expiry'] ?? '90');
         $selected_scopes = $_POST['api_token_scopes'] ?? [];
 
         if ($token_name === '') {
@@ -142,13 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('profile');
         }
 
-        $expires_at = null;
-        if ($expiry !== 'never') {
-            $days = max(1, min(365, (int) $expiry));
-            $expires_at = date('Y-m-d H:i:s', time() + ($days * 86400));
-        }
-
-        $token_result = generate_api_token((int) $user['id'], $token_name, $expires_at, $selected_scopes);
+        $token_result = generate_api_token((int) $user['id'], $token_name, null, $selected_scopes);
         if (!empty($token_result['token'])) {
             $_SESSION['new_profile_api_token'] = $token_result['token'];
             $_SESSION['new_profile_api_token_scopes'] = $token_result['scopes'] ?? [];
@@ -612,22 +605,12 @@ include BASE_PATH . '/includes/components/page-header.php';
             <?php else: ?>
                 <form method="post" class="space-y-4 mb-5">
                     <?php echo csrf_field(); ?>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="api-token-name" class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Token name')); ?></label>
-                            <input type="text" name="api_token_name" id="api-token-name" class="form-input"
-                                placeholder="<?php echo e(t('Codex local assistant')); ?>" maxlength="120">
-                        </div>
-                        <div>
-                            <label for="api-token-expiry" class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Expires')); ?></label>
-                            <select name="api_token_expiry" id="api-token-expiry" class="form-select">
-                                <option value="30"><?php echo e(t('30 days')); ?></option>
-                                <option value="90" selected><?php echo e(t('90 days')); ?></option>
-                                <option value="365"><?php echo e(t('1 year')); ?></option>
-                                <option value="never"><?php echo e(t('Never')); ?></option>
-                            </select>
-                        </div>
+                    <div>
+                        <label for="api-token-name" class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Token name')); ?></label>
+                        <input type="text" name="api_token_name" id="api-token-name" class="form-input"
+                            placeholder="<?php echo e(t('Codex local assistant')); ?>" maxlength="120">
                     </div>
+                    <p class="text-xs text-theme-muted"><?php echo e(t('The key stays active until you revoke it.')); ?></p>
 
                     <?php if (!empty($api_scope_catalog)): ?>
                         <div>

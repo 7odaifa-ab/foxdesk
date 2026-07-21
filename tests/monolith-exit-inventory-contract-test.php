@@ -36,7 +36,7 @@ foreach ($all_page_files as $file) {
 
 $priority_targets = [
     'pages/tickets.php' => [
-        'max_lines' => 2325,
+        'max_lines' => 700,
         'modules' => [
             'includes/modules/tickets/ticket-bulk-actions.php',
             'includes/modules/tickets/ticket-list-filters.php',
@@ -54,15 +54,21 @@ $priority_targets = [
         ],
     ],
     'pages/ticket-detail.php' => [
-        'max_lines' => 1305,
+        'max_lines' => 700,
         'modules' => [
             'includes/modules/tickets/ticket-detail-context.php',
             'includes/modules/tickets/ticket-detail-timeline.php',
             'includes/modules/tickets/ticket-share-state.php',
+            'includes/components/ticket-detail-content.php',
             'includes/components/ticket-detail-composer.php',
             'includes/components/ticket-detail-modals.php',
             'includes/components/ticket-detail-sidebar.php',
             'includes/components/ticket-detail-surface.php',
+            'assets/css/ticket-detail.css',
+            'assets/js/ticket-detail-core.js',
+            'assets/js/ticket-detail-workflow.js',
+            'assets/js/ticket-detail-records.js',
+            'assets/js/ticket-detail-admin.js',
             'assets/js/ticket-detail.js',
         ],
         'tests' => [
@@ -77,16 +83,30 @@ $priority_targets = [
         ],
     ],
     'pages/admin/reports.php' => [
-        'max_lines' => 3070,
+        'max_lines' => 700,
         'modules' => [
             'includes/modules/reports/report-filters.php',
             'includes/modules/reports/report-query.php',
             'includes/modules/reports/report-totals.php',
             'includes/modules/reports/report-adjustments.php',
             'includes/modules/reports/report-export.php',
+            'includes/modules/reports/report-page-controller.php',
+            'includes/modules/reports/report-page-view-model.php',
+            'includes/modules/reports/report-page-render.php',
+            'includes/modules/reports/views/page.php',
+            'includes/modules/reports/views/filters.php',
+            'includes/modules/reports/views/time.php',
+            'includes/modules/reports/views/weekly.php',
+            'includes/modules/reports/views/billing.php',
+            'includes/modules/reports/views/worklog.php',
+            'includes/modules/reports/views/rates.php',
+            'includes/modules/reports/views/published.php',
+            'includes/modules/reports/views/entry-modal.php',
+            'assets/js/report-page.js',
             'assets/js/report-billing-review.js',
         ],
         'tests' => [
+            'tests/report-page-extraction-contract-test.php',
             'tests/reporting-flow-contract-test.php',
             'tests/report-rate-parity-contract-test.php',
             'tests/report-filter-contract-test.php',
@@ -95,7 +115,7 @@ $priority_targets = [
         ],
     ],
     'pages/admin/settings.php' => [
-        'max_lines' => 3100,
+        'max_lines' => 700,
         'modules' => [
             'includes/modules/settings/settings-actions.php',
             'includes/modules/settings/settings-email.php',
@@ -104,6 +124,13 @@ $priority_targets = [
             'includes/modules/settings/settings-security.php',
             'includes/modules/settings/settings-view-model.php',
             'includes/modules/settings/settings-templates.php',
+            'includes/modules/settings/views/general.php',
+            'includes/modules/settings/views/email.php',
+            'includes/modules/settings/views/templates.php',
+            'includes/modules/settings/views/system.php',
+            'includes/modules/settings/views/logs.php',
+            'includes/modules/settings/views/workflow.php',
+            'includes/modules/settings/views/security.php',
             'includes/components/admin-settings-tabs.php',
             'includes/components/admin-workflow-card.php',
         ],
@@ -117,9 +144,14 @@ $priority_targets = [
         ],
     ],
     'pages/admin/users.php' => [
-        'max_lines' => 2450,
+        'max_lines' => 700,
         'modules' => [
             'includes/modules/team/team-users.php',
+            'includes/modules/team/team-users-actions.php',
+            'includes/components/team/team-tabs.php',
+            'includes/components/team/ai-agents-surface.php',
+            'includes/components/team/users-surface.php',
+            'includes/components/team/user-edit-surface.php',
         ],
         'tests' => [
             'tests/team-users-contract-test.php',
@@ -187,9 +219,24 @@ foreach ($priority_targets as $page => $targets) {
 }
 
 foreach ([
+    'pages/new-ticket.php' => 700,
+    'assets/js/ticket-list.js' => 900,
+    'assets/js/ticket-list-actions.js' => 900,
+    'includes/components/ticket-list-board.php' => 700,
+    'includes/components/ticket-list-table.php' => 900,
+] as $hard_gate_path => $hard_gate_lines) {
+    $hard_gate_count = count(file($root . '/' . $hard_gate_path) ?: []);
+    $assert(
+        $hard_gate_count < $hard_gate_lines,
+        "{$hard_gate_path} has {$hard_gate_count} lines; hard gate requires fewer than {$hard_gate_lines}."
+    );
+}
+
+foreach ([
     'includes/components/ticket-detail-sidebar.php',
     'includes/components/ticket-detail-composer.php',
     'includes/components/ticket-detail-modals.php',
+    'includes/components/ticket-detail-content.php',
     'includes/components/ticket-detail-surface.php',
     'includes/modules/tickets/ticket-detail-context.php',
     'includes/modules/tickets/ticket-detail-read-model.php',
@@ -199,10 +246,33 @@ foreach ([
     'includes/modules/tickets/ticket-row-view-model.php',
     'assets/js/ticket-list.js',
     'assets/js/ticket-detail.js',
+    'assets/js/ticket-detail-core.js',
+    'assets/js/ticket-detail-workflow.js',
+    'assets/js/ticket-detail-records.js',
+    'assets/js/ticket-detail-admin.js',
+    'assets/css/ticket-detail.css',
+    'includes/modules/reports/report-page-controller.php',
+    'includes/modules/reports/report-page-view-model.php',
+    'includes/modules/reports/report-page-render.php',
+    'includes/modules/reports/views/page.php',
+    'includes/modules/reports/views/filters.php',
+    'includes/modules/reports/views/time.php',
+    'includes/modules/reports/views/weekly.php',
+    'includes/modules/reports/views/billing.php',
+    'includes/modules/reports/views/worklog.php',
+    'includes/modules/reports/views/rates.php',
+    'includes/modules/reports/views/published.php',
+    'includes/modules/reports/views/entry-modal.php',
+    'assets/js/report-page.js',
     'includes/modules/settings/settings-templates.php',
     'includes/components/admin-workflow-card.php',
     'assets/js/report-billing-review.js',
     'includes/modules/team/team-users.php',
+    'includes/modules/team/team-users-actions.php',
+    'includes/components/team/team-tabs.php',
+    'includes/components/team/ai-agents-surface.php',
+    'includes/components/team/users-surface.php',
+    'includes/components/team/user-edit-surface.php',
     'includes/modules/app/dashboard-compat.php',
     'includes/admin-crud-helper.php',
 ] as $extracted_path) {
@@ -210,10 +280,13 @@ foreach ([
 }
 
 $ticket_page = file_get_contents($root . '/pages/ticket-detail.php');
+$ticket_content = file_get_contents($root . '/includes/components/ticket-detail-content.php');
 $assert($ticket_page !== false, 'Ticket detail page must be readable.');
-$assert(str_contains($ticket_page, "/includes/components/ticket-detail-sidebar.php"), 'Ticket detail page must include the extracted sidebar component.');
-$assert(str_contains($ticket_page, "/includes/components/ticket-detail-composer.php"), 'Ticket detail page must include the extracted composer component.');
-$assert(str_contains($ticket_page, "/includes/components/ticket-detail-modals.php"), 'Ticket detail page must include the extracted modals component.');
+$assert($ticket_content !== false, 'Ticket detail content component must be readable.');
+$assert(str_contains($ticket_page, "/includes/components/ticket-detail-content.php"), 'Ticket detail page must delegate its markup to the content component.');
+$assert(str_contains($ticket_content, "/includes/components/ticket-detail-sidebar.php"), 'Ticket detail content must include the extracted sidebar component.');
+$assert(str_contains($ticket_content, "/includes/components/ticket-detail-composer.php"), 'Ticket detail content must include the extracted composer component.');
+$assert(str_contains($ticket_content, "/includes/components/ticket-detail-modals.php"), 'Ticket detail content must include the extracted modals component.');
 $assert(!str_contains($ticket_page, 'data-ticket-sidebar-surface'), 'Sidebar markup must not move back into the route file.');
 $assert(!str_contains($ticket_page, 'data-ticket-composer-surface'), 'Composer markup must not move back into the route file.');
 $assert(!str_contains($ticket_page, '<div id="edit-ticket-modal"'), 'Modal markup must not move back into the route file.');

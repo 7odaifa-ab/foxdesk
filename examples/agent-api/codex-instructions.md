@@ -24,6 +24,17 @@ cookies. A FoxDesk API token only works through HTTP requests that include:
 Authorization: Bearer $FOXDESK_API_TOKEN
 ```
 
+## Required Session Start
+
+1. Call `agent-docs` and follow its `operating_instructions`.
+2. Call `agent-me` and verify the token identity.
+3. Before changing an existing ticket, call `agent-get-ticket`.
+
+Keep the main ticket concise. Use `agent-add-update` for a comment without time
+and `agent-add-work-entry` for tracked work, sending the formatted comment and
+duration together. Use a unique `Idempotency-Key` for every POST request. Full rules:
+`docs/AGENT_TICKET_WORKFLOW.md`.
+
 ## Allowed Tools
 
 Use only these scripts unless the user explicitly asks for a lower-level API
@@ -32,6 +43,7 @@ call:
 ```bash
 sh examples/agent-api/create-ticket.sh
 sh examples/agent-api/add-comment.sh
+sh examples/agent-api/comment-with-time.sh
 sh examples/agent-api/log-time.sh
 sh examples/agent-api/prepare-report.sh
 ```
@@ -44,5 +56,9 @@ sh examples/agent-api/prepare-report.sh
 - Treat 401/403 as permission or token-scope problems, not application bugs.
 - For write actions, keep the default `Idempotency-Key` header or set
   `FOXDESK_IDEMPOTENCY_KEY` when retrying the same action.
+- If the API returns `409` with `Retry-After`, wait and retry the unchanged
+  request with the same idempotency key. Never reuse that key for new content.
+- Standalone time entries are only for work without a matching comment and
+  accept 1 to 1440 minutes.
 - Summarize the created ticket id, logged minutes, or report totals back to the
   user.

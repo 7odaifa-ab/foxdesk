@@ -23,9 +23,28 @@ $files = [
     'pages/admin/migration-export.php',
 ];
 
-foreach ($files as $file) {
+$composed_surfaces = [
+    'pages/new-ticket.php' => [
+        'includes/components/new-ticket-form.php',
+        'includes/components/new-ticket-assets.php',
+    ],
+];
+
+$read_surface = static function (string $file) use ($root, $composed_surfaces): string {
     $contents = file_get_contents($root . '/' . $file);
     assert_home_redirect_contract($contents !== false, $file . ' must be readable.');
+
+    foreach ($composed_surfaces[$file] ?? [] as $component) {
+        $component_contents = file_get_contents($root . '/' . $component);
+        assert_home_redirect_contract($component_contents !== false, $component . ' must be readable.');
+        $contents .= "\n" . $component_contents;
+    }
+
+    return $contents;
+};
+
+foreach ($files as $file) {
+    $contents = $read_surface($file);
     assert_home_redirect_contract(
         strpos($contents, "header('Location: index.php?page=dashboard');") === false,
         $file . ' must not hard-code dashboard as a fallback redirect.'
@@ -33,7 +52,7 @@ foreach ($files as $file) {
 }
 
 foreach ($files as $file) {
-    $contents = file_get_contents($root . '/' . $file);
+    $contents = $read_surface($file);
     assert_home_redirect_contract(
         strpos($contents, 'foxdesk_authenticated_home_page') !== false,
         $file . ' should use authenticated home routing for fallback redirects.'

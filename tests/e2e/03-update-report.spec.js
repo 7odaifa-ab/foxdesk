@@ -9,7 +9,7 @@ test('upgrade script runs without fatal errors', async () => {
 });
 
 test('update package applies with backup evidence and rollback removes added files', async () => {
-  const markerPath = '/var/www/html/update-e2e-marker.txt';
+  const markerPath = '/var/www/html/pages/update-e2e-marker.php';
   dockerExec(webContainer, ['rm', '-f', markerPath]);
 
   const packagePath = php(`
@@ -26,7 +26,7 @@ test('update package applies with backup evidence and rollback removes added fil
       'changelog' => ['E2E update package smoke'],
       'delete_files' => []
     ], JSON_PRETTY_PRINT));
-    $zip->addFromString('files/update-e2e-marker.txt', 'created by update package');
+    $zip->addFromString('files/pages/update-e2e-marker.php', '<?php // created by update package');
     $zip->close();
     echo $zipPath;
   `).trim();
@@ -68,8 +68,8 @@ test('update package applies with backup evidence and rollback removes added fil
     $backups = get_backups();
     $latest = $backups[0] ?? [];
     echo json_encode([
-      'marker_exists' => file_exists(BASE_PATH . '/update-e2e-marker.txt'),
-      'marker_body' => file_exists(BASE_PATH . '/update-e2e-marker.txt') ? trim(file_get_contents(BASE_PATH . '/update-e2e-marker.txt')) : '',
+      'marker_exists' => file_exists(BASE_PATH . '/pages/update-e2e-marker.php'),
+      'marker_body' => file_exists(BASE_PATH . '/pages/update-e2e-marker.php') ? trim(file_get_contents(BASE_PATH . '/pages/update-e2e-marker.php')) : '',
       'backup_id' => $latest['id'] ?? null,
       'backup_has_files' => !empty($latest['id']) && file_exists(BACKUP_DIR . '/' . $latest['id'] . '/files.zip'),
       'backup_has_info' => !empty($latest['id']) && file_exists(BACKUP_DIR . '/' . $latest['id'] . '/info.json')
@@ -78,7 +78,7 @@ test('update package applies with backup evidence and rollback removes added fil
   const parsed = JSON.parse(evidence);
   expect(parsed).toMatchObject({
     marker_exists: true,
-    marker_body: 'created by update package',
+    marker_body: '<?php // created by update package',
     backup_has_files: true,
     backup_has_info: true
   });
@@ -195,12 +195,12 @@ test('backup rollback removes files created after backup and health remains OK',
       fwrite(STDERR, json_encode($backup));
       exit(2);
     }
-    file_put_contents(BASE_PATH . '/rollback-marker-e2e.txt', 'created after backup');
+    file_put_contents(BASE_PATH . '/pages/rollback-marker-e2e.php', '<?php // created after backup');
     rollback_update($backup['backup_id'], false);
   `);
   expect(output).toContain('Rollback complete');
 
-  const marker = dockerExec(webContainer, ['sh', '-lc', 'test ! -f /var/www/html/rollback-marker-e2e.txt && echo removed']);
+  const marker = dockerExec(webContainer, ['sh', '-lc', 'test ! -f /var/www/html/pages/rollback-marker-e2e.php && echo removed']);
   expect(marker.trim()).toBe('removed');
 
   const health = await page.request.get('/index.php?page=health');

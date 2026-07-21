@@ -44,6 +44,38 @@ function team_users_valid_organization_ids(array $organizations): array
     return array_map('intval', array_column($organizations, 'id'));
 }
 
+/**
+ * Build a lazy loader for database references to users.
+ *
+ * The destructive user action only needs this metadata on demand, so the
+ * controller receives a callable instead of owning the INFORMATION_SCHEMA
+ * query itself.
+ */
+function team_users_fk_reference_loader(): callable
+{
+    return static function (): array {
+        try {
+            return db_fetch_all(
+                "SELECT
+                    k.TABLE_NAME,
+                    k.COLUMN_NAME,
+                    c.IS_NULLABLE
+                 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE k
+                 INNER JOIN INFORMATION_SCHEMA.COLUMNS c
+                    ON c.TABLE_SCHEMA = k.TABLE_SCHEMA
+                   AND c.TABLE_NAME = k.TABLE_NAME
+                   AND c.COLUMN_NAME = k.COLUMN_NAME
+                 WHERE k.TABLE_SCHEMA = DATABASE()
+                   AND k.REFERENCED_TABLE_SCHEMA = DATABASE()
+                   AND k.REFERENCED_TABLE_NAME = 'users'
+                   AND k.REFERENCED_COLUMN_NAME = 'id'"
+            );
+        } catch (Throwable $e) {
+            return [];
+        }
+    };
+}
+
 function team_users_filter_organization_ids($organization_ids, ?array $valid_organization_ids = null): array
 {
     $ids = normalize_organization_ids($organization_ids);
@@ -86,6 +118,7 @@ function team_users_permission_payload(string $role, ?int $organization_id, arra
             'ticket_scope' => 'all',
             'organization_ids' => team_users_filter_organization_ids($organization_membership_ids, $valid_organization_ids),
             'can_archive' => true,
+            'can_delete_tickets_permanently' => true,
             'can_view_edit_history' => true,
             'can_import_md' => true,
             'can_view_time' => true,
@@ -117,6 +150,7 @@ function team_users_permission_payload(string $role, ?int $organization_id, arra
         'ticket_scope' => $ticket_scope,
         'organization_ids' => $effective_organization_ids,
         'can_archive' => $role === 'agent' && isset($input['can_archive']),
+        'can_delete_tickets_permanently' => $role === 'agent' && isset($input['can_delete_tickets_permanently']),
         'can_view_edit_history' => isset($input['can_view_edit_history']),
         'can_import_md' => $role === 'agent' && isset($input['can_import_md']),
         'can_view_time' => isset($input['can_view_time']),
