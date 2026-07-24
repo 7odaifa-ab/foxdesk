@@ -104,7 +104,7 @@ $extract_report_tags = static function ($value) {
 };
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $template['report_language'] ?? 'en'; ?>">
+<html lang="<?php echo $template['report_language'] ?? 'en'; ?>" dir="<?php echo get_app_direction($template['report_language'] ?? 'en'); ?>">
 
 <head>
     <meta charset="UTF-8">

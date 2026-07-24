@@ -1,4 +1,4 @@
-﻿
+
 @font-face {
 font-family: 'Inter';
 font-style: normal;
@@ -8666,3 +8666,150 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 #new-ticket-form.is-submitting [type="submit"] {
   opacity: 0.6;
 }
+
+/* ==========================================================================
+   Full Systematic RTL (Right-To-Left) Layout Support
+   ========================================================================== */
+
+html[dir="rtl"],
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* 1. App Shell & Layout Margins */
+html[dir="rtl"] .sidebar {
+  right: 0;
+  left: auto;
+  border-right: none;
+  border-left: 1px solid var(--border-light);
+}
+
+html[dir="rtl"][data-theme="dark"] .sidebar {
+  border-left: none;
+}
+
+html[dir="rtl"] .sidebar .nav-item.active::before {
+  right: 0;
+  left: auto;
+  border-radius: 4px 0 0 4px;
+}
+
+html[dir="rtl"] .main-content {
+  margin-right: var(--app-sidebar-width);
+  margin-left: 0;
+  transition: margin-right 0.2s ease;
+}
+
+html[dir="rtl"] body.sidebar-compact .main-content,
+html[dir="rtl"] body.sidebar-collapsed .main-content,
+html[dir="rtl"] .sidebar.sidebar--compact + .main-content {
+  margin-right: var(--app-sidebar-compact-width) !important;
+  margin-left: 0 !important;
+}
+
+@media (max-width: 1024px) {
+  html[dir="rtl"] .sidebar {
+    transform: translateX(100%);
+  }
+  html[dir="rtl"] .sidebar.is-open {
+    transform: translateX(0);
+  }
+  html[dir="rtl"] .main-content {
+    margin-right: 0 !important;
+  }
+}
+
+/* 2. Alignment & Utility Overrides */
+html[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+html[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+html[dir="rtl"] .ml-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+html[dir="rtl"] .mr-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+/* 3. Navigation Header & Search Controls */
+html[dir="rtl"] .app-header {
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+html[dir="rtl"] .header-search-wrapper input {
+  padding-right: 2.5rem !important;
+  padding-left: 1rem !important;
+}
+
+html[dir="rtl"] .header-search-wrapper .search-icon {
+  right: 0.75rem !important;
+  left: auto !important;
+}
+
+/* 4. Form Controls & Select Inputs */
+html[dir="rtl"] input[type="text"],
+html[dir="rtl"] input[type="email"],
+html[dir="rtl"] input[type="password"],
+html[dir="rtl"] input[type="search"],
+html[dir="rtl"] input[type="number"],
+html[dir="rtl"] input[type="url"],
+html[dir="rtl"] input[type="tel"],
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+  text-align: right;
+}
+
+html[dir="rtl"] select.form-select {
+  background-position: left 0.75rem center;
+  padding-left: 2.25rem;
+  padding-right: 0.75rem;
+}
+
+/* 5. Modals & Popovers */
+html[dir="rtl"] .modal-close,
+html[dir="rtl"] [data-modal-close] {
+  left: 1rem !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .dropdown-menu,
+html[dir="rtl"] .popover-panel {
+  right: auto;
+  left: 0;
+}
+
+/* 6. Tables & Lists */
+html[dir="rtl"] table th,
+html[dir="rtl"] table td,
+html[dir="rtl"] .data-table th,
+html[dir="rtl"] .data-table td {
+  text-align: right;
+}
+
+/* 7. Icon Transforms for RTL */
+html[dir="rtl"] .icon-flip-rtl,
+html[dir="rtl"] .chevron-left-icon,
+html[dir="rtl"] .chevron-right-icon,
+html[dir="rtl"] .arrow-left-icon,
+html[dir="rtl"] .arrow-right-icon,
+html[dir="rtl"] [data-rtl-flip] {
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+/* 8. Ticket Composer & Detail Elements */
+html[dir="rtl"] .ticket-segmented-control {
+  direction: rtl;
+}
+
+html[dir="rtl"] .kanban-column-header {
+  text-align: right;
+}
+

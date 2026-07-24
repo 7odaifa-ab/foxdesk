@@ -18,13 +18,7 @@ $error = '';
 $valid_token = false;
 $token_hash = '';
 $current_lang = get_app_language();
-$lang_options = [
-    'en' => t('English'),
-    'cs' => t('Czech'),
-    'de' => t('German'),
-    'it' => t('Italian'),
-    'es' => t('Spanish')
-];
+$lang_options = array_map(fn($item) => t($item['name']), get_supported_languages());
 $lang_params = ['page' => 'reset-password'];
 if (!empty($token)) {
     $lang_params['token'] = $token;
@@ -67,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo e(get_app_language()); ?>">
+<html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
 <head>
     <meta charset="UTF-8">

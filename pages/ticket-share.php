@@ -13,7 +13,7 @@ function render_share_message($app_name, $title, $message)
 {
     ?>
     <!DOCTYPE html>
-    <html lang="<?php echo e(get_app_language()); ?>">
+    <html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
     <head>
         <meta charset="UTF-8">
@@ -59,7 +59,7 @@ mark_ticket_share_accessed($share['id']);
 $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']) : t('Never');
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo e(get_app_language()); ?>">
+<html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
 <head>
     <meta charset="UTF-8">

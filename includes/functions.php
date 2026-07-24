@@ -482,11 +482,47 @@ function ticket_url($ticket, $params = [])
 }
 
 /**
+ * Get all supported languages and metadata
+ */
+function get_supported_languages()
+{
+    return [
+        'en' => ['name' => 'English', 'native' => 'English', 'rtl' => false],
+        'cs' => ['name' => 'Czech', 'native' => 'Čeština', 'rtl' => false],
+        'de' => ['name' => 'German', 'native' => 'Deutsch', 'rtl' => false],
+        'it' => ['name' => 'Italian', 'native' => 'Italiano', 'rtl' => false],
+        'es' => ['name' => 'Spanish', 'native' => 'Español', 'rtl' => false],
+        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'rtl' => true],
+        'he' => ['name' => 'Hebrew', 'native' => 'עברית', 'rtl' => true],
+        'fa' => ['name' => 'Farsi', 'native' => 'فارسی', 'rtl' => true],
+        'ur' => ['name' => 'Urdu', 'native' => 'اردو', 'rtl' => true],
+    ];
+}
+
+/**
+ * Check if the given or active language is Right-to-Left (RTL)
+ */
+function is_rtl(?string $lang = null): bool
+{
+    $lang = $lang !== null ? strtolower(trim($lang)) : get_app_language();
+    $supported = get_supported_languages();
+    return !empty($supported[$lang]['rtl']);
+}
+
+/**
+ * Get HTML direction attribute value ('rtl' or 'ltr')
+ */
+function get_app_direction(?string $lang = null): string
+{
+    return is_rtl($lang) ? 'rtl' : 'ltr';
+}
+
+/**
  * Get active app language (default: English)
  */
 function get_app_language()
 {
-    $allowed = ['en', 'cs', 'de', 'it', 'es'];
+    $allowed = array_keys(get_supported_languages());
     $normalize = static function ($value) use ($allowed) {
         $value = strtolower(trim((string) $value));
         return in_array($value, $allowed, true) ? $value : null;
@@ -530,7 +566,14 @@ function get_app_language()
         return $session_lang;
     }
 
-    $setting_lang = $normalize(get_setting('app_language', 'en'));
+    $setting_lang = null;
+    if (function_exists('get_setting')) {
+        try {
+            $setting_lang = $normalize(get_setting('app_language', 'en'));
+        } catch (Throwable $e) {
+            $setting_lang = null;
+        }
+    }
     return $setting_lang ?? 'en';
 }
 

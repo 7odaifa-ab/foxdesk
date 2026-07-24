@@ -10,7 +10,7 @@ if (!is_admin()) {
 }
 
 $current_user = current_user();
-$allowed_report_languages = ['en', 'cs', 'de', 'it', 'es'];
+$allowed_report_languages = array_keys(get_supported_languages());
 $allowed_group_by = ['none', 'day', 'task'];
 $allowed_rounding = [0, 15, 30, 60];
 
@@ -161,13 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $organizations = db_fetch_all("SELECT id, name FROM organizations WHERE is_active = 1 ORDER BY name ASC");
 
 // Get available languages
-$languages = [
-    'en' => t('English'),
-    'cs' => t('Czech'),
-    'de' => t('German'),
-    'it' => t('Italian'),
-    'es' => t('Spanish')
-];
+$languages = array_map(fn($item) => t($item['name']), get_supported_languages());
 
 // Date presets
 $today = date('Y-m-d');

@@ -27,7 +27,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo e(get_app_language()); ?>">
+<html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -44,6 +44,8 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
     <script>
         window.csrfToken = <?php echo json_encode(csrf_token()); ?>;
         window.appName = <?php echo json_encode($app_name); ?>;
+        window.appDirection = <?php echo json_encode(get_app_direction()); ?>;
+        window.isRTL = <?php echo is_rtl() ? 'true' : 'false'; ?>;
         window.originalPageTitle = <?php echo json_encode(($page_title ?? t('Dashboard')) . ' - ' . $app_name); ?>;
         window.appNotificationPrefs = {
             inAppEnabled: <?php echo $in_app_notifications_enabled ? 'true' : 'false'; ?>,
