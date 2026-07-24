@@ -493,9 +493,6 @@ function get_supported_languages()
         'it' => ['name' => 'Italian', 'native' => 'Italiano', 'rtl' => false],
         'es' => ['name' => 'Spanish', 'native' => 'Español', 'rtl' => false],
         'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'rtl' => true],
-        'he' => ['name' => 'Hebrew', 'native' => 'עברית', 'rtl' => true],
-        'fa' => ['name' => 'Farsi', 'native' => 'فارسی', 'rtl' => true],
-        'ur' => ['name' => 'Urdu', 'native' => 'اردو', 'rtl' => true],
     ];
 }
 

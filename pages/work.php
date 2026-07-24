@@ -457,7 +457,7 @@ require_once BASE_PATH . '/includes/header.php';
                     )));
                     ?>
                     <tr data-work-team-row data-work-search-text="<?php echo e(mb_strtolower($team_search_text)); ?>">
-                        <td data-label="<?php echo e(t('Agent')); ?>">
+                        <td class="work-team-agent-cell" data-label="<?php echo e(t('Agent')); ?>">
                             <a href="<?php echo e($agent_report_url); ?>" class="work-team-agent">
                                 <?php echo e($row['name'] ?? t('Agent')); ?>
                             </a>

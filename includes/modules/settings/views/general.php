@@ -52,6 +52,9 @@
                         <option value="es" <?php echo ($settings['app_language'] ?? 'en') === 'es' ? 'selected' : ''; ?>>
                             <?php echo e(t('Spanish')); ?>
                         </option>
+                        <option value="ar" <?php echo ($settings['app_language'] ?? 'en') === 'ar' ? 'selected' : ''; ?>>
+                            <?php echo e(t('Arabic')); ?>
+                        </option>
                     </select>
                     <p class="text-xs mt-1 text-theme-muted">
                         <?php echo e(t('Default interface language for all users. Users can override this in their profile.')); ?>
