@@ -83,6 +83,10 @@ assert_rtl(str_contains($theme_css, 'inset-inline-end: 1rem;'), 'theme.css must 
 assert_rtl(str_contains($theme_css, 'html[dir="rtl"] .text-left'), 'RTL must mirror legacy text alignment utilities globally');
 assert_rtl(str_contains($theme_css, 'text-align: start;'), 'Shared table styles must use logical text alignment');
 assert_rtl(str_contains($theme_css, '.app-toast-fallback'), 'Fallback toasts must use shared logical positioning');
+assert_rtl(str_contains($theme_css, '--fd-inline-enter-x: -24px;'), 'RTL toast entrance animation must travel from the inline end');
+assert_rtl(str_contains($theme_css, '--fd-inline-exit-x: -20px;'), 'RTL toast exit animation must travel toward the inline end');
+assert_rtl(str_contains($theme_css, '--fd-chevron-expanded-turn: -90deg;'), 'RTL accordion chevrons must rotate in the mirrored direction');
+assert_rtl(str_contains($theme_css, 'var(--fd-inline-nudge-x)'), 'Shared horizontal hover animations must use directional variables');
 
 $app_header_js = file_get_contents($root . '/assets/js/app-header.js');
 assert_rtl($app_header_js !== false, 'Unable to read app-header.js');

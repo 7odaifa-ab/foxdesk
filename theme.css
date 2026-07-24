@@ -91,6 +91,13 @@ navigation: auto;
 --transition-fast: 0.15s ease;
 --transition-base: 0.2s ease;
 --transition-slow: 0.3s ease;
+--fd-inline-enter-x: 24px;
+--fd-inline-exit-x: 20px;
+--fd-inline-nudge-x: 2px;
+--fd-inline-hover-enter-x: -4px;
+--fd-inline-remove-x: -10px;
+--fd-chevron-expanded-turn: 90deg;
+--fd-chevron-scale-x: 1;
 --space-0: 0;
 --space-1: 0.25rem;
 --space-2: 0.5rem;
@@ -3399,7 +3406,7 @@ transform 0.2s ease;
 }
 .flash-message.is-dismissing {
 opacity: 0;
-transform: translateX(20px);
+transform: translateX(var(--fd-inline-exit-x));
 }
 .flash-success {
 background: var(--corp-success-soft);
@@ -3451,7 +3458,7 @@ animation: fadeInUp 0.25s ease-out;
 @keyframes toastSlideIn {
 from {
 opacity: 0;
-transform: translateX(24px);
+transform: translateX(var(--fd-inline-enter-x));
 }
 to {
 opacity: 1;
@@ -4300,7 +4307,7 @@ border-bottom: none;
 }
 .worklog__row:hover {
 background: var(--worklog-row-hover);
-transform: translateX(2px);
+transform: translateX(var(--fd-inline-nudge-x));
 }
 .worklog__row--running {
 background: rgba(34, 197, 94, 0.05);
@@ -4704,7 +4711,7 @@ justify-content: space-between;
 gap: var(--space-4);
 padding: var(--space-4);
 color: var(--text-primary);
-text-align: left;
+text-align: start;
 background: var(--surface-secondary);
 border: 0;
 cursor: pointer;
@@ -4713,7 +4720,7 @@ cursor: pointer;
 background: var(--surface-tertiary);
 }
 .report-ticket-summary[aria-expanded="true"] .report-ticket-summary__icon {
-transform: rotate(90deg);
+transform: scaleX(var(--fd-chevron-scale-x)) rotate(var(--fd-chevron-expanded-turn));
 }
 .report-ticket-summary__main {
 display: flex;
@@ -4727,6 +4734,7 @@ flex: 0 0 auto;
 margin-top: 2px;
 color: var(--text-muted);
 transition: transform var(--transition-fast);
+transform: scaleX(var(--fd-chevron-scale-x));
 }
 .report-ticket-summary__title {
 display: block;
@@ -4896,7 +4904,7 @@ transition: height var(--transition-fast);
 .nav-item:hover {
 background: var(--surface-secondary);
 color: var(--text-primary);
-transform: translateX(2px);
+transform: translateX(var(--fd-inline-nudge-x));
 }
 .nav-item.active {
 background: var(--primary-soft);
@@ -8693,6 +8701,13 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 html[dir="rtl"] {
   direction: rtl;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  --fd-inline-enter-x: -24px;
+  --fd-inline-exit-x: -20px;
+  --fd-inline-nudge-x: -2px;
+  --fd-inline-hover-enter-x: 4px;
+  --fd-inline-remove-x: 10px;
+  --fd-chevron-expanded-turn: -90deg;
+  --fd-chevron-scale-x: -1;
 }
 
 /* Keep legacy utility classes directional without adding RTL rules to pages. */

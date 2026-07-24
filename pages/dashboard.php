@@ -293,11 +293,12 @@ require_once BASE_PATH . '/includes/header.php';
         font-size: 1.125rem;
         color: var(--text-muted);
         position: absolute;
-        right: 12px;
+        inset-inline-end: 12px;
+        inset-inline-start: auto;
         top: 50%;
         opacity: 0;
         transition: opacity 0.15s, transform 0.15s;
-        transform: translateY(-50%) translateX(-4px);
+        transform: translateY(-50%) translateX(var(--fd-inline-hover-enter-x, -4px));
     }
 
     a.db-stat-row:hover::after {
@@ -306,7 +307,7 @@ require_once BASE_PATH . '/includes/header.php';
     }
 
     a.db-stat-row {
-        padding-right: 28px;
+        padding-inline-end: 28px;
     }
 
     /* room for the absolute arrow */
