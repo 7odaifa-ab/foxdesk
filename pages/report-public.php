@@ -455,7 +455,7 @@ $extract_report_tags = static function ($value) {
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-center space-x-4 mb-5 no-print">
+        <div class="flex justify-center gap-4 mb-5 no-print">
             <button onclick="window.print()" class="fd-button fd-button--primary">
                 <?php echo get_icon('print', 'mr-2 inline-block'); ?><?php echo e(t('Print / Save as PDF')); ?>
             </button>

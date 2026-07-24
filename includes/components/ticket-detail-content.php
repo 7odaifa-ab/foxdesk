@@ -94,7 +94,7 @@
                     <?php endif; ?>
 
                     <div class="mt-3 pt-2.5 border-t flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-theme-muted">
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center gap-3">
                             <span class="ticket-meta-avatar" aria-hidden="true">
                                 <span class="ticket-meta-avatar__initial"><?php echo e($ticket_creator_initial); ?></span>
                             </span>

@@ -78,7 +78,7 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="flex items-center space-x-3">
+                        <label class="flex items-center gap-3">
                                 <input type="checkbox" name="imap_enabled" <?php echo ($imap_view['enabled'] ?? '0') === '1' ? 'checked' : ''; ?> class="w-5 h-5 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="font-medium text-theme-primary"><?php echo e(t('Enable incoming email processing')); ?></span>
                             </label>
@@ -188,19 +188,19 @@
                                 </div>
 
                                 <div class="space-y-2">
-                                    <label class="flex items-center space-x-3">
+                                    <label class="flex items-center gap-3">
                                         <input type="checkbox" name="imap_validate_cert" <?php echo ($imap_view['validate_cert'] ?? '0') === '1' ? 'checked' : ''; ?>
                                             class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                         <span class="text-theme-secondary"><?php echo e(t('Validate TLS certificate')); ?></span>
                                     </label>
 
-                                    <label class="flex items-center space-x-3">
+                                    <label class="flex items-center gap-3">
                                         <input type="checkbox" name="imap_mark_seen_on_skip" <?php echo ($imap_view['mark_seen_on_skip'] ?? '1') === '1' ? 'checked' : ''; ?>
                                             class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                         <span class="text-theme-secondary"><?php echo e(t('Mark skipped emails as seen')); ?></span>
                                     </label>
 
-                                    <label class="flex items-center space-x-3">
+                                    <label class="flex items-center gap-3">
                                         <input type="checkbox" name="imap_allow_unknown_senders" <?php echo ($imap_view['allow_unknown_senders'] ?? '0') === '1' ? 'checked' : ''; ?>
                                             class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                         <span class="text-theme-secondary"><?php echo e(t('Allow unknown senders (without allowlist)')); ?></span>
@@ -315,7 +315,7 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="flex items-center space-x-3">
+                            <label class="flex items-center gap-3">
                                 <input type="checkbox" name="email_notifications_enabled" <?php echo ($settings['email_notifications_enabled'] ?? '0') === '1' ? 'checked' : ''; ?>
                                     class="w-5 h-5 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="font-medium text-theme-primary"><?php echo e(t('Enable email notifications')); ?></span>
@@ -337,19 +337,19 @@
                         <hr class="my-4">
 
                         <div class="space-y-3">
-                            <label class="flex items-center space-x-3">
+                            <label class="flex items-center gap-3">
                                 <input type="checkbox" name="notify_on_status_change" <?php echo ($settings['notify_on_status_change'] ?? '1') === '1' ? 'checked' : ''; ?>
                                     class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="text-theme-secondary"><?php echo e(t('Notify on status change')); ?></span>
                             </label>
 
-                            <label class="flex items-center space-x-3">
+                            <label class="flex items-center gap-3">
                                 <input type="checkbox" name="notify_on_new_comment" <?php echo ($settings['notify_on_new_comment'] ?? '1') === '1' ? 'checked' : ''; ?>
                                     class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="text-theme-secondary"><?php echo e(t('Notify on new comment')); ?></span>
                             </label>
 
-                            <label class="flex items-center space-x-3">
+                            <label class="flex items-center gap-3">
                                 <input type="checkbox" name="notify_on_new_ticket" <?php echo ($settings['notify_on_new_ticket'] ?? '1') === '1' ? 'checked' : ''; ?>
                                     class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="text-theme-secondary"><?php echo e(t('Notify admins on new ticket')); ?></span>
@@ -358,7 +358,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-4">
                     <button type="submit" name="save_email" class="btn btn-primary">
                         <?php echo e(t('Save settings')); ?>
                     </button>

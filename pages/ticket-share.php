@@ -72,7 +72,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
 <body class="bg-gray-100 min-h-screen">
     <header class="bg-white border-b">
         <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-blue-50 dark:bg-blue-900/200 rounded-lg flex items-center justify-center">
                     <span class="text-white font-bold"><?php echo strtoupper(substr($app_name, 0, 1)); ?></span>
                 </div>
@@ -135,7 +135,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                                 </a>
                             <?php else: ?>
                                 <a href="<?php echo $_share_url; ?>" target="_blank"
-                                    class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition">
+                                    class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition">
                                     <span class="truncate max-w-[180px]"><?php echo e($attachment['original_name']); ?></span>
                                     <span class="text-gray-400 text-xs"><?php echo format_file_size($attachment['file_size']); ?></span>
                                 </a>
@@ -163,7 +163,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                         });
                         ?>
                         <div class="p-4 lg:p-6">
-                            <div class="flex items-start space-x-3 lg:space-x-4">
+                            <div class="flex items-start gap-3 lg:gap-4">
                                 <div
                                     class="w-8 lg:w-10 h-8 lg:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-blue-600 font-medium text-sm lg:text-base">
@@ -199,7 +199,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                                                     </a>
                                                 <?php else: ?>
                                                     <a href="<?php echo $_share_c_url; ?>" target="_blank"
-                                                        class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded px-2 py-1 text-xs text-gray-600 transition">
+                                                        class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded px-2 py-1 text-xs text-gray-600 transition">
                                                         <span class="truncate max-w-[140px]"><?php echo e($attachment['original_name']); ?></span>
                                                     </a>
                                                 <?php endif; ?>

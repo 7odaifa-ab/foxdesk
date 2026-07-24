@@ -7,7 +7,7 @@
         <div class="mb-2 flex justify-between items-center">
             <h3 class="font-semibold text-theme-primary"><?php echo e(t('Email Templates')); ?></h3>
 
-            <form action="" method="get" class="flex items-center space-x-2">
+            <form action="" method="get" class="flex items-center gap-2">
                 <input type="hidden" name="page" value="admin">
                 <input type="hidden" name="section" value="settings">
                 <input type="hidden" name="tab" value="templates">

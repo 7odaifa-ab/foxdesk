@@ -1084,9 +1084,11 @@ font-family: inherit;
 }
 .sidebar {
 width: var(--app-sidebar-width);
+inset-inline-start: 0;
+inset-inline-end: auto;
 background: var(--surface-primary);
 color: var(--text-primary);
-border-right: 1px solid var(--border-light);
+border-inline-end: 1px solid var(--border-light);
 transition:
 width 0.2s ease,
 transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1108,7 +1110,7 @@ background: var(--primary);
 [data-theme="dark"] .sidebar {
 background: #1c2434;
 color: #8a99af;
-border-right: none;
+border-inline-end: none;
 }
 [data-theme="dark"] .sidebar .nav-item {
 color: #8a99af;
@@ -1137,13 +1139,13 @@ background: var(--primary);
 color: #fff;
 }
 .main-content {
-margin-left: var(--app-sidebar-width);
+margin-inline-start: var(--app-sidebar-width);
 display: flex;
 flex-direction: column;
 min-width: 0;
 min-height: 100vh;
 background: var(--bg-primary);
-transition: margin-left 0.2s ease;
+transition: margin-inline-start 0.2s ease;
 }
 .app-content {
 width: 100%;
@@ -1233,12 +1235,13 @@ width: 100%;
 min-width: 0;
 box-sizing: border-box;
 border-radius: var(--fd-radius-control);
-padding-left: 2.75rem !important;
-padding-right: 1rem !important;
+padding-inline-start: 2.75rem !important;
+padding-inline-end: 1rem !important;
 }
 .header-search-icon {
 position: absolute;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 top: 50%;
 z-index: 1;
 color: var(--text-muted);
@@ -1254,7 +1257,7 @@ width: var(--app-sidebar-compact-width) !important;
 overflow: visible;
 }
 #sidebar.is-compact ~ #main-content {
-margin-left: var(--app-sidebar-compact-width) !important;
+margin-inline-start: var(--app-sidebar-compact-width) !important;
 }
 }
 @media (max-width: 1024px) {
@@ -1268,7 +1271,7 @@ transform: translateX(0);
 box-shadow: var(--shadow-xl);
 }
 .main-content {
-margin-left: 0;
+margin-inline-start: 0;
 }
 .app-content {
 padding: 1rem;
@@ -1297,12 +1300,11 @@ overflow: visible;
 }
 body.sidebar-compact .main-content,
 body.sidebar-compact #main-content {
-margin-left: var(--app-sidebar-compact-width) !important;
+margin-inline-start: var(--app-sidebar-compact-width) !important;
 }
 body.sidebar-compact .sidebar-brand-row {
 justify-content: center;
-padding-left: 0.5rem;
-padding-right: 0.5rem;
+padding-inline: 0.5rem;
 position: relative;
 }
 body.sidebar-compact .sidebar-brand-link {
@@ -1320,7 +1322,8 @@ display: none !important;
 }
 body.sidebar-compact #sidebar-collapse-btn {
 position: absolute;
-right: -1rem;
+inset-inline-end: -1rem;
+inset-inline-start: auto;
 top: 1rem;
 z-index: 60;
 background: var(--surface-primary);
@@ -1328,8 +1331,7 @@ border: 1px solid var(--border-light);
 box-shadow: var(--shadow-sm);
 }
 body.sidebar-compact .sidebar-nav {
-padding-left: 0.5rem;
-padding-right: 0.5rem;
+padding-inline: 0.5rem;
 overflow-x: visible;
 }
 body.sidebar-compact #sidebar .nav-item,
@@ -1337,19 +1339,20 @@ body.sidebar-compact #sidebar #help-panel-btn,
 body.sidebar-compact #sidebar #sidebar-user-btn {
 justify-content: center;
 gap: 0;
-padding-left: 0.75rem;
-padding-right: 0.75rem;
+padding-inline: 0.75rem;
 min-height: 44px;
 position: relative;
 }
 body.sidebar-compact #sidebar .nav-item.active::before {
-left: 0.125rem;
+inset-inline-start: 0.125rem;
+inset-inline-end: auto;
 }
 body.sidebar-compact #sidebar .notif-sidebar-badge,
 body.sidebar-compact #sidebar .sidebar-timer-count {
 position: absolute;
 top: 0.25rem;
-right: 0.25rem;
+inset-inline-end: 0.25rem;
+inset-inline-start: auto;
 min-width: 1rem;
 height: 1rem;
 font-size: 0.625rem;
@@ -1359,8 +1362,8 @@ padding-left: 0.5rem;
 padding-right: 0.5rem;
 }
 body.sidebar-compact #sidebar-user-menu {
-left: 4.75rem;
-right: auto;
+inset-inline-start: 4.75rem;
+inset-inline-end: auto;
 bottom: 0;
 width: 15rem;
 }
@@ -1657,7 +1660,7 @@ padding: 0.625rem 0.75rem;
 border-top: 1px solid var(--border-light);
 font-size: var(--type-xs);
 line-height: 1.35;
-text-align: left;
+text-align: start;
 vertical-align: top;
 }
 .fd-table th {
@@ -1798,7 +1801,7 @@ font-size: 0.75rem;
 color: var(--text-muted);
 }
 .form-select-sm {
-padding-right: 1.5rem;
+padding-inline-end: 1.5rem;
 background-position: right 0.35rem center;
 background-size: 12px;
 }
@@ -1992,7 +1995,7 @@ align-items: center;
 justify-content: center;
 width: 2rem;
 height: 2rem;
-margin-right: 0.75rem;
+margin-inline-end: 0.75rem;
 border: 1px solid var(--border-light);
 border-radius: var(--fd-radius-control);
 background: var(--surface-secondary);
@@ -2873,7 +2876,7 @@ justify-items: start;
 gap: 0.75rem;
 padding: 0.35rem 0 !important;
 border: 0 !important;
-text-align: left !important;
+text-align: start !important;
 min-width: 0;
 width: 100% !important;
 max-width: none !important;
@@ -3429,7 +3432,8 @@ opacity: 1;
 .toast-stack {
 position: fixed;
 top: 1rem;
-right: 1rem;
+inset-inline-end: 1rem;
+inset-inline-start: auto;
 z-index: 60;
 display: flex;
 flex-direction: column;
@@ -3860,7 +3864,8 @@ background: rgba(255, 255, 255, 0.05);
 .skip-to-content {
 position: absolute;
 top: -100%;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 z-index: 9999;
 padding: 0.75rem 1.5rem;
 background: var(--primary);
@@ -4107,7 +4112,7 @@ text-transform: uppercase;
 letter-spacing: 0.05em;
 color: var(--text-muted);
 padding: 0.75rem 1rem;
-text-align: left;
+text-align: start;
 border-bottom: 1px solid var(--border-light);
 background: var(--surface-secondary);
 }
@@ -4528,12 +4533,13 @@ visibility: visible;
 .help-panel {
 position: fixed;
 top: 0;
-right: 0;
+inset-inline-end: 0;
+inset-inline-start: auto;
 bottom: 0;
 width: min(580px, 90vw);
 z-index: 9991;
 background: var(--surface-primary);
-border-left: 1px solid var(--border-light);
+border-inline-start: 1px solid var(--border-light);
 box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
 transform: translateX(100%);
 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -4792,7 +4798,7 @@ display: none !important;
 display: none !important;
 }
 .main-content {
-margin-left: 0 !important;
+margin-inline-start: 0 !important;
 }
 body {
 background: white;
@@ -4877,7 +4883,8 @@ overflow: hidden;
 .nav-item::before {
 content: "";
 position: absolute;
-left: 0;
+inset-inline-start: 0;
+inset-inline-end: auto;
 top: 50%;
 transform: translateY(-50%);
 width: 3px;
@@ -4936,7 +4943,7 @@ filter: brightness(1.15);
 border: 0;
 width: 100%;
 font: inherit;
-text-align: left;
+text-align: start;
 cursor: pointer;
 }
 .nav-item.nav-item--button:disabled {
@@ -5076,11 +5083,11 @@ font-size: 0.75rem;
 }
 .comment-internal {
 background: rgba(245, 158, 11, 0.04);
-border-left: 3px solid rgba(245, 158, 11, 0.5);
+border-inline-start: 3px solid rgba(245, 158, 11, 0.5);
 }
 [data-theme="dark"] .comment-internal {
 background: rgba(234, 179, 8, 0.06);
-border-left-color: rgba(234, 179, 8, 0.4);
+border-inline-start-color: rgba(234, 179, 8, 0.4);
 }
 .comment-actions {
 display: flex;
@@ -5720,7 +5727,8 @@ overflow: visible;
 }
 .ticket-search-wrap .search-icon {
 position: absolute;
-left: 0.65rem;
+inset-inline-start: 0.65rem;
+inset-inline-end: auto;
 top: 50%;
 transform: translateY(-50%);
 color: var(--text-muted);
@@ -5732,7 +5740,9 @@ background: transparent;
 border: 1px solid var(--border-light);
 border-radius: var(--fd-radius-control);
 box-sizing: border-box;
-padding: 0.35rem 0.5rem 0.35rem 1.85rem;
+padding-block: 0.35rem;
+padding-inline-start: 1.85rem;
+padding-inline-end: 0.5rem;
 font-size: var(--type-xs);
 color: var(--text-secondary);
 width: 100%;
@@ -5765,7 +5775,8 @@ color: var(--primary);
 display: none;
 position: absolute;
 top: calc(100% + 4px);
-left: 0;
+inset-inline-start: 0;
+inset-inline-end: auto;
 width: 320px;
 max-height: 280px;
 overflow-y: auto;
@@ -5953,7 +5964,7 @@ font-size: var(--type-13);
 border: 0;
 background: none;
 cursor: pointer;
-text-align: left;
+text-align: start;
 white-space: nowrap;
 }
 .tl-dropdown-item:hover {
@@ -7310,10 +7321,13 @@ padding-bottom: max(0.125rem, env(safe-area-inset-bottom));
 #sidebar-user-menu {
 background: var(--surface-primary);
 border: 1px solid var(--border-light);
+inset-inline-start: 1rem;
+inset-inline-end: 1rem;
 }
 .header-search-icon {
 position: absolute;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 top: 50%;
 z-index: 1;
 color: var(--text-muted);
@@ -7323,11 +7337,13 @@ transform: translateY(-50%);
 .notification-panel {
 width: min(396px, calc(100vw - 2rem));
 max-height: 480px;
-right: 1rem;
+inset-inline-end: 1rem;
+inset-inline-start: auto;
 top: 3.5rem;
 }
 .notification-panel.is-mobile-position {
-right: 0.5rem;
+inset-inline-end: 0.5rem;
+inset-inline-start: auto;
 }
 .notification-toggle-btn {
 color: var(--text-muted);
@@ -7370,7 +7386,8 @@ opacity: 1 !important;
 .notif-badge {
 position: absolute;
 top: 2px;
-right: 2px;
+inset-inline-end: 2px;
+inset-inline-start: auto;
 min-width: 18px;
 height: 18px;
 padding: 0 5px;
@@ -7667,7 +7684,7 @@ text-align: center;
 }
 .tl-event {
 position: relative;
-padding-left: 32px;
+padding-inline-start: 32px;
 padding-bottom: 20px;
 }
 .tl-event:last-child {
@@ -7676,7 +7693,8 @@ padding-bottom: 0;
 .tl-event::before {
 content: '';
 position: absolute;
-left: 11px;
+inset-inline-start: 11px;
+inset-inline-end: auto;
 top: 22px;
 bottom: 0;
 width: 1px;
@@ -7687,7 +7705,8 @@ display: none;
 }
 .tl-dot {
 position: absolute;
-left: 6px;
+inset-inline-start: 6px;
+inset-inline-end: auto;
 top: 6px;
 width: 12px;
 height: 12px;
@@ -8671,145 +8690,133 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
    Full Systematic RTL (Right-To-Left) Layout Support
    ========================================================================== */
 
-html[dir="rtl"],
-[dir="rtl"] {
+html[dir="rtl"] {
   direction: rtl;
-  text-align: right;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+/* Keep legacy utility classes directional without adding RTL rules to pages. */
+html[dir="rtl"] .text-left,
+html[dir="rtl"] .sm\:text-left {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+html[dir="rtl"] .ml-auto {
+  margin-inline-start: 0 !important;
+  margin-inline-end: auto !important;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-inline-start: auto !important;
+  margin-inline-end: 0 !important;
+}
+
+html[dir="rtl"] .left-0 {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .right-0 {
+  left: 0 !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .left-4 {
+  left: auto !important;
+  right: 1rem !important;
+}
+
+html[dir="rtl"] .right-4 {
+  left: 1rem !important;
+  right: auto !important;
+}
+
+.app-toast-fallback {
+  inset-inline-end: 1rem;
 }
 
 /* 1. App Shell & Layout Margins */
 html[dir="rtl"] .sidebar {
-  right: 0;
-  left: auto;
-  border-right: none;
-  border-left: 1px solid var(--border-light);
+  border-inline-end: 0;
+  border-inline-start: 1px solid var(--border-light);
 }
 
-html[dir="rtl"][data-theme="dark"] .sidebar {
-  border-left: none;
+html[dir="rtl"] .help-panel {
+  transform: translateX(-100%);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.12);
 }
 
-html[dir="rtl"] .sidebar .nav-item.active::before {
-  right: 0;
-  left: auto;
-  border-radius: 4px 0 0 4px;
+html[dir="rtl"] .help-panel.open {
+  transform: translateX(0);
+}
+
+html[dir="rtl"] .sidebar.open {
+  transform: translateX(0);
 }
 
 html[dir="rtl"] .main-content {
-  margin-right: var(--app-sidebar-width);
-  margin-left: 0;
-  transition: margin-right 0.2s ease;
+  margin-inline-start: var(--app-sidebar-width);
+  margin-inline-end: 0;
+  transition: margin-inline-start 0.2s ease;
 }
 
 html[dir="rtl"] body.sidebar-compact .main-content,
 html[dir="rtl"] body.sidebar-collapsed .main-content,
 html[dir="rtl"] .sidebar.sidebar--compact + .main-content {
-  margin-right: var(--app-sidebar-compact-width) !important;
-  margin-left: 0 !important;
+  margin-inline-start: var(--app-sidebar-compact-width) !important;
+  margin-inline-end: 0 !important;
 }
 
 @media (max-width: 1024px) {
   html[dir="rtl"] .sidebar {
     transform: translateX(100%);
   }
-  html[dir="rtl"] .sidebar.is-open {
+  html[dir="rtl"] .sidebar.open {
     transform: translateX(0);
   }
   html[dir="rtl"] .main-content {
-    margin-right: 0 !important;
+    margin-inline-start: 0 !important;
   }
 }
 
-/* 2. Alignment & Utility Overrides */
-html[dir="rtl"] .text-left {
-  text-align: right !important;
-}
-html[dir="rtl"] .text-right {
-  text-align: left !important;
-}
-
-html[dir="rtl"] .ml-auto {
-  margin-right: auto !important;
-  margin-left: 0 !important;
-}
-html[dir="rtl"] .mr-auto {
-  margin-left: auto !important;
-  margin-right: 0 !important;
-}
-
 /* 3. Navigation Header & Search Controls */
-html[dir="rtl"] .app-header {
-  padding-right: 1.25rem;
-  padding-left: 1.25rem;
+html[dir="rtl"] .header-search-input {
+  padding-inline-start: 1rem !important;
+  padding-inline-end: 2.75rem !important;
 }
 
-html[dir="rtl"] .header-search-wrapper input {
-  padding-right: 2.5rem !important;
-  padding-left: 1rem !important;
-}
-
-html[dir="rtl"] .header-search-wrapper .search-icon {
-  right: 0.75rem !important;
-  left: auto !important;
+html[dir="rtl"] .header-search-icon {
+  inset-inline-start: auto;
+  inset-inline-end: 1rem;
 }
 
 /* 4. Form Controls & Select Inputs */
-html[dir="rtl"] input[type="text"],
-html[dir="rtl"] input[type="email"],
-html[dir="rtl"] input[type="password"],
-html[dir="rtl"] input[type="search"],
-html[dir="rtl"] input[type="number"],
-html[dir="rtl"] input[type="url"],
-html[dir="rtl"] input[type="tel"],
-html[dir="rtl"] textarea,
-html[dir="rtl"] select {
-  text-align: right;
-}
-
 html[dir="rtl"] select.form-select {
   background-position: left 0.75rem center;
-  padding-left: 2.25rem;
-  padding-right: 0.75rem;
+  padding-inline-start: 2.25rem;
+  padding-inline-end: 0.75rem;
 }
 
 /* 5. Modals & Popovers */
 html[dir="rtl"] .modal-close,
 html[dir="rtl"] [data-modal-close] {
-  left: 1rem !important;
-  right: auto !important;
+  inset-inline-start: 1rem !important;
+  inset-inline-end: auto !important;
 }
 
 html[dir="rtl"] .dropdown-menu,
 html[dir="rtl"] .popover-panel {
-  right: auto;
-  left: 0;
+  inset-inline-start: 0;
+  inset-inline-end: auto;
 }
 
-/* 6. Tables & Lists */
-html[dir="rtl"] table th,
-html[dir="rtl"] table td,
-html[dir="rtl"] .data-table th,
-html[dir="rtl"] .data-table td {
-  text-align: right;
-}
-
-/* 7. Icon Transforms for RTL */
-html[dir="rtl"] .icon-flip-rtl,
-html[dir="rtl"] .chevron-left-icon,
-html[dir="rtl"] .chevron-right-icon,
-html[dir="rtl"] .arrow-left-icon,
-html[dir="rtl"] .arrow-right-icon,
-html[dir="rtl"] [data-rtl-flip] {
-  transform: scaleX(-1);
-  display: inline-block;
-}
-
-/* 8. Ticket Composer & Detail Elements */
-html[dir="rtl"] .ticket-segmented-control {
-  direction: rtl;
-}
-
-html[dir="rtl"] .kanban-column-header {
-  text-align: right;
+@media (max-width: 1024px) {
+  html[dir="rtl"] .main-content {
+    margin-inline-start: 0 !important;
+  }
 }
 

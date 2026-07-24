@@ -126,7 +126,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                     $tickets_count = db_fetch_one("SELECT COUNT(*) as c FROM tickets WHERE status_id = ?", [$status['id']]);
                 ?>
                     <div class="px-6 py-3 hover:bg-gray-50 status-item flex items-center justify-between" data-id="<?php echo $status['id']; ?>">
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center gap-4">
                             <!-- Drag handle -->
                             <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600 flex-shrink-0">
                                 <?php echo get_icon('grip-vertical'); ?>
@@ -149,7 +149,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center gap-2">
                             <?php if (!$status['is_default']): ?>
                                 <form method="post" class="inline">
                                     <?php echo csrf_field(); ?>

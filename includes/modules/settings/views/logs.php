@@ -150,7 +150,7 @@
                                 'total' => $total_logs
                             ]); ?>
                         </div>
-                        <div class="flex space-x-1">
+                        <div class="flex gap-1">
                             <?php if ($page_num > 1): ?>
                                 <a href="<?php echo url('admin', ['section' => 'settings', 'tab' => 'logs', 'p' => $page_num - 1]); ?>"
                                     class="px-3 py-1 border rounded text-sm" style="background: var(--bg-primary);">

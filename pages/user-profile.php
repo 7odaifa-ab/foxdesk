@@ -90,7 +90,7 @@ include BASE_PATH . '/includes/components/page-header.php';
 <div class="space-y-3">
     <!-- User Info Card -->
     <div class="card card-body">
-        <div class="flex items-start space-x-6">
+        <div class="flex items-start gap-6">
             <div class="flex-shrink-0">
                 <?php echo render_user_avatar($user, 'xl', '', ['aria_hidden' => false]); ?>
             </div>

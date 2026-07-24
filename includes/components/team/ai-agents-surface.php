@@ -72,7 +72,7 @@
                                     ?>
                                         <tr class="tr-hover <?php echo $agent['is_active'] ? '' : 'opacity-50'; ?>">
                                             <td class="px-4 py-2.5 admin-responsive-primary" data-label="<?php echo e(t('Name')); ?>">
-                                                <div class="flex items-center space-x-2">
+                                                <div class="flex items-center gap-2">
                                                     <div
                                                         class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                                                         <?php echo get_icon('bot', 'w-4 h-4 text-purple-600'); ?>
@@ -383,7 +383,7 @@
                                 </div>
                         <?php endif; ?>
                         <div>
-                            <label class="flex items-center space-x-2 text-sm">
+                            <label class="flex items-center gap-2 text-sm">
                                 <input type="checkbox" name="is_active" id="ai_edit_is_active" value="1">
                                 <span><?php echo e(t('Active')); ?></span>
                             </label>

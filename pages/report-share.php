@@ -109,7 +109,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
 <body class="bg-gray-100 min-h-screen">
     <header class="bg-white border-b">
         <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-blue-50 dark:bg-blue-900/200 rounded-lg flex items-center justify-center">
                     <span class="text-white font-bold"><?php echo strtoupper(substr($app_name, 0, 1)); ?></span>
                 </div>

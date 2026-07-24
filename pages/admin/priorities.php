@@ -184,7 +184,7 @@ include BASE_PATH . '/includes/components/page-header.php';
             ?>
             <li data-id="<?php echo $priority['id']; ?>" 
                 class="px-6 py-3 flex items-center justify-between bg-white hover:bg-gray-50 cursor-move">
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-4">
                     <span class="text-gray-400 cursor-move drag-handle">
                         <?php echo get_icon('grip-vertical'); ?>
                     </span>
@@ -197,7 +197,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                     <?php endif; ?>
                     <span class="text-sm text-gray-500">(<?php echo e(t('{count} tickets', ['count' => $tickets_count['c']])); ?>)</span>
                 </div>
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center gap-2">
                     <button type="button" onclick="openEditPriorityModal(<?php echo htmlspecialchars(json_encode([
                         'id' => $priority['id'],
                         'name' => $priority['name'],
@@ -263,7 +263,7 @@ include BASE_PATH . '/includes/components/page-header.php';
             </div>
 
             <div>
-                <label class="flex items-center space-x-2">
+                <label class="flex items-center gap-2">
                     <input type="checkbox" name="is_default" class="rounded text-blue-500 focus:ring-blue-500">
                     <span class="text-sm text-gray-700"><?php echo e(t('Set as default')); ?></span>
                 </label>
@@ -313,7 +313,7 @@ include BASE_PATH . '/includes/components/page-header.php';
             </div>
 
             <div>
-                <label class="flex items-center space-x-2">
+                <label class="flex items-center gap-2">
                     <input type="checkbox" name="is_default" id="edit_priority_is_default" class="rounded text-blue-500 focus:ring-blue-500">
                     <span class="text-sm text-gray-700"><?php echo e(t('Set as default priority')); ?></span>
                 </label>

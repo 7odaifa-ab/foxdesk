@@ -552,7 +552,7 @@ include BASE_PATH . '/includes/header.php';
                 <!-- Theme Color -->
                 <div>
                     <label class="block text-sm font-medium mb-2 text-theme-secondary"><?php echo e(t('Report Theme Color')); ?></label>
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center gap-4">
                         <input type="color" name="theme_color" value="<?php echo e($form_values['theme_color']); ?>" id="theme_color"
                                class="w-32 h-16 border-2 rounded-lg cursor-pointer shadow-sm border-theme-light">
                         <div>

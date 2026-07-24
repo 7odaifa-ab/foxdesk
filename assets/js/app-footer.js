@@ -77,7 +77,7 @@ function normalizeFlashType(type) {
 
 function showAppToastFallback(message, type) {
     var toast = document.createElement('div');
-    toast.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg text-sm font-medium z-50 transition-opacity duration-300 '
+    toast.className = 'app-toast-fallback fixed bottom-4 px-4 py-2 rounded-lg shadow-lg text-sm font-medium z-50 transition-opacity duration-300 '
         + (type === 'success' ? 'bg-green-600 text-white' : (type === 'error' ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'));
     toast.textContent = message;
     document.body.appendChild(toast);

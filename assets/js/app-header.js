@@ -49,9 +49,6 @@ function setSidebarCompact(isCompact, persist) {
         sidebar.classList.toggle('is-compact', shouldCompact);
         sidebar.style.width = shouldCompact ? compactWidth : '';
     }
-    if (mainContent) {
-        mainContent.style.marginLeft = shouldCompact ? compactWidth : '';
-    }
     if (window.syncSidebarCompactLayout) window.syncSidebarCompactLayout();
 
     if (button) {

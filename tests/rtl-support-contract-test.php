@@ -76,6 +76,16 @@ $theme_css = file_get_contents($root . '/theme.css');
 assert_rtl($theme_css !== false, 'Unable to read theme.css');
 assert_rtl(str_contains($theme_css, 'html[dir="rtl"]'), 'theme.css must contain html[dir="rtl"] selectors');
 assert_rtl(str_contains($theme_css, 'direction: rtl;'), 'theme.css must set direction: rtl');
-assert_rtl(str_contains($theme_css, 'margin-right: var(--app-sidebar-width);'), 'theme.css must mirror main content margin for RTL sidebar');
+assert_rtl(str_contains($theme_css, 'margin-inline-start: var(--app-sidebar-width);'), 'theme.css must use logical main-content spacing');
+assert_rtl(str_contains($theme_css, 'html[dir="rtl"] .sidebar.open'), 'RTL mobile sidebar must follow the actual .open state class');
+assert_rtl(str_contains($theme_css, '.header-search-icon'), 'theme.css must mirror the shared header search component');
+assert_rtl(str_contains($theme_css, 'inset-inline-end: 1rem;'), 'theme.css must use logical popover positioning');
+assert_rtl(str_contains($theme_css, 'html[dir="rtl"] .text-left'), 'RTL must mirror legacy text alignment utilities globally');
+assert_rtl(str_contains($theme_css, 'text-align: start;'), 'Shared table styles must use logical text alignment');
+assert_rtl(str_contains($theme_css, '.app-toast-fallback'), 'Fallback toasts must use shared logical positioning');
+
+$app_header_js = file_get_contents($root . '/assets/js/app-header.js');
+assert_rtl($app_header_js !== false, 'Unable to read app-header.js');
+assert_rtl(!str_contains($app_header_js, 'style.marginLeft'), 'Sidebar compact mode must not hard-code a physical main-content margin');
 
 echo 'RTL support contract OK' . PHP_EOL;

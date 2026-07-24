@@ -1354,7 +1354,7 @@ if (empty($messages)) {
         <div class="space-y-2 max-h-96 overflow-y-auto">
             <?php foreach ($messages as $msg): ?>
                 <div
-                    class="flex items-start space-x-2 <?php echo strpos($msg, 'OK:') === 0 ? 'text-green-600' : (strpos($msg, 'ERROR:') === 0 ? 'text-red-600' : 'text-gray-600'); ?>">
+                    class="flex items-start gap-2 <?php echo strpos($msg, 'OK:') === 0 ? 'text-green-600' : (strpos($msg, 'ERROR:') === 0 ? 'text-red-600' : 'text-gray-600'); ?>">
                     <span><?php echo htmlspecialchars($msg); ?></span>
                 </div>
             <?php endforeach; ?>

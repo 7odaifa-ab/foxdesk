@@ -246,7 +246,7 @@ include BASE_PATH . '/includes/header.php';
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end space-x-2">
+                                <div class="flex items-center justify-end gap-2">
                                     <?php if (!$report['is_draft']): ?>
                                         <!-- View Public Report -->
                                         <?php $report_share_url = APP_URL . '/index.php?page=report-public&token=' . rawurlencode((string) ($report['share_token'] ?? '')); ?>
