@@ -19,7 +19,7 @@ function translation_placeholders(string $value): array
 }
 
 $source = include $root . '/includes/lang/en.php';
-$languages = ['cs', 'de', 'es', 'it'];
+$languages = ['cs', 'de', 'es', 'it', 'ar'];
 $sameAsEnglishAllowlist = array_fill_keys([
     'API',
     'API Base:',
