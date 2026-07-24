@@ -336,7 +336,7 @@ require_once BASE_PATH . '/includes/header.php';
     ?>
     <a href="<?php echo url('admin', ['section' => 'activity', 'range' => $range]); ?>"
        class="inline-flex items-center gap-1 text-sm mb-3" style="color: var(--primary); text-decoration: none;">
-        <?php echo get_icon('arrow-left', 'w-3.5 h-3.5'); ?> <?php echo e(t('Back to overview')); ?>
+        <?php echo get_icon('arrow-left', 'w-3.5 h-3.5 back-link-icon'); ?> <?php echo e(t('Back to overview')); ?>
     </a>
 
     <div class="act-card mb-4">

@@ -369,7 +369,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
                 <div class="flex items-center justify-center mt-6">
                     <a href="<?php echo url('login', ['cancel2fa' => '1']); ?>"
                         class="text-sm transition-colors text-theme-muted">
-                        &larr; <?php echo e(t('Back to sign in')); ?>
+                        <span class="back-link-icon" aria-hidden="true">&larr;</span> <?php echo e(t('Back to sign in')); ?>
                     </a>
                 </div>
 

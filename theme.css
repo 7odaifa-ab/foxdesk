@@ -5103,7 +5103,7 @@ align-items: center;
 gap: 0.125rem;
 opacity: 0;
 transition: opacity 150ms ease;
-margin-left: auto;
+margin-inline-start: auto;
 }
 .comment-item:hover .comment-actions {
 opacity: 1;
@@ -5519,9 +5519,13 @@ flex-direction: column;
 gap: 0.5rem;
 padding-right: 0.5rem;
 }
-.status-item,
-.priority-item,
-.type-item {
+/* Scoped to .accordion-item: statuses.php reuses the bare .status-item class
+   name for an unrelated plain flex row, and this column layout (meant for
+   the accordion-style editor in statuses-content.php) was leaking into it,
+   forcing that row's two halves to stack instead of sitting side by side. */
+.accordion-item.status-item,
+.accordion-item.priority-item,
+.accordion-item.type-item {
 display: flex;
 flex-direction: column;
 border-radius: var(--fd-radius-control);
@@ -5530,9 +5534,9 @@ border: 1px solid var(--border-light);
 transition: background 150ms ease, box-shadow 150ms ease;
 overflow: hidden;
 }
-.status-item:hover,
-.priority-item:hover,
-.type-item:hover {
+.accordion-item.status-item:hover,
+.accordion-item.priority-item:hover,
+.accordion-item.type-item:hover {
 background: var(--surface-tertiary);
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -5681,7 +5685,7 @@ white-space: nowrap;
 display: inline-flex;
 align-items: center;
 gap: 0.25rem;
-margin-left: auto;
+margin-inline-start: auto;
 color: var(--text-muted);
 font-size: var(--type-xs);
 font-weight: 750;
@@ -6081,7 +6085,7 @@ flex-shrink: 0;
 .kanban-board--count-3 { --kanban-column-count: 3; }
 .kanban-board--count-4 { --kanban-column-count: 4; }
 .kanban-count {
-margin-left: auto;
+margin-inline-start: auto;
 padding: 0.125rem 0.5rem;
 border-radius: var(--fd-radius-pill);
 background: var(--border-light);
@@ -6186,7 +6190,7 @@ align-items: center;
 color: var(--text-muted);
 }
 .kanban-card-assignee {
-margin-left: auto;
+margin-inline-start: auto;
 }
 .kanban-mobile-status {
 display: none;
@@ -6984,7 +6988,7 @@ font-size: 0.75rem;
 .report-preset-list {
 display: flex;
 gap: 3px;
-margin-left: auto;
+margin-inline-start: auto;
 }
 .range-preset-btn {
 padding: 2px 8px;
@@ -7131,7 +7135,7 @@ text-overflow: ellipsis;
 white-space: nowrap;
 }
 .workspace-queue-count {
-margin-left: auto;
+margin-inline-start: auto;
 min-width: 1.75rem;
 padding: 0.18rem 0.45rem;
 border-radius: var(--fd-radius-pill);
@@ -7413,7 +7417,7 @@ animation: notif-pulse 2s ease-in-out infinite;
 box-shadow: 0 0 0 2px var(--bg-primary, #fff);
 }
 .notif-sidebar-badge {
-margin-left: auto;
+margin-inline-start: auto;
 min-width: 18px;
 height: 18px;
 padding: 0 5px;
@@ -8789,6 +8793,22 @@ html[dir="rtl"] .nav-item::before {
   border-radius: 3px 0 0 3px;
 }
 
+/* The sidebar sits on the right edge in RTL, so the collapse/expand chevrons
+   must point the opposite way from LTR (collapse → toward the right edge,
+   expand → into the content on the left). Both icons are mirror images of
+   each other, so a horizontal flip swaps them correctly without touching JS. */
+html[dir="rtl"] #sidebar-collapse-btn svg {
+  transform: scaleX(-1);
+}
+
+/* "Back" links point toward reading-start, which is the right in RTL — mirror
+   every arrow-left icon/glyph tagged with this class (see back-link-icon
+   usages across pages/ and includes/components/). */
+html[dir="rtl"] .back-link-icon {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
 html[dir="rtl"] .help-panel {
   transform: translateX(-100%);
   box-shadow: 8px 0 30px rgba(0, 0, 0, 0.12);
@@ -8843,6 +8863,53 @@ html[dir="rtl"] select.form-select {
   background-position: left 0.75rem center;
   padding-inline-start: 2.25rem;
   padding-inline-end: 0.75rem;
+}
+
+/* 4b. Quill rich-text editor (quill.snow.css) — the vendor stylesheet has no
+   RTL support at all: it hardcodes text-align/float/margin/padding to the
+   physical left, so under dir="rtl" typed/placeholder text stays glued to
+   the left edge and toolbar button groups keep uneven left-only gaps. */
+html[dir="rtl"] .ql-editor {
+  text-align: right;
+}
+html[dir="rtl"] .ql-snow .ql-picker {
+  float: right;
+}
+html[dir="rtl"] .ql-snow.ql-toolbar button,
+html[dir="rtl"] .ql-snow .ql-toolbar button {
+  float: right;
+}
+html[dir="rtl"] .ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0;
+  margin-left: 15px;
+}
+html[dir="rtl"] .ql-snow .ql-picker-label {
+  padding-left: 2px;
+  padding-right: 8px;
+}
+html[dir="rtl"] .ql-snow .ql-picker-options {
+  right: 0;
+  left: auto;
+  text-align: right;
+}
+
+/* quill.snow.css bakes the header-picker labels in as literal English
+   content: text (no i18n hook at all) — override per language. */
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: 'عادي';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: 'عنوان 1';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: 'عنوان 2';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: 'عنوان 3';
 }
 
 /* 5. Modals & Popovers */

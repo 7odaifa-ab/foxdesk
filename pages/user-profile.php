@@ -83,7 +83,7 @@ require_once BASE_PATH . '/includes/header.php';
 <?php
 $page_header_title = $page_title;
 $page_header_subtitle = t('User activity and ticket history.');
-$page_header_actions = '<a href="' . url('admin', ['section' => 'users']) . '" class="btn btn-secondary btn-sm">' . get_icon('arrow-left', 'mr-1 inline') . e(t('Back to users')) . '</a>';
+$page_header_actions = '<a href="' . url('admin', ['section' => 'users']) . '" class="btn btn-secondary btn-sm">' . get_icon('arrow-left', 'mr-1 inline back-link-icon') . e(t('Back to users')) . '</a>';
 include BASE_PATH . '/includes/components/page-header.php';
 ?>
 

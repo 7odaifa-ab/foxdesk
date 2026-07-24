@@ -593,6 +593,21 @@ function t($key, $replacements = [])
 }
 
 /**
+ * Wrap a plain-text value in Unicode bidi isolate marks (U+2068/U+2069).
+ *
+ * Use when concatenating a translated label with an untranslated dynamic
+ * value (e.g. a user-defined status/priority name) inside plain-text
+ * contexts like <option> that cannot use a <bdi> element. Without this,
+ * mixing an RTL label with a Latin-script value can make the browser's
+ * bidi algorithm visually reorder the whole string (e.g. "Status: New"
+ * rendering as "New :Status" under dir="rtl").
+ */
+function bidi_isolate($text)
+{
+    return "\u{2068}" . $text . "\u{2069}";
+}
+
+/**
  * Get base URL for the application
  */
 function get_base_url()

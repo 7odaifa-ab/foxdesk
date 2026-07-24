@@ -322,7 +322,7 @@ include BASE_PATH . '/includes/header.php';
         </div>
         <div class="admin-hero-actions">
             <a href="<?php echo url('admin', ['section' => 'reports-list']); ?>" class="btn btn-secondary btn-sm">
-                <?php echo get_icon('arrow-left', 'w-3.5 h-3.5'); ?><?php echo e(t('Back')); ?>
+                <?php echo get_icon('arrow-left', 'w-3.5 h-3.5 back-link-icon'); ?><?php echo e(t('Back')); ?>
             </a>
         </div>
     </section>

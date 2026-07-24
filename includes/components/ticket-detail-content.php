@@ -24,7 +24,7 @@
                 ?>
                 <div class="ticket-work-panel__meta">
                     <a href="<?php echo $back_url; ?>" class="inline-flex items-center gap-1 hover:underline text-theme-muted">
-                        <?php echo get_icon('arrow-left', 'w-3.5 h-3.5'); ?>
+                        <?php echo get_icon('arrow-left', 'w-3.5 h-3.5 back-link-icon'); ?>
                         <?php echo e(t('Back')); ?>
                     </a>
                     <span><?php echo get_ticket_code($ticket_id); ?></span>
