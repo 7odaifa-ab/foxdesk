@@ -11,6 +11,7 @@
  */
 
 require_once dirname(__DIR__) . '/modules/agent/operating-instructions.php';
+require_once dirname(__DIR__) . '/modules/agent/work-log-planner.php';
 
 /**
  * Format a ticket code consistently with the rest of the app.
@@ -139,6 +140,27 @@ function api_agent_endpoint_url(string $action): string
     return api_agent_base_url() . '/index.php?page=api&action=' . rawurlencode($action);
 }
 
+function api_agent_enforce_structured_temporal_text(array $input, array $fields): void
+{
+    $allow_temporal_text = foxdesk_agent_plan_bool($input, 'allow_temporal_text', false);
+    if ($allow_temporal_text && trim((string) ($input['temporal_text_reason'] ?? '')) === '') {
+        api_error('temporal_text_reason is required when allow_temporal_text is true.', 422);
+    }
+    try {
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $input)) {
+                foxdesk_agent_assert_structured_temporal_text(
+                    (string) $input[$field],
+                    $field,
+                    $allow_temporal_text
+                );
+            }
+        }
+    } catch (InvalidArgumentException $e) {
+        api_error($e->getMessage(), 422);
+    }
+}
+
 function api_agent_docs_tools(): array
 {
     return [
@@ -151,7 +173,9 @@ function api_agent_docs_tools(): array
         ['action' => 'agent-get-ticket', 'method' => 'GET', 'scopes' => ['tickets:read'], 'description' => 'Read one ticket with comments and time entries.'],
         ['action' => 'agent-create-ticket', 'method' => 'POST', 'scopes' => ['tickets:write'], 'description' => 'Create a ticket without a time entry.'],
         ['action' => 'agent-add-update', 'method' => 'POST', 'scopes' => ['tickets:read', 'comments:write'], 'description' => 'Add a public or internal comment without tracked time.'],
-        ['action' => 'agent-add-work-entry', 'method' => 'POST', 'scopes' => ['tickets:read', 'comments:write', 'time:write'], 'description' => 'Atomically add a comment and its linked tracked-time entry.'],
+        ['action' => 'agent-add-work-entry', 'method' => 'POST', 'scopes' => ['tickets:read', 'comments:write', 'time:write'], 'description' => 'Atomically add a work-only comment and its linked structured work date/duration entry.'],
+        ['action' => 'agent-plan-work-log', 'method' => 'POST', 'scopes' => ['tickets:read', 'tickets:write', 'comments:write', 'time:write'], 'description' => 'Validate and preview a complete one-ticket or multi-ticket work-log plan without writing business records.'],
+        ['action' => 'agent-apply-work-log-plan', 'method' => 'POST', 'scopes' => ['tickets:read', 'tickets:write', 'comments:write', 'time:write'], 'description' => 'Atomically apply an unchanged signed work-log preview after explicit user confirmation.'],
         ['action' => 'agent-update-status', 'method' => 'POST', 'scopes' => ['tickets:write'], 'description' => 'Change a ticket status.'],
         ['action' => 'agent-log-time', 'method' => 'POST', 'scopes' => ['time:write'], 'description' => 'Log a standalone time entry only when no comment belongs to the work.'],
         ['action' => 'agent-delete-ticket-preflight', 'method' => 'GET', 'scopes' => ['tickets:read'], 'description' => 'Preview the complete impact of a permanent ticket deletion.', 'requires_permanent_delete_permission' => true],
@@ -266,9 +290,16 @@ function api_agent_docs()
                         'ticket_hash' => 'ticket_hash_from_agent-get-ticket',
                         'content' => $operating_instructions['daily_entries']['example_html'],
                         'duration_minutes' => 27,
+                        'worked_on' => '2026-07-13',
+                        'time_precision' => 'duration_only',
                         'is_internal' => false,
                         'skip_notification' => true,
                     ],
+                ],
+                'multi_day_work' => [
+                    'plan_action' => 'agent-plan-work-log',
+                    'apply_action' => 'agent-apply-work-log-plan',
+                    'rule' => 'Show the complete signed preview and apply the unchanged plan only after explicit user approval.',
                 ],
             ],
         ],
@@ -411,6 +442,7 @@ function api_agent_create_ticket()
     if (empty($input['title'])) {
         api_error('Field "title" is required', 422);
     }
+    api_agent_enforce_structured_temporal_text($input, ['title', 'description']);
     foreach (['duration_minutes', 'started_at', 'ended_at', 'manual_date', 'manual_start_time', 'manual_end_time', 'time_summary'] as $time_field) {
         if (array_key_exists($time_field, $input)) {
             api_error('Ticket creation does not accept time fields. Create the ticket first, then use agent-add-work-entry.', 422);
@@ -626,12 +658,17 @@ function api_agent_get_ticket()
 
     $time_entries = [];
     foreach ($activity['time_entries'] as $te) {
+            $public_timestamps = function_exists('ticket_time_entry_public_timestamps')
+                ? ticket_time_entry_public_timestamps($te)
+                : ['started_at' => $te['started_at'] ?? null, 'ended_at' => $te['ended_at'] ?? null];
             $time_entries[] = [
                 'id' => (int) $te['id'],
                 'comment_id' => !empty($te['comment_id']) ? (int) $te['comment_id'] : null,
                 'user' => trim(($te['first_name'] ?? '') . ' ' . ($te['last_name'] ?? '')),
-                'started_at' => $te['started_at'],
-                'ended_at' => $te['ended_at'] ?? null,
+                'worked_on' => $te['worked_on'] ?? (!empty($te['started_at']) ? date('Y-m-d', strtotime((string) $te['started_at'])) : null),
+                'time_precision' => function_exists('ticket_time_entry_precision') ? ticket_time_entry_precision($te) : 'exact',
+                'started_at' => $public_timestamps['started_at'],
+                'ended_at' => $public_timestamps['ended_at'],
                 'duration_minutes' => (int) ($te['duration_minutes'] ?? 0),
                 'summary' => $te['summary'] ?? null,
                 'is_billable' => !empty($te['is_billable']),
@@ -692,8 +729,9 @@ function api_agent_add_comment()
     if (empty($input['content'])) {
         api_error('Field "content" is required', 422);
     }
+    api_agent_enforce_structured_temporal_text($input, ['content', 'time_summary', 'summary']);
     $action = (string) ($GLOBALS['api_current_action'] ?? ($_GET['action'] ?? 'agent-add-comment'));
-    $time_fields = ['duration_minutes', 'started_at', 'ended_at', 'manual_date', 'manual_start_time', 'manual_end_time'];
+    $time_fields = ['duration_minutes', 'worked_on', 'time_precision', 'started_at', 'ended_at', 'manual_date', 'manual_start_time', 'manual_end_time'];
     $has_time_fields = false;
     foreach ($time_fields as $time_field) {
         $has_time_fields = $has_time_fields || array_key_exists($time_field, $input);
@@ -706,6 +744,19 @@ function api_agent_add_comment()
     }
     if ($action === 'agent-add-work-entry' && !$has_time_fields) {
         api_error('agent-add-work-entry requires duration_minutes or an explicit start/end time.', 422);
+    }
+    if ($action === 'agent-add-work-entry' && (int) ($input['duration_minutes'] ?? 0) < 1) {
+        api_error('agent-add-work-entry requires a positive duration_minutes value.', 422);
+    }
+    if ($action === 'agent-add-work-entry') {
+        $has_exact_range = trim((string) ($input['started_at'] ?? '')) !== ''
+            && trim((string) ($input['ended_at'] ?? '')) !== '';
+        $has_manual_range = trim((string) ($input['manual_date'] ?? '')) !== ''
+            && trim((string) ($input['manual_start_time'] ?? '')) !== ''
+            && trim((string) ($input['manual_end_time'] ?? '')) !== '';
+        if (!$has_exact_range && !$has_manual_range && trim((string) ($input['worked_on'] ?? '')) === '') {
+            api_error('worked_on is required when exact work times are not known.', 422);
+        }
     }
     if ($action === 'agent-add-work-entry' && !empty($GLOBALS['is_api_token_auth']) && !api_token_has_scope('time:write')) {
         api_error('Missing required scope: time:write', 403);
@@ -732,11 +783,39 @@ function api_agent_add_comment()
             throw new RuntimeException('Failed to add comment');
         }
         if ($duration > 0 && function_exists('add_manual_time_entry')) {
-            $ended_at = !empty($input['ended_at']) ? (string) $input['ended_at'] : date('Y-m-d H:i:s');
-            $started_at = !empty($input['started_at']) ? (string) $input['started_at'] : date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+            $worked_on = trim((string) ($input['worked_on'] ?? $input['manual_date'] ?? ''));
+            if ($worked_on !== '') {
+                $worked_on = foxdesk_agent_plan_date($worked_on);
+            }
+            $has_exact_range = !empty($input['started_at']) && !empty($input['ended_at']);
+            $precision = strtolower(trim((string) ($input['time_precision'] ?? '')));
+            if ($precision === '') {
+                $precision = $has_exact_range ? 'exact' : 'duration_only';
+            }
+            if (!in_array($precision, ['exact', 'duration_only', 'allocated'], true)) {
+                throw new InvalidArgumentException('time_precision must be exact, duration_only, or allocated.');
+            }
+            if ($precision === 'exact' && !$has_exact_range) {
+                throw new InvalidArgumentException('time_precision exact requires started_at and ended_at.');
+            }
+            if ($has_exact_range) {
+                $started_at = foxdesk_agent_plan_datetime((string) $input['started_at'], 'started_at');
+                $ended_at = foxdesk_agent_plan_datetime((string) $input['ended_at'], 'ended_at');
+                if ((int) floor((strtotime($ended_at) - strtotime($started_at)) / 60) !== $duration) {
+                    throw new InvalidArgumentException('duration_minutes must match started_at and ended_at.');
+                }
+                if ($worked_on === '') {
+                    $worked_on = date('Y-m-d', strtotime($started_at));
+                }
+            } else {
+                $ended_at = $worked_on . ' 12:00:00';
+                $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+            }
             $source = (function_exists('is_ai_user') && is_ai_user($user['id'])) ? 'ai' : 'manual';
             $time_entry_id = add_manual_time_entry($ticket_id, $user['id'], [
                 'comment_id' => (int) $comment_id,
+                'worked_on' => $worked_on,
+                'time_precision' => $precision,
                 'started_at' => $started_at,
                 'ended_at' => $ended_at,
                 'duration_minutes' => $duration,
@@ -752,6 +831,11 @@ function api_agent_add_comment()
         if ($started_transaction) {
             $db->commit();
         }
+    } catch (InvalidArgumentException $e) {
+        if ($started_transaction && $db->inTransaction()) {
+            $db->rollBack();
+        }
+        api_error($e->getMessage(), 422);
     } catch (Throwable $e) {
         if ($started_transaction && $db->inTransaction()) {
             $db->rollBack();
@@ -763,6 +847,10 @@ function api_agent_add_comment()
     if ($time_entry_id) {
         $response['time_entry_id'] = (int) $time_entry_id;
         $response['duration_minutes'] = $duration;
+        $response['worked_on'] = $worked_on;
+        $response['time_precision'] = $precision;
+        $response['started_at'] = $precision === 'exact' ? $started_at : null;
+        $response['ended_at'] = $precision === 'exact' ? $ended_at : null;
     }
 
     // In-app notification for new comment (skip internal notes)
@@ -865,9 +953,48 @@ function api_agent_log_time()
     $ticket = api_agent_resolve_ticket($input, $user, 'ticket_hash', 'ticket_id');
     $ticket_id = (int) $ticket['id'];
     $duration = (int) $input['duration_minutes'];
+    $worked_on = trim((string) ($input['worked_on'] ?? ''));
+    if ($worked_on !== '') {
+        $worked_on = foxdesk_agent_plan_date($worked_on);
+    }
+    $started_raw = trim((string) ($input['started_at'] ?? ''));
+    $ended_raw = trim((string) ($input['ended_at'] ?? ''));
+    $precision = strtolower(trim((string) ($input['time_precision'] ?? '')));
+    if ($precision === '') {
+        $precision = ($started_raw !== '' || $ended_raw !== '') ? 'exact' : 'duration_only';
+    }
+    if (!in_array($precision, ['exact', 'duration_only', 'allocated'], true)) {
+        api_error('time_precision must be exact, duration_only, or allocated.', 422);
+    }
+    if ($precision === 'exact') {
+        if ($started_raw === '' && $ended_raw === '') {
+            api_error('time_precision exact requires started_at or ended_at.', 422);
+        }
+        $started_at = $started_raw !== '' ? foxdesk_agent_plan_datetime($started_raw, 'started_at') : null;
+        $ended_at = $ended_raw !== '' ? foxdesk_agent_plan_datetime($ended_raw, 'ended_at') : null;
+        if ($started_at === null) {
+            $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+        }
+        if ($ended_at === null) {
+            $ended_at = date('Y-m-d H:i:s', strtotime($started_at) + ($duration * 60));
+        }
+        if ((int) floor((strtotime($ended_at) - strtotime($started_at)) / 60) !== $duration) {
+            api_error('duration_minutes must match started_at and ended_at.', 422);
+        }
+        if ($worked_on === '') {
+            $worked_on = date('Y-m-d', strtotime($started_at));
+        }
+    } else {
+        if ($started_raw !== '' || $ended_raw !== '') {
+            api_error('Non-exact entries must not invent started_at or ended_at.', 422);
+        }
+        if ($worked_on === '') {
+            api_error('worked_on is required when exact work times are not known.', 422);
+        }
+        $ended_at = $worked_on . ' 12:00:00';
+        $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+    }
     $now = date('Y-m-d H:i:s');
-    $started_at = $input['started_at'] ?? $now;
-    $ended_at = $input['ended_at'] ?? date('Y-m-d H:i:s', strtotime($started_at) + ($duration * 60));
 
     // Determine source: AI agent token defaults to 'ai', human token to 'manual'
     $default_source = (function_exists('is_ai_user') && is_ai_user($user['id'])) ? 'ai' : 'manual';
@@ -877,6 +1004,8 @@ function api_agent_log_time()
     }
 
     $data = [
+        'worked_on' => $worked_on,
+        'time_precision' => $precision,
         'started_at' => $started_at,
         'ended_at' => $ended_at,
         'duration_minutes' => $duration,
@@ -909,6 +1038,10 @@ function api_agent_log_time()
     api_success([
         'time_entry_id' => (int) $entry_id,
         'duration_minutes' => $duration,
+        'worked_on' => $worked_on,
+        'time_precision' => $precision,
+        'started_at' => $precision === 'exact' ? $started_at : null,
+        'ended_at' => $precision === 'exact' ? $ended_at : null,
         'source' => $source,
     ]);
 }

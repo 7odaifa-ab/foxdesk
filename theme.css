@@ -5109,17 +5109,13 @@ border-inline-start-color: rgba(234, 179, 8, 0.4);
 display: flex;
 align-items: center;
 gap: 0.125rem;
-opacity: 0;
+opacity: 0.72;
 transition: opacity 150ms ease;
 margin-inline-start: auto;
 }
-.comment-item:hover .comment-actions {
+.comment-item:hover .comment-actions,
+.comment-actions:focus-within {
 opacity: 1;
-}
-@media (hover: none) {
-.comment-actions {
-opacity: 1;
-}
 }
 .modal-overlay {
 position: fixed;
@@ -5186,16 +5182,12 @@ display: none;
 display: inline-flex;
 align-items: center;
 gap: 0.125rem;
-opacity: 0;
+opacity: 0.72;
 transition: opacity 150ms ease;
 }
-.time-entry-row:hover .time-entry-actions {
+.time-entry-row:hover .time-entry-actions,
+.time-entry-actions:focus-within {
 opacity: 1;
-}
-@media (hover: none) {
-.time-entry-actions {
-opacity: 1;
-}
 }
 .workflow-grid {
 display: grid;

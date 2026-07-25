@@ -57,6 +57,7 @@ function ticket_detail_comment_attachments(array $attachments, int $comment_id):
 function ticket_detail_build_timeline(array $comments, array $time_entries): array
 {
     $time_entries_by_comment = [];
+    $work_date_by_comment = [];
     $orphan_time_entries = [];
 
     foreach ($time_entries as $entry) {
@@ -66,6 +67,13 @@ function ticket_detail_build_timeline(array $comments, array $time_entries): arr
                 $time_entries_by_comment[$comment_id] = [];
             }
             $time_entries_by_comment[$comment_id][] = $entry;
+            $precision = strtolower(trim((string) ($entry['time_precision'] ?? 'exact')));
+            $worked_on = trim((string) ($entry['worked_on'] ?? ''));
+            if ($precision !== 'exact' && $worked_on !== '') {
+                if (!isset($work_date_by_comment[$comment_id]) || $worked_on < $work_date_by_comment[$comment_id]) {
+                    $work_date_by_comment[$comment_id] = $worked_on;
+                }
+            }
         } else {
             $orphan_time_entries[] = $entry;
         }
@@ -73,10 +81,16 @@ function ticket_detail_build_timeline(array $comments, array $time_entries): arr
 
     $timeline_items = [];
     foreach ($comments as $comment) {
+        $comment_id = (int) ($comment['id'] ?? 0);
+        if (isset($work_date_by_comment[$comment_id])) {
+            $comment['work_date'] = $work_date_by_comment[$comment_id];
+        }
         $timeline_items[] = [
             'type' => 'comment',
             'data' => $comment,
-            'sort_time' => strtotime((string) ($comment['created_at'] ?? '')) ?: 0,
+            'sort_time' => !empty($comment['work_date'])
+                ? (strtotime((string) $comment['work_date'] . ' 12:00:00') ?: 0)
+                : (strtotime((string) ($comment['created_at'] ?? '')) ?: 0),
         ];
     }
 
@@ -84,7 +98,12 @@ function ticket_detail_build_timeline(array $comments, array $time_entries): arr
         $timeline_items[] = [
             'type' => 'time_entry',
             'data' => $entry,
-            'sort_time' => strtotime((string) ($entry['started_at'] ?? '')) ?: 0,
+            'sort_time' => (
+                strtolower(trim((string) ($entry['time_precision'] ?? 'exact'))) !== 'exact'
+                && !empty($entry['worked_on'])
+            )
+                ? (strtotime((string) $entry['worked_on'] . ' 12:00:00') ?: 0)
+                : (strtotime((string) ($entry['started_at'] ?? '')) ?: 0),
         ];
     }
 

@@ -82,6 +82,7 @@ try {
         'report_templates' => ['custom_billable_rate', 'expires_at', 'schedule_enabled', 'agent_ids'],
         'email_ingest_logs' => ['sender_email', 'subject', 'ticket_id'],
         'notifications' => ['actor_id', 'data', 'is_resolved'],
+        'ticket_time_entries' => ['worked_on', 'time_precision'],
     ];
     foreach ($requirements as $table => $columns) {
         foreach ($columns as $column) {

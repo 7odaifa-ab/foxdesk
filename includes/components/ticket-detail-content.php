@@ -252,7 +252,7 @@
                                                                     title="<?php echo e($entry['summary']); ?>"><?php echo e($entry['summary']); ?></span>
                                                         <?php endif; ?>
                                                         <span style="color: var(--border-light);">·</span>
-                                                        <span><?php echo format_date($entry['started_at']); ?></span>
+                                                        <span><?php echo e(ticket_time_entry_display_date($entry)); ?></span>
                                                         <?php $can_edit_this_entry = is_admin() || (is_agent() && (int) $entry['user_id'] === (int) $user['id']); ?>
                                                         <?php if ($can_edit_this_entry): ?>
                                                                 <span class="time-entry-actions" data-time-entry-id="<?php echo (int) $entry['id']; ?>">
@@ -302,7 +302,11 @@
                                                                 <span
                                                                     class="text-xs px-1.5 py-0.5 rounded font-medium bg-amber-50 text-amber-700"><?php echo e(t('Internal')); ?></span>
                                                         <?php endif; ?>
-                                                        <span class="text-xs text-theme-muted"><?php echo format_date($comment['created_at']); ?></span>
+                                                        <span class="text-xs text-theme-muted"><?php
+                                                        echo !empty($comment['work_date'])
+                                                            ? e(format_date($comment['work_date'], 'd.m.Y'))
+                                                            : e(format_date($comment['created_at']));
+                                                        ?></span>
                                                         <?php if ($can_view_edit_history && !empty($comment['updated_at']) && $comment['updated_at'] !== $comment['created_at']): ?>
                                                                 <span class="text-xs italic text-theme-muted">(<?php echo e(t('edited')); ?>)</span>
                                                         <?php endif; ?>
@@ -379,7 +383,7 @@
                                                                                         title="<?php echo e($entry['summary']); ?>"><?php echo e($entry['summary']); ?></span>
                                                                             <?php endif; ?>
                                                                             <span style="color: var(--border-light);">·</span>
-                                                                            <span><?php echo format_date($entry['started_at']); ?></span>
+                                                                            <span><?php echo e(ticket_time_entry_display_date($entry)); ?></span>
                                                                             <?php if ($can_edit_this_entry): ?>
                                                                                     <span class="time-entry-actions" data-time-entry-id="<?php echo (int) $entry['id']; ?>">
                                                                                         <?php if (!empty($entry['ended_at'])): ?>

@@ -1818,4 +1818,21 @@ return [
     'Own tickets' => 'تذاكري',
     'Organization' => 'المؤسسة',
     'AI agents' => 'وكلاء الذكاء الاصطناعي',
+
+    // Agent work-log planner
+    'Dates, clock times, or durations unless the user explicitly requested them in the text.' => 'التواريخ أو الأوقات أو المدد الزمنية إلا إذا طلبها المستخدم صراحةً في النص.',
+    'Multi-day work intake and preview' => 'إدخال العمل متعدد الأيام ومعاينته',
+    'Before writing multi-day or multi-entry work, collect any missing choices and show a complete preview.' => 'قبل كتابة عمل متعدد الأيام أو متعدد القيود، اجمع أي خيارات ناقصة وأظهر معاينة كاملة.',
+    'One main ticket with work comments, or multiple tickets for distinct deliverables?' => 'تذكرة رئيسية واحدة مع تعليقات عمل، أم عدة تذاكر لمخرجات منفصلة؟',
+    'What exact total worked time should be recorded?' => 'ما إجمالي وقت العمل الدقيق الذي يجب تسجيله؟',
+    'Which work dates or date range should be used?' => 'ما تواريخ العمل أو نطاق التاريخ الذي يجب استخدامه؟',
+    'Are the durations actual, or may the approved total be allocated naturally across entries?' => 'هل المدد فعلية، أم يمكن توزيع الإجمالي المعتمد بشكل طبيعي على القيود؟',
+    'Should entries be public and billable?' => 'هل يجب أن تكون القيود عامة وقابلة للفوترة؟',
+    'Do not write anything until the user approves the complete preview.' => 'لا تكتب أي شيء حتى يوافق المستخدم على المعاينة الكاملة.',
+    'Add one separate work entry for each workday.' => 'أضف قيد عمل منفصلاً لكل يوم عمل.',
+    'Keep daily work entries in chronological order.' => 'حافظ على ترتيب قيود العمل اليومية زمنياً.',
+    'Describe only the specific work completed; keep dates and time out of the comment text.' => 'صف فقط العمل المحدد المُنجز؛ لا تُدرج التواريخ والوقت في نص التعليق.',
+    'Put the work date in worked_on. Use started_at and ended_at only when exact times are known.' => 'ضع تاريخ العمل في worked_on. استخدم started_at و ended_at فقط عند معرفة الأوقات الدقيقة.',
+    'Record realistic minute-level durations based on the actual or approved work.' => 'سجّل مدداً واقعية بالدقائق بناءً على العمل الفعلي أو المعتمد.',
+    'Do not round work into artificial blocks like 60 or 120 minutes unless that is the real approved duration.' => 'لا تُقرِّب العمل إلى كتل مصطنعة مثل 60 أو 120 دقيقة إلا إذا كانت هذه هي المدة المعتمدة الفعلية.',
 ];

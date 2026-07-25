@@ -34,6 +34,16 @@ $assert($asset !== false, 'Ticket detail JS asset must be readable.');
 $assert($paste_drop_asset !== false, 'Attachment paste/drop JS asset must be readable.');
 $assert($theme !== false, 'Theme CSS must be readable.');
 
+$has_visible_default_opacity = static function (string $css, string $selector): bool {
+    $pattern = '/' . preg_quote($selector, '/') . '\s*\{[^}]*opacity:\s*([0-9]*\.?[0-9]+)/s';
+    return preg_match($pattern, $css, $matches) === 1 && (float) $matches[1] > 0;
+};
+
+$assert($has_visible_default_opacity($theme, '.comment-actions'), 'Editable comment actions must remain visible without hover.');
+$assert($has_visible_default_opacity($theme, '.time-entry-actions'), 'Editable time-entry actions must remain visible without hover.');
+$assert(str_contains($theme, '.comment-actions:focus-within'), 'Comment actions must become fully visible on keyboard focus.');
+$assert(str_contains($theme, '.time-entry-actions:focus-within'), 'Time-entry actions must become fully visible on keyboard focus.');
+
 foreach ([
     'window.FoxDeskTicketDetailConfig',
     'assets/js/quill-image-upload.js',

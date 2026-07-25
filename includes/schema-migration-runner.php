@@ -52,11 +52,24 @@ function foxdesk_run_versioned_migrations(string $directory): array
 
         try {
             if (str_ends_with($name, '.php')) {
-                $migration = require $file;
-                if (!is_callable($migration)) {
-                    throw new RuntimeException("PHP migration {$name} must return a callable.");
+                $restoreEmulatedPrepares = null;
+                try {
+                    $restoreEmulatedPrepares = (bool) $db->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+                    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+                } catch (Throwable $e) {
+                    $restoreEmulatedPrepares = null;
                 }
-                $migration($db);
+                try {
+                    $migration = require $file;
+                    if (!is_callable($migration)) {
+                        throw new RuntimeException("PHP migration {$name} must return a callable.");
+                    }
+                    $migration($db);
+                } finally {
+                    if ($restoreEmulatedPrepares !== null) {
+                        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, $restoreEmulatedPrepares);
+                    }
+                }
             } else {
                 foreach (split_sql_statements((string) file_get_contents($file)) as $statement) {
                     if (trim((string) $statement) !== '') {

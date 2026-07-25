@@ -46,12 +46,11 @@ function foxdesk_agent_operating_instructions(?string $language = null, ?array $
     $language = foxdesk_agent_instruction_language($language, $user);
     $tr = static fn(string $key): string => foxdesk_agent_instruction_text($key, $language);
 
-    $daily_example = '<p><strong>' . $tr('13 Jul 2026 - 27 min') . '</strong></p>'
-        . '<ul><li>' . $tr('Adjusted campaign budgets based on performance.') . '</li>'
+    $daily_example = '<ul><li>' . $tr('Adjusted campaign budgets based on performance.') . '</li>'
         . '<li>' . $tr('Reviewed the bidding strategy for the accessories campaign.') . '</li></ul>';
 
     return [
-        'schema_version' => 2,
+        'schema_version' => 5,
         'language' => $language,
         'available_languages' => foxdesk_agent_instruction_languages(),
         'language_parameter' => 'instruction_language',
@@ -76,20 +75,38 @@ function foxdesk_agent_operating_instructions(?string $language = null, ?array $
                 $tr('A day-by-day work breakdown.'),
                 $tr('A detailed work agenda.'),
                 $tr('A timer or time entry.'),
+                $tr('Dates, clock times, or durations unless the user explicitly requested them in the text.'),
             ],
+        ],
+        'planning' => [
+            'title' => $tr('Multi-day work intake and preview'),
+            'trigger' => $tr('Before writing multi-day or multi-entry work, collect any missing choices and show a complete preview.'),
+            'questions' => [
+                $tr('One main ticket with work comments, or multiple tickets for distinct deliverables?'),
+                $tr('What exact total worked time should be recorded?'),
+                $tr('Which work dates or date range should be used?'),
+                $tr('Are the durations actual, or may the approved total be allocated naturally across entries?'),
+                $tr('Should entries be public and billable?'),
+            ],
+            'recommended_structure' => 'one_ticket',
+            'plan_action' => 'agent-plan-work-log',
+            'apply_action' => 'agent-apply-work-log-plan',
+            'confirmation_rule' => $tr('Do not write anything until the user approves the complete preview.'),
         ],
         'daily_entries' => [
             'title' => $tr('Tracked work entries'),
             'action' => 'agent-add-work-entry',
             'example_html' => $daily_example,
             'rules' => [
-                $tr('Add one separate comment for each workday.'),
-                $tr('Keep daily comments in chronological order.'),
-                $tr('Include the date, approved minutes, and the specific work completed.'),
+                $tr('Add one separate work entry for each workday.'),
+                $tr('Keep daily work entries in chronological order.'),
+                $tr('Describe only the specific work completed; keep dates and time out of the comment text.'),
                 $tr('Use agent-add-update for a comment without tracked time.'),
                 $tr('Use agent-add-work-entry when the work must count toward tracked or billable time.'),
                 $tr('Send the comment and duration together so FoxDesk links them atomically.'),
-                $tr('Include started_at and ended_at when exact work times are known.'),
+                $tr('Put the work date in worked_on. Use started_at and ended_at only when exact times are known.'),
+                $tr('Record realistic minute-level durations based on the actual or approved work.'),
+                $tr('Do not round work into artificial blocks like 60 or 120 minutes unless that is the real approved duration.'),
                 $tr('Do not create a separate comment and time entry for the same work.'),
                 $tr('Set skip_notification to true when the client should not receive an email.'),
             ],
@@ -114,6 +131,14 @@ function foxdesk_agent_operating_instructions(?string $language = null, ?array $
             'post_requires_unique_idempotency_key' => true,
             'comment_only_action' => 'agent-add-update',
             'tracked_work_action' => 'agent-add-work-entry',
+            'daily_entry_time_location' => 'worked_on/duration_minutes fields; exact started_at/ended_at only when known; not comment text',
+            'time_precision_rule' => 'record realistic minute-level durations; do not round into artificial 60/120 minute blocks unless approved',
+            'temporal_text_default' => 'forbidden unless allow_temporal_text=true with an explicit user-approved reason',
+            'multi_entry_requires_intake' => true,
+            'multi_entry_required_choices' => ['structure', 'total_minutes', 'work_dates', 'allocation_basis', 'visibility', 'billable'],
+            'multi_entry_plan_action' => 'agent-plan-work-log',
+            'multi_entry_apply_action' => 'agent-apply-work-log-plan',
+            'multi_entry_requires_preview_confirmation' => true,
             'tracked_work_required_fields' => ['content', 'duration_minutes'],
             'tracked_work_requires_linked_comment_id' => true,
             'expected_total_time_rule' => 'sum(time_entries.duration_minutes)',
@@ -142,6 +167,14 @@ function foxdesk_agent_operating_instructions_markdown(?string $language = null,
     foreach ($instructions['ticket_creation']['exclude'] as $rule) {
         $lines[] = '- ' . $rule;
     }
+
+    $lines[] = '';
+    $lines[] = '## ' . $instructions['planning']['title'];
+    $lines[] = $instructions['planning']['trigger'];
+    foreach ($instructions['planning']['questions'] as $question) {
+        $lines[] = '- ' . $question;
+    }
+    $lines[] = '- ' . $instructions['planning']['confirmation_rule'];
 
     $lines[] = '';
     $lines[] = '## ' . $instructions['daily_entries']['title'];

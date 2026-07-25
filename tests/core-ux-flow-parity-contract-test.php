@@ -46,9 +46,12 @@ assert_core_ux_flow(!str_contains($header, "url('dashboard')"), 'Legacy dashboar
 assert_core_ux_flow(!str_contains($header, "url('inbox')"), 'Inbox must not be exposed as a separate workspace agenda.');
 
 $shortcuts = read_core_ux_flow_file($root, 'assets/js/shortcuts.js');
-assert_core_ux_flow(str_contains($shortcuts, "label: 'Dashboard'"), 'Command palette must label the primary workspace dashboard as Dashboard.');
+assert_core_ux_flow(str_contains($shortcuts, "label: labels.dashboard, desc: labels.dashboardDesc"), 'Command palette must label the primary workspace dashboard using the localized dashboard label.');
 assert_core_ux_flow(!str_contains($shortcuts, "label: 'Work'"), 'Command palette must not expose the old Work label.');
-assert_core_ux_flow(str_contains($shortcuts, "label: 'Analytics'"), 'Command palette must keep the legacy analytics dashboard distinct.');
+
+$footer = read_core_ux_flow_file($root, 'includes/footer.php');
+assert_core_ux_flow(str_contains($footer, "'dashboard' => t('Dashboard')"), 'Command palette dashboard label must be sourced from the Dashboard translation key.');
+assert_core_ux_flow(str_contains($shortcuts, 'label: labels.analytics'), 'Command palette must keep the legacy analytics dashboard distinct.');
 
 $work = read_core_ux_flow_file($root, 'includes/modules/work/work-queues.php');
 foreach (['mine', 'unassigned', 'overdue', 'waiting', 'done_today'] as $key) {

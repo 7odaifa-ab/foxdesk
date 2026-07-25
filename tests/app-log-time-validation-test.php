@@ -31,12 +31,17 @@ $assert = static function (bool $condition, string $message): void {
     }
 };
 
-$before = time();
-$default = api_app_resolve_log_time_input(['duration_minutes' => 15]);
+$default = api_app_resolve_log_time_input([
+    'duration_minutes' => 17,
+    'worked_on' => '2026-07-24',
+    'time_precision' => 'duration_only',
+]);
 $default_start = strtotime($default['started_at']);
 $default_end = strtotime($default['ended_at']);
-$assert(($default_end - $default_start) === 900, 'Duration-only logging must create an exact historical interval.');
-$assert($default_end >= $before && $default_end <= time() + 1, 'Duration-only logging must end now instead of in the future.');
+$assert(($default_end - $default_start) === 1020, 'Duration-only logging must preserve the structured duration.');
+$assert($default['worked_on'] === '2026-07-24', 'Duration-only logging must preserve worked_on.');
+$assert($default['time_precision'] === 'duration_only', 'Duration-only logging must preserve its precision.');
+$assert($default['ended_at'] === '2026-07-24 12:00:00', 'Compatibility timestamps must remain deterministic and internal.');
 
 $explicit = api_app_resolve_log_time_input([
     'duration_minutes' => 48,
@@ -45,6 +50,7 @@ $explicit = api_app_resolve_log_time_input([
 ]);
 $assert($explicit['started_at'] === '2026-05-25 21:18:00', 'Explicit start time must be preserved.');
 $assert($explicit['ended_at'] === '2026-05-25 22:06:00', 'Explicit end time must be preserved.');
+$assert($explicit['time_precision'] === 'exact', 'Explicit timestamp ranges must be marked exact.');
 
 foreach ([
     ['duration_minutes' => 1441],

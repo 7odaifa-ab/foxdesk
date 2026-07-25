@@ -105,6 +105,8 @@ const TOOLS = [
         assignee_id: { type: 'integer', minimum: 1 },
         priority_id: { type: 'integer', minimum: 1 },
         status_id: { type: 'integer', minimum: 1 },
+        allow_temporal_text: { type: 'boolean' },
+        temporal_text_reason: { type: 'string' },
         idempotency_key: { type: 'string' },
         dry_run: { type: 'boolean', description: 'Return the planned API request without writing.' },
         confirm: { type: 'boolean', description: 'Required to execute this write tool.' },
@@ -123,6 +125,8 @@ const TOOLS = [
         ticket_hash: { type: 'string' },
         content: { type: 'string' },
         is_internal: { type: 'boolean' },
+        allow_temporal_text: { type: 'boolean' },
+        temporal_text_reason: { type: 'string' },
         idempotency_key: { type: 'string' },
         dry_run: { type: 'boolean', description: 'Return the planned API request without writing.' },
         confirm: { type: 'boolean', description: 'Required to execute this write tool.' },
@@ -132,7 +136,7 @@ const TOOLS = [
   },
   {
     name: 'foxdesk_add_work_entry',
-    description: 'Atomically add a comment and its linked tracked-time entry to a FoxDesk ticket.',
+    description: 'Atomically add a work-only comment and its linked structured date/duration entry to a FoxDesk ticket.',
     inputSchema: {
       type: 'object',
       required: ['content', 'duration_minutes'],
@@ -142,7 +146,11 @@ const TOOLS = [
         content: { type: 'string' },
         is_internal: { type: 'boolean' },
         skip_notification: { type: 'boolean' },
+        allow_temporal_text: { type: 'boolean' },
+        temporal_text_reason: { type: 'string' },
         duration_minutes: { type: 'integer', minimum: 1, maximum: 1440 },
+        worked_on: { type: 'string', description: 'Work date in YYYY-MM-DD format.' },
+        time_precision: { type: 'string', enum: ['exact', 'duration_only', 'allocated'] },
         started_at: { type: 'string' },
         ended_at: { type: 'string' },
         manual_date: { type: 'string' },
@@ -157,6 +165,75 @@ const TOOLS = [
     },
   },
   {
+    name: 'foxdesk_plan_work_log',
+    description: 'Validate a complete multi-day ticket/comment/time plan and return a signed user-facing preview without writing.',
+    inputSchema: {
+      type: 'object',
+      required: ['structure', 'allocation_basis', 'total_minutes', 'tickets'],
+      properties: {
+        structure: { type: 'string', enum: ['one_ticket', 'multiple_tickets'] },
+        allocation_basis: { type: 'string', enum: ['actual', 'approved_total'] },
+        total_minutes: { type: 'integer', minimum: 1, maximum: 525600 },
+        allow_temporal_text: { type: 'boolean' },
+        temporal_text_reason: { type: 'string' },
+        tickets: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            required: ['title', 'entries'],
+            properties: {
+              title: { type: 'string' },
+              description: { type: 'string' },
+              organization_id: { type: 'integer', minimum: 1 },
+              assignee_id: { type: 'integer', minimum: 1 },
+              priority_id: { type: 'integer', minimum: 1 },
+              status_id: { type: 'integer', minimum: 1 },
+              entries: {
+                type: 'array',
+                minItems: 1,
+                items: {
+                  type: 'object',
+                  required: ['content', 'worked_on', 'duration_minutes'],
+                  properties: {
+                    content: { type: 'string' },
+                    worked_on: { type: 'string' },
+                    duration_minutes: { type: 'integer', minimum: 1, maximum: 1440 },
+                    time_precision: { type: 'string', enum: ['exact', 'duration_only', 'allocated'] },
+                    started_at: { type: 'string' },
+                    ended_at: { type: 'string' },
+                    time_summary: { type: 'string' },
+                    is_billable: { type: 'boolean' },
+                    is_internal: { type: 'boolean' },
+                    skip_notification: { type: 'boolean' },
+                  },
+                  additionalProperties: false,
+                },
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'foxdesk_apply_work_log_plan',
+    description: 'Apply an unchanged signed work-log plan only after the user explicitly approves the complete preview.',
+    inputSchema: {
+      type: 'object',
+      required: ['plan', 'plan_hash', 'confirm'],
+      properties: {
+        plan: { type: 'object' },
+        plan_hash: { type: 'string' },
+        confirm: { type: 'boolean', description: 'Must be true after explicit user approval.' },
+        idempotency_key: { type: 'string' },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'foxdesk_log_time',
     description: 'Add a manual time entry to a FoxDesk ticket.',
     inputSchema: {
@@ -166,6 +243,10 @@ const TOOLS = [
         ticket_id: { type: 'integer', minimum: 1 },
         ticket_hash: { type: 'string' },
         duration_minutes: { type: 'integer', minimum: 1, maximum: 1440 },
+        worked_on: { type: 'string' },
+        time_precision: { type: 'string', enum: ['exact', 'duration_only', 'allocated'] },
+        started_at: { type: 'string' },
+        ended_at: { type: 'string' },
         summary: { type: 'string' },
         is_billable: { type: 'boolean' },
         idempotency_key: { type: 'string' },
@@ -250,6 +331,22 @@ const TOOL_POLICY = {
     supportsDryRun: true,
     requiresConfirmation: true,
   },
+  foxdesk_plan_work_log: {
+    action: 'agent-plan-work-log',
+    method: 'POST',
+    scopes: ['tickets:read', 'tickets:write', 'comments:write', 'time:write'],
+    writes: false,
+    supportsDryRun: false,
+    requiresConfirmation: false,
+  },
+  foxdesk_apply_work_log_plan: {
+    action: 'agent-apply-work-log-plan',
+    method: 'POST',
+    scopes: ['tickets:read', 'tickets:write', 'comments:write', 'time:write'],
+    writes: true,
+    supportsDryRun: false,
+    requiresConfirmation: true,
+  },
   foxdesk_log_time: {
     action: 'agent-log-time',
     method: 'POST',
@@ -295,6 +392,8 @@ const TOOL_HANDLERS = {
       'assignee_id',
       'priority_id',
       'status_id',
+      'allow_temporal_text',
+      'temporal_text_reason',
     ]), args);
   },
   foxdesk_add_comment: (args) => {
@@ -305,6 +404,8 @@ const TOOL_HANDLERS = {
       'ticket_hash',
       'content',
       'is_internal',
+      'allow_temporal_text',
+      'temporal_text_reason',
     ]), args);
   },
   foxdesk_add_work_entry: (args) => {
@@ -316,7 +417,11 @@ const TOOL_HANDLERS = {
       'content',
       'is_internal',
       'skip_notification',
+      'allow_temporal_text',
+      'temporal_text_reason',
       'duration_minutes',
+      'worked_on',
+      'time_precision',
       'started_at',
       'ended_at',
       'manual_date',
@@ -325,12 +430,30 @@ const TOOL_HANDLERS = {
       'is_billable',
     ]), args);
   },
+  foxdesk_plan_work_log: (args) => apiPost('agent-plan-work-log', pickDefined(args, [
+    'structure',
+    'allocation_basis',
+    'total_minutes',
+    'allow_temporal_text',
+    'temporal_text_reason',
+    'tickets',
+  ]), args.idempotency_key),
+  foxdesk_apply_work_log_plan: (args) => apiWriteTool(
+    'foxdesk_apply_work_log_plan',
+    'agent-apply-work-log-plan',
+    pickDefined(args, ['plan', 'plan_hash', 'confirm']),
+    args
+  ),
   foxdesk_log_time: (args) => {
     requireTicketSelector(args);
     return apiWriteTool('foxdesk_log_time', 'agent-log-time', pickDefined(args, [
       'ticket_id',
       'ticket_hash',
       'duration_minutes',
+      'worked_on',
+      'time_precision',
+      'started_at',
+      'ended_at',
       'summary',
       'is_billable',
     ]), args);
