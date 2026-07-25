@@ -17,6 +17,9 @@
     'use strict';
 
     var cfg = window.appConfig || {};
+    function shortcutLabel(key, fallback) {
+        return (cfg.shortcutLabels && cfg.shortcutLabels[key]) || fallback;
+    }
     var pendingG = false;
     var gTimeout = null;
 
@@ -74,7 +77,7 @@
 
         paletteInput = document.createElement('input');
         paletteInput.type = 'text';
-        paletteInput.placeholder = 'Search tickets, clients, history...';
+        paletteInput.placeholder = shortcutLabel('search', 'Search tickets, clients, history...');
         paletteInput.className = 'fd-command-input';
         paletteInput.addEventListener('input', onPaletteInput);
         paletteInput.addEventListener('keydown', onPaletteKeydown);
@@ -98,30 +101,31 @@
     }
 
     function getDefaultItems() {
+        var labels = cfg.shortcutLabels || {};
         var items = [
-            { type: 'nav', label: 'Dashboard', desc: 'Open your main workspace dashboard', icon: 'D', action: function() { navigateTo('work'); } },
-            { type: 'nav', label: 'Analytics', desc: 'View analytics dashboard', icon: 'A', action: function() { navigateTo('dashboard'); } },
-            { type: 'nav', label: 'Tickets', desc: 'View all tickets', icon: 'T', action: function() { navigateTo('tickets'); } },
-            { type: 'action', label: 'New Ticket', desc: 'Create a new ticket', icon: '+', action: function() { navigateTo('new-ticket'); } },
-            { type: 'nav', label: 'My Profile', desc: 'Edit your profile', icon: 'P', action: function() { navigateTo('profile'); } }
+            { type: 'nav', label: labels.dashboard, desc: labels.dashboardDesc, icon: 'D', action: function() { navigateTo('work'); } },
+            { type: 'nav', label: labels.analytics, desc: labels.analyticsDesc, icon: 'A', action: function() { navigateTo('dashboard'); } },
+            { type: 'nav', label: labels.tickets, desc: labels.ticketsDesc, icon: 'T', action: function() { navigateTo('tickets'); } },
+            { type: 'action', label: labels.newTicket, desc: labels.newTicketDesc, icon: '+', action: function() { navigateTo('new-ticket'); } },
+            { type: 'nav', label: labels.profile, desc: labels.profileDesc, icon: 'P', action: function() { navigateTo('profile'); } }
         ];
         if (cfg.isStaff) {
-            items.push({ type: 'nav', label: 'Time Reports', desc: 'View time reports', icon: 'R', action: function() { navigateTo('admin', {section:'reports'}); } });
-            items.push({ type: 'nav', label: 'Settings', desc: 'System settings', icon: 'S', action: function() { navigateTo('admin', {section:'settings'}); } });
-            items.push({ type: 'nav', label: 'Users', desc: 'Manage users', icon: 'U', action: function() { navigateTo('admin', {section:'users'}); } });
-            items.push({ type: 'nav', label: 'Organizations', desc: 'Manage companies', icon: 'O', action: function() { navigateTo('admin', {section:'organizations'}); } });
+            items.push({ type: 'nav', label: labels.timeReports, desc: labels.timeReportsDesc, icon: 'R', action: function() { navigateTo('admin', {section:'reports'}); } });
+            items.push({ type: 'nav', label: labels.settings, desc: labels.settingsDesc, icon: 'S', action: function() { navigateTo('admin', {section:'settings'}); } });
+            items.push({ type: 'nav', label: labels.users, desc: labels.usersDesc, icon: 'U', action: function() { navigateTo('admin', {section:'users'}); } });
+            items.push({ type: 'nav', label: labels.organizations, desc: labels.organizationsDesc, icon: 'O', action: function() { navigateTo('admin', {section:'organizations'}); } });
         }
-        items.push({ type: 'action', label: 'Toggle Dark Mode', desc: 'Switch light/dark theme', icon: 'M', action: function() { if (typeof toggleTheme === 'function') toggleTheme(); } });
+        items.push({ type: 'action', label: labels.toggleDark, desc: labels.toggleDarkDesc, icon: 'M', action: function() { if (typeof toggleTheme === 'function') toggleTheme(); } });
         return items;
     }
 
     function getItemTypeLabel(item) {
-        if (item.type === 'ticket') return 'ticket';
-        if (item.type === 'client') return 'client';
-        if (item.type === 'contact') return 'contact';
-        if (item.type === 'report') return 'report';
-        if (item.type === 'action') return 'action';
-        return 'go to';
+        if (item.type === 'ticket') return shortcutLabel('ticket', 'ticket');
+        if (item.type === 'client') return shortcutLabel('client', 'client');
+        if (item.type === 'contact') return shortcutLabel('contact', 'contact');
+        if (item.type === 'report') return shortcutLabel('report', 'report');
+        if (item.type === 'action') return shortcutLabel('action', 'action');
+        return shortcutLabel('goTo', 'go to');
     }
 
     function renderPaletteSection(title) {
@@ -139,7 +143,7 @@
 
         if (!items.length) {
             var empty = document.createElement('div');
-            empty.textContent = 'No matches';
+            empty.textContent = shortcutLabel('noMatches', 'No matches');
             empty.className = 'fd-command-empty';
             paletteResults.appendChild(empty);
             return;
@@ -194,13 +198,14 @@
     }
 
     function getGlobalSearchSectionLabels() {
+        var labels = cfg.shortcutLabels || {};
         return {
-            open_tickets: 'Open tickets',
-            done_tickets: 'Done tickets',
-            archived_tickets: 'Archived tickets',
-            clients: 'Clients',
-            contacts: 'Contacts',
-            reports: 'Reports'
+            open_tickets: labels.openTickets || 'Open tickets',
+            done_tickets: labels.doneTickets || 'Done tickets',
+            archived_tickets: labels.archivedTickets || 'Archived tickets',
+            clients: labels.clients || 'Clients',
+            contacts: labels.contacts || 'Contacts',
+            reports: labels.reports || 'Reports'
         };
     }
 

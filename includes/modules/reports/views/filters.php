@@ -166,7 +166,7 @@
                                 'this_week' => t('This week'),
                                 'this_month' => t('This month'),
                                 'last_month' => t('Last month'),
-                                'this_quarter' => t('Q' . ceil(date('n') / 3)),
+                                'this_quarter' => t('Quarter {number}', ['number' => ceil(date('n') / 3)]),
                             ];
                             foreach ($quick_presets as $preset_val => $preset_label): ?>
                             <button type="button"
