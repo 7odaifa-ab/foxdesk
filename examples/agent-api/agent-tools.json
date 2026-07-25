@@ -71,6 +71,24 @@
       "requires_confirmation": true
     },
     {
+      "name": "foxdesk_plan_work_log",
+      "action": "agent-plan-work-log",
+      "method": "POST",
+      "scopes": ["tickets:read", "tickets:write", "comments:write", "time:write"],
+      "writes": false,
+      "supports_dry_run": false,
+      "requires_confirmation": false
+    },
+    {
+      "name": "foxdesk_apply_work_log_plan",
+      "action": "agent-apply-work-log-plan",
+      "method": "POST",
+      "scopes": ["tickets:read", "tickets:write", "comments:write", "time:write"],
+      "writes": true,
+      "supports_dry_run": false,
+      "requires_confirmation": true
+    },
+    {
       "name": "foxdesk_log_time",
       "action": "agent-log-time",
       "method": "POST",

@@ -52,6 +52,12 @@ Use absolute paths in real client configs:
 - `foxdesk_create_ticket` creates a ticket.
 - `foxdesk_add_comment` adds a public or internal comment.
 - `foxdesk_add_work_entry` atomically adds a comment and its linked time entry.
+- `foxdesk_add_work_entry` creates a work-only comment with its structured work
+  date and duration.
+- `foxdesk_plan_work_log` validates a complete multi-day plan and returns a
+  signed preview without writing.
+- `foxdesk_apply_work_log_plan` applies that unchanged plan only after the user
+  explicitly approves the complete preview.
 - `foxdesk_log_time` logs standalone time only when no comment belongs to the work.
 - `foxdesk_prepare_report` prepares a report review.
 
@@ -61,6 +67,8 @@ Use absolute paths in real client configs:
 - `tickets:write` for creating tickets.
 - `tickets:read` plus `comments:write` for comments.
 - `tickets:read`, `comments:write`, and `time:write` for linked work entries.
+- `tickets:read`, `tickets:write`, `comments:write`, and `time:write` for
+  planning and applying multi-day work logs.
 - `time:write` for standalone time entries.
 - `reports:read` for report review.
 
@@ -87,6 +95,13 @@ calling FoxDesk:
 Then repeat the call with `confirm:true` to execute it. Set
 `FOXDESK_AGENT_DRY_RUN=1` to force all write tools into dry-run mode. Set
 `FOXDESK_AGENT_CONFIRM_WRITES=0` only in a tightly controlled automation.
+
+For multi-day work, collect the ticket structure, exact total minutes, work
+dates, actual versus approved allocation, visibility, and billable state.
+Show the complete `foxdesk_plan_work_log` preview, then pass its unchanged
+`plan` and `plan_hash` to `foxdesk_apply_work_log_plan` with `confirm:true`.
+Keep dates and durations out of ticket and comment prose unless the user
+explicitly asks for them there.
 
 ## Verification
 

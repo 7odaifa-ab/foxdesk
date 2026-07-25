@@ -599,6 +599,8 @@ function api_token_required_scope_for_action(string $action): ?string
         'agent-add-comment' => 'comments:write',
         'agent-add-update' => 'comments:write',
         'agent-add-work-entry' => 'comments:write',
+        'agent-plan-work-log' => 'tickets:read',
+        'agent-apply-work-log-plan' => 'tickets:write',
         'agent-update-status' => 'tickets:write',
         'agent-log-time' => 'time:write',
         'agent-delete-ticket-preflight' => 'tickets:read',

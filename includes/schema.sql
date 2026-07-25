@@ -172,6 +172,8 @@ CREATE TABLE IF NOT EXISTS ticket_time_entries (
     ticket_id INT NOT NULL,
     user_id INT NOT NULL,
     comment_id INT,
+    worked_on DATE DEFAULT NULL,
+    time_precision VARCHAR(24) NOT NULL DEFAULT 'exact',
     started_at DATETIME NOT NULL,
     ended_at DATETIME DEFAULT NULL,
     paused_at DATETIME DEFAULT NULL,
@@ -189,6 +191,7 @@ CREATE TABLE IF NOT EXISTS ticket_time_entries (
     INDEX idx_ticket (ticket_id),
     INDEX idx_user (user_id),
     INDEX idx_comment (comment_id),
+    INDEX idx_worked_on (worked_on),
     INDEX idx_started (started_at),
     INDEX idx_ended (ended_at),
     INDEX idx_created (created_at)

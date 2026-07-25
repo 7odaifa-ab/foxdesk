@@ -22,8 +22,17 @@ parameter is omitted, FoxDesk uses the API-token user's language.
 ## Main Ticket
 
 The main ticket contains only a concise title, short general description,
-client, assignee, status, and priority. Do not put minutes, total time, a daily
-breakdown, a detailed agenda, a timer, or a time entry in the main body.
+client, assignee, status, and priority. Do not put dates, clock times, minutes,
+total time, a daily breakdown, a detailed agenda, a timer, or a time entry in
+the main body unless the user explicitly asks for temporal information there.
+
+## Multi-day intake and preview
+
+Before writing multi-day work, collect the desired one-ticket or multi-ticket
+structure, exact total minutes, work dates, actual versus approved allocation,
+visibility, and billable state. Use `agent-plan-work-log` to show a complete
+signed preview. Write nothing until the user approves it, then send the
+unchanged plan to `agent-apply-work-log-plan` with `confirm:true`.
 
 ## Comments Without Tracked Time
 
@@ -36,17 +45,17 @@ Use one `agent-add-work-entry` request for each work record. Send the comment
 and duration together so FoxDesk creates both linked records atomically:
 
 ```html
-<p><strong>13 Jul 2026 - 27 min</strong></p>
 <ul>
   <li>Adjusted campaign budgets based on performance.</li>
   <li>Reviewed the bidding strategy for the accessories campaign.</li>
 </ul>
 ```
 
-The request must include `content` and `duration_minutes`. Include `started_at`
-and `ended_at` when exact work times are known. Set `skip_notification` to
-`true` when the client should not receive an email. Never create a separate
-comment and time entry for the same work.
+The request must include `content`, `worked_on`, and `duration_minutes`. Include
+`started_at` and `ended_at` only when exact work times are known. Keep dates
+and durations out of the comment text. Set `skip_notification` to `true` when
+the client should not receive an email. Never create a separate comment and
+time entry for the same work.
 
 ## Verification
 

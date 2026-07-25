@@ -54,6 +54,17 @@ function api_app_normalize_datetime_for_time($value, string $field): string
     return $normalized;
 }
 
+function api_app_normalize_worked_on($value): string
+{
+    $value = trim((string) $value);
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    $errors = DateTimeImmutable::getLastErrors();
+    if (!$date || ($errors !== false && ((int) ($errors['warning_count'] ?? 0) > 0 || (int) ($errors['error_count'] ?? 0) > 0))) {
+        api_error('worked_on must use YYYY-MM-DD.', 422);
+    }
+    return $date->format('Y-m-d');
+}
+
 function api_app_resolve_log_time_input(array $input): array
 {
     $duration = (int) ($input['duration_minutes'] ?? 0);
@@ -63,6 +74,14 @@ function api_app_resolve_log_time_input(array $input): array
 
     $started_raw = trim((string) ($input['started_at'] ?? ''));
     $ended_raw = trim((string) ($input['ended_at'] ?? ''));
+    $worked_on = trim((string) ($input['worked_on'] ?? ''));
+    if ($worked_on !== '') {
+        $worked_on = api_app_normalize_worked_on($worked_on);
+    }
+    $requested_precision = strtolower(trim((string) ($input['time_precision'] ?? '')));
+    if ($requested_precision !== '' && !in_array($requested_precision, ['exact', 'duration_only', 'allocated'], true)) {
+        api_error('time_precision must be exact, duration_only, or allocated.', 422);
+    }
     $started_at = $started_raw !== '' ? api_app_normalize_datetime_for_time($started_raw, 'started_at') : null;
     $ended_at = $ended_raw !== '' ? api_app_normalize_datetime_for_time($ended_raw, 'ended_at') : null;
 
@@ -81,13 +100,28 @@ function api_app_resolve_log_time_input(array $input): array
     } elseif ($ended_at !== null) {
         $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
     } else {
-        $ended_at = date('Y-m-d H:i:s');
+        if ($requested_precision === 'exact') {
+            api_error('time_precision exact requires started_at or ended_at.', 422);
+        }
+        if ($worked_on === '') {
+            $worked_on = date('Y-m-d');
+        }
+        $ended_at = $worked_on . ' 12:00:00';
         $started_at = date('Y-m-d H:i:s', strtotime($ended_at) - ($duration * 60));
+    }
+
+    $precision = ($started_raw !== '' || $ended_raw !== '')
+        ? 'exact'
+        : ($requested_precision !== '' ? $requested_precision : 'duration_only');
+    if ($worked_on === '') {
+        $worked_on = date('Y-m-d', strtotime((string) $started_at));
     }
 
     return [
         'started_at' => $started_at,
         'ended_at' => $ended_at,
+        'worked_on' => $worked_on,
+        'time_precision' => $precision,
         'duration_minutes' => $duration,
     ];
 }
@@ -348,11 +382,17 @@ function api_app_ticket_time_entries(int $ticket_id): array
 
     $entries = [];
     foreach (get_ticket_time_entries($ticket_id) as $entry) {
+        $public_timestamps = function_exists('ticket_time_entry_public_timestamps')
+            ? ticket_time_entry_public_timestamps($entry)
+            : ['started_at' => $entry['started_at'] ?? null, 'ended_at' => $entry['ended_at'] ?? null];
         $entries[] = [
             'id' => (int) ($entry['id'] ?? 0),
+            'comment_id' => !empty($entry['comment_id']) ? (int) $entry['comment_id'] : null,
             'user_name' => trim((string) (($entry['first_name'] ?? '') . ' ' . ($entry['last_name'] ?? ''))),
-            'started_at' => $entry['started_at'] ?? null,
-            'ended_at' => $entry['ended_at'] ?? null,
+            'worked_on' => $entry['worked_on'] ?? (!empty($entry['started_at']) ? date('Y-m-d', strtotime((string) $entry['started_at'])) : null),
+            'time_precision' => function_exists('ticket_time_entry_precision') ? ticket_time_entry_precision($entry) : 'exact',
+            'started_at' => $public_timestamps['started_at'],
+            'ended_at' => $public_timestamps['ended_at'],
             'duration_minutes' => (int) ($entry['duration_minutes'] ?? 0),
             'summary' => $entry['summary'] ?? null,
             'is_billable' => !empty($entry['is_billable']),
@@ -536,6 +576,8 @@ function api_app_log_time()
     }
 
     $entry_id = add_manual_time_entry((int) $ticket['id'], (int) $user['id'], [
+        'worked_on' => $time_input['worked_on'],
+        'time_precision' => $time_input['time_precision'],
         'started_at' => $time_input['started_at'],
         'ended_at' => $time_input['ended_at'],
         'duration_minutes' => $duration,
@@ -552,6 +594,10 @@ function api_app_log_time()
         'ticket' => app_contract_ticket_payload($ticket),
         'time_entry_id' => (int) $entry_id,
         'duration_minutes' => $duration,
+        'worked_on' => $time_input['worked_on'],
+        'time_precision' => $time_input['time_precision'],
+        'started_at' => $time_input['time_precision'] === 'exact' ? $time_input['started_at'] : null,
+        'ended_at' => $time_input['time_precision'] === 'exact' ? $time_input['ended_at'] : null,
     ];
 
     api_app_contract_success($response, ['resource' => 'log_time'], $response);

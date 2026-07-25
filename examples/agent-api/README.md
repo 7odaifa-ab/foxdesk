@@ -70,6 +70,10 @@ See `docs/AGENT_MCP_SERVER.md` for the client config and tool list.
 
 Write tools support `dry_run:true` and require `confirm:true` before execution.
 The machine-readable tool manifest is in `examples/agent-api/agent-tools.json`.
+For multi-day work, use `foxdesk_plan_work_log`, show the complete signed
+preview, and call `foxdesk_apply_work_log_plan` only after explicit approval.
+The prose describes completed work; `worked_on` and `duration_minutes` carry
+the date and duration.
 
 ## Staging/production smoke
 

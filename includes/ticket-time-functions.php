@@ -12,6 +12,40 @@ function ticket_time_table_exists() {
     return table_exists('ticket_time_entries');
 }
 
+function ticket_time_work_metadata_columns_exist(): bool
+{
+    return ticket_time_table_exists()
+        && column_exists('ticket_time_entries', 'worked_on')
+        && column_exists('ticket_time_entries', 'time_precision');
+}
+
+function ticket_time_entry_precision(array $entry): string
+{
+    $precision = strtolower(trim((string) ($entry['time_precision'] ?? 'exact')));
+    return in_array($precision, ['exact', 'duration_only', 'allocated'], true) ? $precision : 'exact';
+}
+
+function ticket_time_entry_display_date(array $entry): string
+{
+    $worked_on = trim((string) ($entry['worked_on'] ?? ''));
+    if (ticket_time_entry_precision($entry) !== 'exact' && $worked_on !== '') {
+        return function_exists('format_date') ? format_date($worked_on, 'd.m.Y') : $worked_on;
+    }
+    $started_at = trim((string) ($entry['started_at'] ?? ''));
+    return $started_at !== '' && function_exists('format_date') ? format_date($started_at) : $started_at;
+}
+
+function ticket_time_entry_public_timestamps(array $entry): array
+{
+    if (ticket_time_entry_precision($entry) !== 'exact') {
+        return ['started_at' => null, 'ended_at' => null];
+    }
+    return [
+        'started_at' => $entry['started_at'] ?? null,
+        'ended_at' => $entry['ended_at'] ?? null,
+    ];
+}
+
 /**
  * Ensure the tickets table supports a custom per-ticket billable rate override.
  */
@@ -327,11 +361,14 @@ function get_ticket_time_entries($ticket_id, bool $strict = false) {
         return [];
     }
     try {
+        $order_by = ticket_time_work_metadata_columns_exist()
+            ? 'COALESCE(tte.worked_on, DATE(tte.started_at)) DESC, tte.started_at DESC'
+            : 'tte.started_at DESC';
         return db_fetch_all("SELECT tte.*, u.first_name, u.last_name, u.email
                              FROM ticket_time_entries tte
                              LEFT JOIN users u ON tte.user_id = u.id
                              WHERE tte.ticket_id = ?
-                             ORDER BY tte.started_at DESC", [$ticket_id]);
+                             ORDER BY {$order_by}", [$ticket_id]);
     } catch (Throwable $e) {
         if ($strict) {
             throw new RuntimeException('Unable to read ticket time entries.', 0, $e);
@@ -425,6 +462,15 @@ function add_manual_time_entry($ticket_id, $user_id, $data) {
             'is_manual' => ($source === 'timer') ? 0 : 1,
             'created_at' => date('Y-m-d H:i:s')
         ];
+
+        if (ticket_time_work_metadata_columns_exist()) {
+            $worked_on = trim((string) ($data['worked_on'] ?? ''));
+            if ($worked_on === '' && !empty($data['started_at'])) {
+                $worked_on = date('Y-m-d', strtotime((string) $data['started_at']));
+            }
+            $insert['worked_on'] = $worked_on !== '' ? $worked_on : null;
+            $insert['time_precision'] = ticket_time_entry_precision($data);
+        }
 
         // Set source column if it exists
         if (time_entry_source_column_exists()) {

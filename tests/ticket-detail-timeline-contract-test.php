@@ -20,7 +20,7 @@ $attachments = [
     ['id' => 3, 'comment_id' => 11],
 ];
 $time_entries = [
-    ['id' => 21, 'comment_id' => 10, 'started_at' => '2026-06-01 11:00:00'],
+    ['id' => 21, 'comment_id' => 10, 'started_at' => '2026-06-01 11:00:00', 'worked_on' => '2026-05-30', 'time_precision' => 'duration_only'],
     ['id' => 22, 'comment_id' => null, 'started_at' => '2026-06-01 09:00:00'],
 ];
 
@@ -35,7 +35,8 @@ $assert(count(ticket_detail_comment_attachments($attachments, 10)) === 1, 'Comme
 
 $timeline = ticket_detail_build_timeline($visible_customer_comments, $time_entries);
 $assert(isset($timeline['time_entries_by_comment'][10]), 'Linked time entries must be indexed by comment id.');
+$assert($timeline['timeline_items'][0]['data']['work_date'] === '2026-05-30', 'Duration-only work must supply the comment work date.');
 $assert(count($timeline['orphan_time_entries']) === 1, 'Orphan time entries must stay separate in the read model.');
-$assert(array_column($timeline['timeline_items'], 'type') === ['time_entry', 'comment'], 'Timeline must merge orphan time entries and comments chronologically.');
+$assert(array_column($timeline['timeline_items'], 'type') === ['comment', 'time_entry'], 'Timeline must sort structured work dates chronologically.');
 
 echo "Ticket detail timeline contract OK\n";
