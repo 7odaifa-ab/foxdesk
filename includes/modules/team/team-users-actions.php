@@ -103,7 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $subject = str_replace(array_keys($placeholders), array_values($placeholders), $template['subject']);
                             $body = str_replace(array_keys($placeholders), array_values($placeholders), $template['body']);
 
-                            $sent = send_email($email, $subject, $body, false, true);
+                            $sent = send_ticket_notification_email($email, $subject, $body, [
+                                'language' => $lang,
+                                'eyebrow' => 'Welcome to FoxDesk',
+                                'title' => $subject,
+                                'cta_label' => 'Log in',
+                                'cta_url' => $login_url,
+                            ], true);
                         } else {
                             $sent = false;
                         }

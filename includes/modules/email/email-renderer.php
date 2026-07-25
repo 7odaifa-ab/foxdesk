@@ -62,7 +62,7 @@ function foxdesk_ticket_email_subject(string $event, array $ticket = [], array $
     return foxdesk_email_normalize_subject($subject, $label);
 }
 
-function foxdesk_render_email_body_html($body): string
+function foxdesk_render_email_body_html($body, string $direction = 'ltr'): string
 {
     $text = str_replace(["\r\n", "\r"], "\n", trim((string) $body));
     if ($text === '') {
@@ -96,7 +96,8 @@ function foxdesk_render_email_body_html($body): string
             foreach ($lines as $line) {
                 $items .= '<li style="margin:0 0 6px">' . foxdesk_email_escape(preg_replace('/^[-*]\s+/', '', $line)) . '</li>';
             }
-            $html[] = '<ul style="margin:0 0 14px 20px;padding:0;color:#334155;font-size:15px;line-height:23px">' . $items . '</ul>';
+            $margin = $direction === 'rtl' ? '0 20px 14px 0' : '0 0 14px 20px';
+            $html[] = '<ul style="margin:' . $margin . ';padding:0;color:#334155;font-size:15px;line-height:23px">' . $items . '</ul>';
             continue;
         }
 
@@ -108,11 +109,14 @@ function foxdesk_render_email_body_html($body): string
 
 function foxdesk_render_ticket_email_html(array $payload): string
 {
+    $language = strtolower(trim((string) ($payload['language'] ?? 'en')));
+    $direction = $language === 'ar' ? 'rtl' : 'ltr';
+    $align = $direction === 'rtl' ? 'right' : 'left';
     $app_name = foxdesk_email_escape($payload['app_name'] ?? 'FoxDesk');
     $eyebrow = foxdesk_email_escape($payload['eyebrow'] ?? '');
     $title = foxdesk_email_escape(foxdesk_email_normalize_subject($payload['title'] ?? '', 'Ticket update'));
     $preheader = foxdesk_email_escape($payload['preheader'] ?? $payload['eyebrow'] ?? 'Open FoxDesk to review the update.');
-    $body = foxdesk_render_email_body_html($payload['body'] ?? '');
+    $body = foxdesk_render_email_body_html($payload['body'] ?? '', $direction);
     $cta_label = foxdesk_email_escape($payload['cta_label'] ?? 'Open ticket');
     $cta_url = foxdesk_email_escape($payload['cta_url'] ?? '');
     $reason = foxdesk_email_escape($payload['reason'] ?? 'You are receiving this because you are connected to this ticket.');
@@ -124,11 +128,11 @@ function foxdesk_render_ticket_email_html(array $payload): string
         ? '<p style="margin:22px 0 0;color:#64748b;font-size:12px;line-height:18px">' . $reason . '</p>'
         : '';
 
-    return '<!doctype html><html><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,sans-serif;color:#0f172a">'
+    return '<!doctype html><html lang="' . foxdesk_email_escape($language) . '" dir="' . $direction . '"><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,sans-serif;color:#0f172a;direction:' . $direction . ';text-align:' . $align . '">'
         . '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">' . $preheader . '</div>'
         . '<div style="max-width:620px;margin:0 auto;padding:32px 18px">'
         . '<div style="font-weight:800;font-size:18px;margin-bottom:18px">' . $app_name . '</div>'
-        . '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.06)">'
+        . '<div dir="' . $direction . '" style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.06);direction:' . $direction . ';text-align:' . $align . '">'
         . ($eyebrow !== '' ? '<div style="color:#64748b;font-size:13px;font-weight:700;margin-bottom:8px">' . $eyebrow . '</div>' : '')
         . '<h1 style="margin:0 0 14px;font-size:24px;line-height:30px">' . $title . '</h1>'
         . '<div>' . $body . '</div>'

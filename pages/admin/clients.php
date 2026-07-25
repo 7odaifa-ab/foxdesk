@@ -112,7 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $body = t('Hello') . ",\n\n" . t('Your new password for {app} is:', ['app' => $app_name]) . "\n\n$new_password\n\n" . t('After signing in, you can change your password in your profile settings.') . "\n\n" . t('Regards') . ",\n$app_name";
 
             // Account emails are forced regardless of notification preferences.
-            $sent = send_email($client['email'], $subject, $body, false, true);
+            $sent = send_ticket_notification_email($client['email'], $subject, $body, [
+                'language' => $client['language'] ?? 'en',
+                'eyebrow' => 'Password updated',
+                'title' => $subject,
+            ], true);
 
             if ($sent) {
                 flash(t('New password generated and sent to {email}.', ['email' => $client['email']]), 'success');

@@ -664,7 +664,7 @@ function settings_handle_post_request(callable $settings_audit): void
         $subject = trim($_POST['template_subject'] ?? '');
         $body = trim($_POST['template_body'] ?? '');
         $lang = strtolower(trim((string) ($_POST['template_lang'] ?? 'en')));
-        if (!in_array($lang, ['en', 'cs', 'de', 'it', 'es'], true)) {
+        if (!in_array($lang, array_keys(get_supported_languages()), true)) {
             $lang = 'en';
         }
 

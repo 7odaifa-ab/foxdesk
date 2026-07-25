@@ -61,7 +61,7 @@
     "release:manifest": "node bin/release-manifest.js",
     "release:manifest:verify": "node bin/release-manifest.js --verify=build/release-manifest.json",
     "test:release-manifest": "node tests/release-manifest-contract.test.js",
-    "test:email-policy": "sh -c 'sh ./bin/run-php.sh tests/notification-policy-test.php && sh ./bin/run-php.sh tests/email-notification-contract-test.php && sh ./bin/run-php.sh tests/email-format-test.php && sh ./bin/run-php.sh tests/pseudo-cron-email-test.php'"
+    "test:email-policy": "sh -c 'sh ./bin/run-php.sh tests/notification-policy-test.php && sh ./bin/run-php.sh tests/email-notification-contract-test.php && sh ./bin/run-php.sh tests/email-format-test.php && sh ./bin/run-php.sh tests/email-arabic-contract-test.php && sh ./bin/run-php.sh tests/pseudo-cron-email-test.php'"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

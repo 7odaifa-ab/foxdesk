@@ -494,7 +494,13 @@ function send_recurring_task_notification($ticket_id, $recurring_task)
         $message .= t('Description') . ': ' . ($ticket['description'] ?: t('None')) . "\n";
         $message .= t('Due Date') . ': ' . format_date($ticket['due_date']) . "\n\n";
         $message .= t('View ticket') . ': ' . APP_URL . '/index.php?page=ticket&id=' . $ticket_id . "\n";
-        return send_email($assigned_user['email'], $subject, $message);
+        return send_ticket_notification_email($assigned_user['email'], $subject, $message, [
+            'language' => $language,
+            'eyebrow' => 'Recurring task assigned',
+            'title' => $ticket['title'],
+            'cta_label' => 'Open ticket',
+            'cta_url' => APP_URL . '/index.php?page=ticket&id=' . $ticket_id,
+        ]);
     }
 
     // Replace placeholders
@@ -512,6 +518,12 @@ function send_recurring_task_notification($ticket_id, $recurring_task)
     $subject = str_replace(array_keys($placeholders), array_values($placeholders), $template['subject']);
     $body = str_replace(array_keys($placeholders), array_values($placeholders), $template['body']);
 
-    return send_email($assigned_user['email'], $subject, $body);
+    return send_ticket_notification_email($assigned_user['email'], $subject, $body, [
+        'language' => $language,
+        'eyebrow' => 'Recurring task assigned',
+        'title' => $ticket['title'],
+        'cta_label' => 'Open ticket',
+        'cta_url' => APP_URL . '/index.php?page=ticket&id=' . $ticket_id,
+    ]);
 }
 
