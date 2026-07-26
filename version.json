@@ -1,24 +1,14 @@
 {
-    "version": "0.3.136",
-    "date": "2026-06-30",
+    "version": "0.3.137",
+    "date": "2026-07-26",
     "min_php": "8.1",
     "changelog": [
-        "Work now includes the main working dashboard with exact personal and team time summaries",
-        "The left navigation is simplified to Work, Tickets, Clients, Reports, and Settings",
-        "Reports are reorganized into Time overview, Billing review, and Published reports",
-        "Time overview shows exact worked minutes; invoice rounding is limited to explicit billing review",
-        "Settings now use compact section cards instead of duplicate horizontal admin menus",
-        "Time overview now shows concrete work log rows with agent, ticket, client, note, and exact tracked time",
-        "Self-hosted report summary styling is restored so report metrics render as cards instead of plain text",
-        "The visual system is cleaned up across app shell, ticket detail, reports, login, attachments, and command palette",
-        "Decorative blur, glow, heavy shadows, and inconsistent fallback boxes are replaced by shared design tokens",
-        "Image preview now handles empty image sources safely, preventing broken image placeholders and unnecessary browser requests",
-        "Work dashboard now includes the Active now KPI and a seven-day activity chart with per-agent details",
-        "Hidden help panel state no longer creates horizontal overflow in generated screenshot smoke checks",
-        "Release metadata and self-hosted screenshot evidence are aligned with the current 0.3.136 release",
-        "Reports now use a compact laptop-friendly layout with less vertical whitespace",
-        "Duplicate report page headers are suppressed so the agenda starts higher in the viewport",
-        "Billing review, report filters, KPI totals, and report tables are denser and easier to use on MacBook screens"
+        "FoxDesk now ships complete runtime catalogs for 24 locales",
+        "Arabic, Hebrew, Persian, and Urdu receive right-to-left layout, bidi isolation, and semantic directional icons",
+        "Chinese, Japanese, and Korean input now respects IME composition and CJK-aware search behavior",
+        "Locale-aware dates, numbers, plurals, fonts, e-mails, reports, and public views are available throughout the application",
+        "Language identifiers now support canonical regional and script tags such as pt-BR, zh-Hans, and zh-Hant",
+        "Translation catalog, placeholder, plural, CSS direction, and generated-file checks are enforced by the release pipeline"
     ],
     "delete_files": []
 }
