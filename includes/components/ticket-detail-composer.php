@@ -75,7 +75,7 @@
                                     <select name="status_id" class="form-select text-sm w-full" style="height: 42px;">
                                         <?php foreach ($statuses as $status): ?>
                                                 <option value="<?php echo $status['id']; ?>" <?php echo $status['id'] == $ticket['status_id'] ? 'selected' : ''; ?>>
-                                                    <?php echo e(t('Status')); ?>: <?php echo e($status['name']); ?>
+                                                    <?php echo e(t('Status')); ?>: <?php echo e(bidi_isolate($status['name'])); ?>
                                                 </option>
                                         <?php endforeach; ?>
                                     </select>

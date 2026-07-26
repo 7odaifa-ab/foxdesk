@@ -10,7 +10,7 @@ if (!is_admin()) {
 }
 
 $current_user = current_user();
-$allowed_report_languages = ['en', 'cs', 'de', 'it', 'es'];
+$allowed_report_languages = array_keys(get_supported_languages());
 $allowed_group_by = ['none', 'day', 'task'];
 $allowed_rounding = [0, 15, 30, 60];
 
@@ -161,13 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $organizations = db_fetch_all("SELECT id, name FROM organizations WHERE is_active = 1 ORDER BY name ASC");
 
 // Get available languages
-$languages = [
-    'en' => t('English'),
-    'cs' => t('Czech'),
-    'de' => t('German'),
-    'it' => t('Italian'),
-    'es' => t('Spanish')
-];
+$languages = array_map(fn($item) => t($item['name']), get_supported_languages());
 
 // Date presets
 $today = date('Y-m-d');
@@ -328,7 +322,7 @@ include BASE_PATH . '/includes/header.php';
         </div>
         <div class="admin-hero-actions">
             <a href="<?php echo url('admin', ['section' => 'reports-list']); ?>" class="btn btn-secondary btn-sm">
-                <?php echo get_icon('arrow-left', 'w-3.5 h-3.5'); ?><?php echo e(t('Back')); ?>
+                <?php echo get_icon('arrow-left', 'w-3.5 h-3.5 back-link-icon'); ?><?php echo e(t('Back')); ?>
             </a>
         </div>
     </section>
@@ -558,7 +552,7 @@ include BASE_PATH . '/includes/header.php';
                 <!-- Theme Color -->
                 <div>
                     <label class="block text-sm font-medium mb-2 text-theme-secondary"><?php echo e(t('Report Theme Color')); ?></label>
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center gap-4">
                         <input type="color" name="theme_color" value="<?php echo e($form_values['theme_color']); ?>" id="theme_color"
                                class="w-32 h-16 border-2 rounded-lg cursor-pointer shadow-sm border-theme-light">
                         <div>

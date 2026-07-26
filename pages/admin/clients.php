@@ -112,7 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $body = t('Hello') . ",\n\n" . t('Your new password for {app} is:', ['app' => $app_name]) . "\n\n$new_password\n\n" . t('After signing in, you can change your password in your profile settings.') . "\n\n" . t('Regards') . ",\n$app_name";
 
             // Account emails are forced regardless of notification preferences.
-            $sent = send_email($client['email'], $subject, $body, false, true);
+            $sent = send_ticket_notification_email($client['email'], $subject, $body, [
+                'language' => $client['language'] ?? 'en',
+                'eyebrow' => 'Password updated',
+                'title' => $subject,
+            ], true);
 
             if ($sent) {
                 flash(t('New password generated and sent to {email}.', ['email' => $client['email']]), 'success');
@@ -174,7 +178,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                                 <?php $ticket_count = $ticket_counts[(int) $client['id']] ?? 0; ?>
                                 <tr class="tr-hover">
                                     <td class="px-6 py-4 admin-responsive-primary" data-label="<?php echo e(t('Name')); ?>">
-                                        <div class="flex items-center space-x-3">
+                                        <div class="flex items-center gap-3">
                                             <?php echo render_user_avatar($client, 'sm'); ?>
                                             <span class="admin-cell-title font-medium text-theme-primary"><?php echo e($client['first_name'] . ' ' . $client['last_name']); ?></span>
                                         </div>
@@ -285,7 +289,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                 <input type="email" id="edit_email" disabled class="form-input" style="background: var(--surface-secondary); color: var(--text-muted);">
             </div>
 
-            <div class="flex space-x-3">
+            <div class="flex gap-3">
                 <button type="button" onclick="closeModal()" class="btn btn-secondary flex-1">
                     <?php echo e(t('Cancel')); ?>
                 </button>
@@ -302,7 +306,7 @@ include BASE_PATH . '/includes/components/page-header.php';
         <form method="post" class="space-y-3">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="id" id="reset_id">
-            <div class="flex items-end space-x-3">
+            <div class="flex items-end gap-3">
                 <div class="flex-1">
                     <label
                         class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('New password')); ?></label>

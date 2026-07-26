@@ -7,23 +7,16 @@
         <div class="mb-2 flex justify-between items-center">
             <h3 class="font-semibold text-theme-primary"><?php echo e(t('Email Templates')); ?></h3>
 
-            <form action="" method="get" class="flex items-center space-x-2">
+            <form action="" method="get" class="flex items-center gap-2">
                 <input type="hidden" name="page" value="admin">
                 <input type="hidden" name="section" value="settings">
                 <input type="hidden" name="tab" value="templates">
 
                 <label class="text-sm text-theme-secondary"><?php echo e(t('Language:')); ?></label>
                 <select name="lang" onchange="this.form.submit()" class="form-select form-select-sm w-auto">
-                    <option value="en" <?php echo $template_lang === 'en' ? 'selected' : ''; ?>><?php echo e(t('English')); ?>
-                    </option>
-                    <option value="cs" <?php echo $template_lang === 'cs' ? 'selected' : ''; ?>><?php echo e(t('Czech')); ?>
-                    </option>
-                    <option value="de" <?php echo $template_lang === 'de' ? 'selected' : ''; ?>><?php echo e(t('German')); ?>
-                    </option>
-                    <option value="it" <?php echo $template_lang === 'it' ? 'selected' : ''; ?>><?php echo e(t('Italian')); ?>
-                    </option>
-                    <option value="es" <?php echo $template_lang === 'es' ? 'selected' : ''; ?>><?php echo e(t('Spanish')); ?>
-                    </option>
+                    <?php foreach (get_supported_languages() as $code => $language): ?>
+                        <option value="<?php echo e($code); ?>" <?php echo $template_lang === $code ? 'selected' : ''; ?>><?php echo e(t($language['name'])); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </form>
         </div>
@@ -70,7 +63,7 @@
                                 <div>
                                     <label class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Email subject')); ?></label>
                                     <input type="text" name="template_subject" value="<?php echo e($template['subject']); ?>"
-                                        class="form-input">
+                                        dir="<?php echo e(get_app_direction($template_lang)); ?>" class="form-input">
                                     <p class="text-xs mt-1 text-theme-muted">
                                         <?php echo e(t('You can use variables in the subject, e.g. {ticket_title}.')); ?>
                                     </p>
@@ -78,7 +71,7 @@
                                 <div>
                                     <label class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Email body')); ?></label>
                                     <textarea name="template_body" rows="8"
-                                        class="form-textarea font-mono text-sm"><?php echo e($template['body']); ?></textarea>
+                                        dir="<?php echo e(get_app_direction($template_lang)); ?>" class="form-textarea font-mono text-sm"><?php echo e($template['body']); ?></textarea>
                                 </div>
                             </div>
                             <div class="mt-4 flex justify-end">

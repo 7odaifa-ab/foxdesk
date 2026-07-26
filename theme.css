@@ -1,4 +1,4 @@
-﻿
+
 @font-face {
 font-family: 'Inter';
 font-style: normal;
@@ -91,6 +91,13 @@ navigation: auto;
 --transition-fast: 0.15s ease;
 --transition-base: 0.2s ease;
 --transition-slow: 0.3s ease;
+--fd-inline-enter-x: 24px;
+--fd-inline-exit-x: 20px;
+--fd-inline-nudge-x: 2px;
+--fd-inline-hover-enter-x: -4px;
+--fd-inline-remove-x: -10px;
+--fd-chevron-expanded-turn: 90deg;
+--fd-chevron-scale-x: 1;
 --space-0: 0;
 --space-1: 0.25rem;
 --space-2: 0.5rem;
@@ -1084,9 +1091,11 @@ font-family: inherit;
 }
 .sidebar {
 width: var(--app-sidebar-width);
+inset-inline-start: 0;
+inset-inline-end: auto;
 background: var(--surface-primary);
 color: var(--text-primary);
-border-right: 1px solid var(--border-light);
+border-inline-end: 1px solid var(--border-light);
 transition:
 width 0.2s ease,
 transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1108,7 +1117,7 @@ background: var(--primary);
 [data-theme="dark"] .sidebar {
 background: #1c2434;
 color: #8a99af;
-border-right: none;
+border-inline-end: none;
 }
 [data-theme="dark"] .sidebar .nav-item {
 color: #8a99af;
@@ -1137,13 +1146,13 @@ background: var(--primary);
 color: #fff;
 }
 .main-content {
-margin-left: var(--app-sidebar-width);
+margin-inline-start: var(--app-sidebar-width);
 display: flex;
 flex-direction: column;
 min-width: 0;
 min-height: 100vh;
 background: var(--bg-primary);
-transition: margin-left 0.2s ease;
+transition: margin-inline-start 0.2s ease;
 }
 .app-content {
 width: 100%;
@@ -1233,12 +1242,13 @@ width: 100%;
 min-width: 0;
 box-sizing: border-box;
 border-radius: var(--fd-radius-control);
-padding-left: 2.75rem !important;
-padding-right: 1rem !important;
+padding-inline-start: 2.75rem !important;
+padding-inline-end: 1rem !important;
 }
 .header-search-icon {
 position: absolute;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 top: 50%;
 z-index: 1;
 color: var(--text-muted);
@@ -1254,7 +1264,7 @@ width: var(--app-sidebar-compact-width) !important;
 overflow: visible;
 }
 #sidebar.is-compact ~ #main-content {
-margin-left: var(--app-sidebar-compact-width) !important;
+margin-inline-start: var(--app-sidebar-compact-width) !important;
 }
 }
 @media (max-width: 1024px) {
@@ -1268,7 +1278,7 @@ transform: translateX(0);
 box-shadow: var(--shadow-xl);
 }
 .main-content {
-margin-left: 0;
+margin-inline-start: 0;
 }
 .app-content {
 padding: 1rem;
@@ -1297,12 +1307,11 @@ overflow: visible;
 }
 body.sidebar-compact .main-content,
 body.sidebar-compact #main-content {
-margin-left: var(--app-sidebar-compact-width) !important;
+margin-inline-start: var(--app-sidebar-compact-width) !important;
 }
 body.sidebar-compact .sidebar-brand-row {
 justify-content: center;
-padding-left: 0.5rem;
-padding-right: 0.5rem;
+padding-inline: 0.5rem;
 position: relative;
 }
 body.sidebar-compact .sidebar-brand-link {
@@ -1320,7 +1329,8 @@ display: none !important;
 }
 body.sidebar-compact #sidebar-collapse-btn {
 position: absolute;
-right: -1rem;
+inset-inline-end: -1rem;
+inset-inline-start: auto;
 top: 1rem;
 z-index: 60;
 background: var(--surface-primary);
@@ -1328,8 +1338,7 @@ border: 1px solid var(--border-light);
 box-shadow: var(--shadow-sm);
 }
 body.sidebar-compact .sidebar-nav {
-padding-left: 0.5rem;
-padding-right: 0.5rem;
+padding-inline: 0.5rem;
 overflow-x: visible;
 }
 body.sidebar-compact #sidebar .nav-item,
@@ -1337,19 +1346,20 @@ body.sidebar-compact #sidebar #help-panel-btn,
 body.sidebar-compact #sidebar #sidebar-user-btn {
 justify-content: center;
 gap: 0;
-padding-left: 0.75rem;
-padding-right: 0.75rem;
+padding-inline: 0.75rem;
 min-height: 44px;
 position: relative;
 }
 body.sidebar-compact #sidebar .nav-item.active::before {
-left: 0.125rem;
+inset-inline-start: 0.125rem;
+inset-inline-end: auto;
 }
 body.sidebar-compact #sidebar .notif-sidebar-badge,
 body.sidebar-compact #sidebar .sidebar-timer-count {
 position: absolute;
 top: 0.25rem;
-right: 0.25rem;
+inset-inline-end: 0.25rem;
+inset-inline-start: auto;
 min-width: 1rem;
 height: 1rem;
 font-size: 0.625rem;
@@ -1359,8 +1369,8 @@ padding-left: 0.5rem;
 padding-right: 0.5rem;
 }
 body.sidebar-compact #sidebar-user-menu {
-left: 4.75rem;
-right: auto;
+inset-inline-start: 4.75rem;
+inset-inline-end: auto;
 bottom: 0;
 width: 15rem;
 }
@@ -1657,7 +1667,7 @@ padding: 0.625rem 0.75rem;
 border-top: 1px solid var(--border-light);
 font-size: var(--type-xs);
 line-height: 1.35;
-text-align: left;
+text-align: start;
 vertical-align: top;
 }
 .fd-table th {
@@ -1785,6 +1795,14 @@ font-size: 0.875rem;
 transition: all var(--transition-fast);
 min-height: var(--control-height);
 }
+.form-select {
+appearance: none;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 0.75rem center;
+background-size: 1rem;
+padding-inline-end: 2.5rem;
+}
 .form-input-sm,
 .form-select-sm {
 padding: 0.35rem 0.5rem;
@@ -1798,9 +1816,9 @@ font-size: 0.75rem;
 color: var(--text-muted);
 }
 .form-select-sm {
-padding-right: 1.5rem;
-background-position: right 0.35rem center;
-background-size: 12px;
+  padding-inline-end: 2rem;
+  background-position: right 0.6rem center;
+  background-size: 12px;
 }
 
 .fd-popover {
@@ -1992,7 +2010,7 @@ align-items: center;
 justify-content: center;
 width: 2rem;
 height: 2rem;
-margin-right: 0.75rem;
+margin-inline-end: 0.75rem;
 border: 1px solid var(--border-light);
 border-radius: var(--fd-radius-control);
 background: var(--surface-secondary);
@@ -2873,7 +2891,7 @@ justify-items: start;
 gap: 0.75rem;
 padding: 0.35rem 0 !important;
 border: 0 !important;
-text-align: left !important;
+text-align: start !important;
 min-width: 0;
 width: 100% !important;
 max-width: none !important;
@@ -3396,7 +3414,7 @@ transform 0.2s ease;
 }
 .flash-message.is-dismissing {
 opacity: 0;
-transform: translateX(20px);
+transform: translateX(var(--fd-inline-exit-x));
 }
 .flash-success {
 background: var(--corp-success-soft);
@@ -3429,7 +3447,8 @@ opacity: 1;
 .toast-stack {
 position: fixed;
 top: 1rem;
-right: 1rem;
+inset-inline-end: 1rem;
+inset-inline-start: auto;
 z-index: 60;
 display: flex;
 flex-direction: column;
@@ -3447,7 +3466,7 @@ animation: fadeInUp 0.25s ease-out;
 @keyframes toastSlideIn {
 from {
 opacity: 0;
-transform: translateX(24px);
+transform: translateX(var(--fd-inline-enter-x));
 }
 to {
 opacity: 1;
@@ -3860,7 +3879,8 @@ background: rgba(255, 255, 255, 0.05);
 .skip-to-content {
 position: absolute;
 top: -100%;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 z-index: 9999;
 padding: 0.75rem 1.5rem;
 background: var(--primary);
@@ -4107,7 +4127,7 @@ text-transform: uppercase;
 letter-spacing: 0.05em;
 color: var(--text-muted);
 padding: 0.75rem 1rem;
-text-align: left;
+text-align: start;
 border-bottom: 1px solid var(--border-light);
 background: var(--surface-secondary);
 }
@@ -4295,7 +4315,7 @@ border-bottom: none;
 }
 .worklog__row:hover {
 background: var(--worklog-row-hover);
-transform: translateX(2px);
+transform: translateX(var(--fd-inline-nudge-x));
 }
 .worklog__row--running {
 background: rgba(34, 197, 94, 0.05);
@@ -4528,12 +4548,13 @@ visibility: visible;
 .help-panel {
 position: fixed;
 top: 0;
-right: 0;
+inset-inline-end: 0;
+inset-inline-start: auto;
 bottom: 0;
 width: min(580px, 90vw);
 z-index: 9991;
 background: var(--surface-primary);
-border-left: 1px solid var(--border-light);
+border-inline-start: 1px solid var(--border-light);
 box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
 transform: translateX(100%);
 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -4645,7 +4666,7 @@ gap: 8px;
 font-size: 13px;
 color: var(--text-secondary);
 line-height: 1.6;
-padding-left: 24px;
+padding-inline-start: 24px;
 }
 .help-shortcuts-grid {
 display: grid;
@@ -4698,7 +4719,7 @@ justify-content: space-between;
 gap: var(--space-4);
 padding: var(--space-4);
 color: var(--text-primary);
-text-align: left;
+text-align: start;
 background: var(--surface-secondary);
 border: 0;
 cursor: pointer;
@@ -4707,7 +4728,7 @@ cursor: pointer;
 background: var(--surface-tertiary);
 }
 .report-ticket-summary[aria-expanded="true"] .report-ticket-summary__icon {
-transform: rotate(90deg);
+transform: scaleX(var(--fd-chevron-scale-x)) rotate(var(--fd-chevron-expanded-turn));
 }
 .report-ticket-summary__main {
 display: flex;
@@ -4721,6 +4742,7 @@ flex: 0 0 auto;
 margin-top: 2px;
 color: var(--text-muted);
 transition: transform var(--transition-fast);
+transform: scaleX(var(--fd-chevron-scale-x));
 }
 .report-ticket-summary__title {
 display: block;
@@ -4792,7 +4814,7 @@ display: none !important;
 display: none !important;
 }
 .main-content {
-margin-left: 0 !important;
+margin-inline-start: 0 !important;
 }
 body {
 background: white;
@@ -4877,7 +4899,8 @@ overflow: hidden;
 .nav-item::before {
 content: "";
 position: absolute;
-left: 0;
+inset-inline-start: 0;
+inset-inline-end: auto;
 top: 50%;
 transform: translateY(-50%);
 width: 3px;
@@ -4889,7 +4912,7 @@ transition: height var(--transition-fast);
 .nav-item:hover {
 background: var(--surface-secondary);
 color: var(--text-primary);
-transform: translateX(2px);
+transform: translateX(var(--fd-inline-nudge-x));
 }
 .nav-item.active {
 background: var(--primary-soft);
@@ -4936,7 +4959,7 @@ filter: brightness(1.15);
 border: 0;
 width: 100%;
 font: inherit;
-text-align: left;
+text-align: start;
 cursor: pointer;
 }
 .nav-item.nav-item--button:disabled {
@@ -5076,11 +5099,11 @@ font-size: 0.75rem;
 }
 .comment-internal {
 background: rgba(245, 158, 11, 0.04);
-border-left: 3px solid rgba(245, 158, 11, 0.5);
+border-inline-start: 3px solid rgba(245, 158, 11, 0.5);
 }
 [data-theme="dark"] .comment-internal {
 background: rgba(234, 179, 8, 0.06);
-border-left-color: rgba(234, 179, 8, 0.4);
+border-inline-start-color: rgba(234, 179, 8, 0.4);
 }
 .comment-actions {
 display: flex;
@@ -5088,7 +5111,7 @@ align-items: center;
 gap: 0.125rem;
 opacity: 0.72;
 transition: opacity 150ms ease;
-margin-left: auto;
+margin-inline-start: auto;
 }
 .comment-item:hover .comment-actions,
 .comment-actions:focus-within {
@@ -5496,9 +5519,13 @@ flex-direction: column;
 gap: 0.5rem;
 padding-right: 0.5rem;
 }
-.status-item,
-.priority-item,
-.type-item {
+/* Scoped to .accordion-item: statuses.php reuses the bare .status-item class
+   name for an unrelated plain flex row, and this column layout (meant for
+   the accordion-style editor in statuses-content.php) was leaking into it,
+   forcing that row's two halves to stack instead of sitting side by side. */
+.accordion-item.status-item,
+.accordion-item.priority-item,
+.accordion-item.type-item {
 display: flex;
 flex-direction: column;
 border-radius: var(--fd-radius-control);
@@ -5507,9 +5534,9 @@ border: 1px solid var(--border-light);
 transition: background 150ms ease, box-shadow 150ms ease;
 overflow: hidden;
 }
-.status-item:hover,
-.priority-item:hover,
-.type-item:hover {
+.accordion-item.status-item:hover,
+.accordion-item.priority-item:hover,
+.accordion-item.type-item:hover {
 background: var(--surface-tertiary);
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -5658,7 +5685,7 @@ white-space: nowrap;
 display: inline-flex;
 align-items: center;
 gap: 0.25rem;
-margin-left: auto;
+margin-inline-start: auto;
 color: var(--text-muted);
 font-size: var(--type-xs);
 font-weight: 750;
@@ -5712,7 +5739,8 @@ overflow: visible;
 }
 .ticket-search-wrap .search-icon {
 position: absolute;
-left: 0.65rem;
+inset-inline-start: 0.65rem;
+inset-inline-end: auto;
 top: 50%;
 transform: translateY(-50%);
 color: var(--text-muted);
@@ -5724,7 +5752,9 @@ background: transparent;
 border: 1px solid var(--border-light);
 border-radius: var(--fd-radius-control);
 box-sizing: border-box;
-padding: 0.35rem 0.5rem 0.35rem 1.85rem;
+padding-block: 0.35rem;
+padding-inline-start: 1.85rem;
+padding-inline-end: 0.5rem;
 font-size: var(--type-xs);
 color: var(--text-secondary);
 width: 100%;
@@ -5757,7 +5787,8 @@ color: var(--primary);
 display: none;
 position: absolute;
 top: calc(100% + 4px);
-left: 0;
+inset-inline-start: 0;
+inset-inline-end: auto;
 width: 320px;
 max-height: 280px;
 overflow-y: auto;
@@ -5945,7 +5976,7 @@ font-size: var(--type-13);
 border: 0;
 background: none;
 cursor: pointer;
-text-align: left;
+text-align: start;
 white-space: nowrap;
 }
 .tl-dropdown-item:hover {
@@ -6054,7 +6085,7 @@ flex-shrink: 0;
 .kanban-board--count-3 { --kanban-column-count: 3; }
 .kanban-board--count-4 { --kanban-column-count: 4; }
 .kanban-count {
-margin-left: auto;
+margin-inline-start: auto;
 padding: 0.125rem 0.5rem;
 border-radius: var(--fd-radius-pill);
 background: var(--border-light);
@@ -6159,7 +6190,7 @@ align-items: center;
 color: var(--text-muted);
 }
 .kanban-card-assignee {
-margin-left: auto;
+margin-inline-start: auto;
 }
 .kanban-mobile-status {
 display: none;
@@ -6957,7 +6988,7 @@ font-size: 0.75rem;
 .report-preset-list {
 display: flex;
 gap: 3px;
-margin-left: auto;
+margin-inline-start: auto;
 }
 .range-preset-btn {
 padding: 2px 8px;
@@ -7104,7 +7135,7 @@ text-overflow: ellipsis;
 white-space: nowrap;
 }
 .workspace-queue-count {
-margin-left: auto;
+margin-inline-start: auto;
 min-width: 1.75rem;
 padding: 0.18rem 0.45rem;
 border-radius: var(--fd-radius-pill);
@@ -7302,10 +7333,13 @@ padding-bottom: max(0.125rem, env(safe-area-inset-bottom));
 #sidebar-user-menu {
 background: var(--surface-primary);
 border: 1px solid var(--border-light);
+inset-inline-start: 1rem;
+inset-inline-end: 1rem;
 }
 .header-search-icon {
 position: absolute;
-left: 1rem;
+inset-inline-start: 1rem;
+inset-inline-end: auto;
 top: 50%;
 z-index: 1;
 color: var(--text-muted);
@@ -7315,11 +7349,13 @@ transform: translateY(-50%);
 .notification-panel {
 width: min(396px, calc(100vw - 2rem));
 max-height: 480px;
-right: 1rem;
+inset-inline-end: 1rem;
+inset-inline-start: auto;
 top: 3.5rem;
 }
 .notification-panel.is-mobile-position {
-right: 0.5rem;
+inset-inline-end: 0.5rem;
+inset-inline-start: auto;
 }
 .notification-toggle-btn {
 color: var(--text-muted);
@@ -7362,7 +7398,8 @@ opacity: 1 !important;
 .notif-badge {
 position: absolute;
 top: 2px;
-right: 2px;
+inset-inline-end: 2px;
+inset-inline-start: auto;
 min-width: 18px;
 height: 18px;
 padding: 0 5px;
@@ -7380,7 +7417,7 @@ animation: notif-pulse 2s ease-in-out infinite;
 box-shadow: 0 0 0 2px var(--bg-primary, #fff);
 }
 .notif-sidebar-badge {
-margin-left: auto;
+margin-inline-start: auto;
 min-width: 18px;
 height: 18px;
 padding: 0 5px;
@@ -7659,7 +7696,7 @@ text-align: center;
 }
 .tl-event {
 position: relative;
-padding-left: 32px;
+padding-inline-start: 32px;
 padding-bottom: 20px;
 }
 .tl-event:last-child {
@@ -7668,7 +7705,8 @@ padding-bottom: 0;
 .tl-event::before {
 content: '';
 position: absolute;
-left: 11px;
+inset-inline-start: 11px;
+inset-inline-end: auto;
 top: 22px;
 bottom: 0;
 width: 1px;
@@ -7679,7 +7717,8 @@ display: none;
 }
 .tl-dot {
 position: absolute;
-left: 6px;
+inset-inline-start: 6px;
+inset-inline-end: auto;
 top: 6px;
 width: 12px;
 height: 12px;
@@ -8077,11 +8116,13 @@ white-space: nowrap;
 }
 .work-week-chart__bars {
 display: grid;
-grid-template-columns: repeat(var(--chart-day-count, 7), minmax(1.5rem, 1fr));
+grid-template-columns: repeat(var(--chart-day-count, 7), minmax(2.25rem, 1fr));
 align-items: end;
 gap: 0.5rem;
 min-height: 156px;
 overflow-x: auto;
+/* Keep the timeline reading oldest-to-newest left-to-right regardless of UI direction. */
+direction: ltr;
 }
 .work-week-chart__day {
 display: grid;
@@ -8092,6 +8133,11 @@ color: var(--text-muted);
 font-size: var(--type-3xs);
 font-weight: 800;
 text-align: center;
+}
+.work-week-chart__day > span {
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
 }
 .work-week-chart__bar-track {
 position: relative;
@@ -8138,7 +8184,10 @@ color: var(--text-secondary);
 font-size: var(--type-3xs);
 font-weight: 700;
 line-height: 1.3;
-text-align: left;
+text-align: start;
+/* Tooltip holds language text; read it in the page's real direction even though
+   the chart track around it is pinned to ltr for a stable timeline. */
+direction: var(--app-direction, ltr);
 transform: translateX(-50%) translateY(0.3rem);
 opacity: 0;
 visibility: hidden;
@@ -8309,7 +8358,7 @@ min-width: 860px;
 padding: 0.6rem 0.65rem;
 border-top: 1px solid var(--border-light);
 font-size: 0.75rem;
-text-align: left;
+text-align: start;
 vertical-align: top;
 }
 .work-team-table th {
@@ -8327,7 +8376,7 @@ color: var(--primary);
 }
 .work-team-running {
 display: inline-flex;
-margin-left: 0.4rem;
+margin-inline-start: 0.4rem;
 padding: 0.15rem 0.4rem;
 border-radius: var(--fd-radius-pill);
 background: rgba(16, 185, 129, 0.12);
@@ -8441,7 +8490,7 @@ justify-content: space-between;
 gap: 1rem;
 padding: 0.35rem 0;
 border-top: 0;
-text-align: right;
+text-align: end;
 }
 .work-team-table td::before {
 content: attr(data-label);
@@ -8449,15 +8498,15 @@ flex: 0 0 auto;
 color: var(--text-muted);
 font-size: 0.6875rem;
 font-weight: 800;
-text-align: left;
+text-align: start;
 text-transform: uppercase;
 }
-.work-team-table td[data-label="Agent"] {
+.work-team-table td.work-team-agent-cell {
 display: block;
 padding-bottom: 0.55rem;
-text-align: left;
+text-align: start;
 }
-.work-team-table td[data-label="Agent"]::before {
+.work-team-table td.work-team-agent-cell::before {
 display: none;
 }
 .work-current-list {
@@ -8658,3 +8707,232 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 #new-ticket-form.is-submitting [type="submit"] {
   opacity: 0.6;
 }
+
+/* ==========================================================================
+   Full Systematic RTL (Right-To-Left) Layout Support
+   ========================================================================== */
+
+html[dir="rtl"] {
+  direction: rtl;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  --app-direction: rtl;
+  --fd-inline-enter-x: -24px;
+  --fd-inline-exit-x: -20px;
+  --fd-inline-nudge-x: -2px;
+  --fd-inline-hover-enter-x: 4px;
+  --fd-inline-remove-x: 10px;
+  --fd-chevron-expanded-turn: -90deg;
+  --fd-chevron-scale-x: -1;
+}
+
+/* Keep legacy utility classes directional without adding RTL rules to pages. */
+html[dir="rtl"] .text-left,
+html[dir="rtl"] .sm\:text-left {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
+html[dir="rtl"] .ml-auto {
+  margin-inline-start: 0 !important;
+  margin-inline-end: auto !important;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-inline-start: auto !important;
+  margin-inline-end: 0 !important;
+}
+
+/* Mirror physical mr-*/ml-* spacing utilities (icon/text gaps) for RTL. */
+html[dir="rtl"] .mr-0\.5 { margin-right: 0 !important; margin-left: 0.125rem !important; }
+html[dir="rtl"] .mr-1   { margin-right: 0 !important; margin-left: 0.25rem !important; }
+html[dir="rtl"] .mr-1\.5 { margin-right: 0 !important; margin-left: 0.375rem !important; }
+html[dir="rtl"] .mr-2   { margin-right: 0 !important; margin-left: 0.5rem !important; }
+html[dir="rtl"] .mr-3   { margin-right: 0 !important; margin-left: 0.75rem !important; }
+html[dir="rtl"] .ml-0\.5 { margin-left: 0 !important; margin-right: 0.125rem !important; }
+html[dir="rtl"] .ml-1   { margin-left: 0 !important; margin-right: 0.25rem !important; }
+html[dir="rtl"] .ml-2   { margin-left: 0 !important; margin-right: 0.5rem !important; }
+html[dir="rtl"] .ml-3   { margin-left: 0 !important; margin-right: 0.75rem !important; }
+html[dir="rtl"] .ml-4   { margin-left: 0 !important; margin-right: 1rem !important; }
+html[dir="rtl"] .ml-5   { margin-left: 0 !important; margin-right: 1.25rem !important; }
+html[dir="rtl"] .ml-6   { margin-left: 0 !important; margin-right: 1.5rem !important; }
+html[dir="rtl"] .ml-7   { margin-left: 0 !important; margin-right: 1.75rem !important; }
+html[dir="rtl"] .ml-8   { margin-left: 0 !important; margin-right: 2rem !important; }
+
+html[dir="rtl"] .left-0 {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir="rtl"] .right-0 {
+  left: 0 !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .left-4 {
+  left: auto !important;
+  right: 1rem !important;
+}
+
+html[dir="rtl"] .right-4 {
+  left: 1rem !important;
+  right: auto !important;
+}
+
+.app-toast-fallback {
+  inset-inline-end: 1rem;
+}
+
+/* 1. App Shell & Layout Margins */
+/* .sidebar's border-inline-end (theme.css:1098) already mirrors to the
+   correct physical side automatically in RTL — no override needed here. */
+
+html[dir="rtl"] .nav-item::before {
+  border-radius: 3px 0 0 3px;
+}
+
+/* The sidebar sits on the right edge in RTL, so the collapse/expand chevrons
+   must point the opposite way from LTR (collapse → toward the right edge,
+   expand → into the content on the left). Both icons are mirror images of
+   each other, so a horizontal flip swaps them correctly without touching JS. */
+html[dir="rtl"] #sidebar-collapse-btn svg {
+  transform: scaleX(-1);
+}
+
+/* "Back" links point toward reading-start, which is the right in RTL — mirror
+   every arrow-left icon/glyph tagged with this class (see back-link-icon
+   usages across pages/ and includes/components/). */
+html[dir="rtl"] .back-link-icon {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .help-panel {
+  transform: translateX(-100%);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.12);
+}
+
+html[dir="rtl"] .help-panel.open {
+  transform: translateX(0);
+}
+
+html[dir="rtl"] .sidebar.open {
+  transform: translateX(0);
+}
+
+html[dir="rtl"] .main-content {
+  margin-inline-start: var(--app-sidebar-width);
+  margin-inline-end: 0;
+  transition: margin-inline-start 0.2s ease;
+}
+
+html[dir="rtl"] body.sidebar-compact .main-content,
+html[dir="rtl"] body.sidebar-collapsed .main-content,
+html[dir="rtl"] .sidebar.sidebar--compact + .main-content {
+  margin-inline-start: var(--app-sidebar-compact-width) !important;
+  margin-inline-end: 0 !important;
+}
+
+@media (max-width: 1024px) {
+  html[dir="rtl"] .sidebar {
+    transform: translateX(100%);
+  }
+  html[dir="rtl"] .sidebar.open {
+    transform: translateX(0);
+  }
+  html[dir="rtl"] .main-content {
+    margin-inline-start: 0 !important;
+  }
+}
+
+/* 3. Navigation Header & Search Controls */
+html[dir="rtl"] .header-search-input {
+  padding-inline-start: 1rem !important;
+  padding-inline-end: 2.75rem !important;
+}
+
+html[dir="rtl"] .header-search-icon {
+  inset-inline-start: auto;
+  inset-inline-end: 1rem;
+}
+
+/* 4. Form Controls & Select Inputs */
+html[dir="rtl"] select.form-select {
+  background-position: left 0.75rem center;
+  padding-inline-start: 0.75rem;
+  padding-inline-end: 2.5rem;
+}
+html[dir="rtl"] select.form-select-sm {
+  background-position: left 0.6rem center;
+  padding-inline-start: 0.5rem;
+  padding-inline-end: 2rem;
+}
+
+/* 4b. Quill rich-text editor (quill.snow.css) — the vendor stylesheet has no
+   RTL support at all: it hardcodes text-align/float/margin/padding to the
+   physical left, so under dir="rtl" typed/placeholder text stays glued to
+   the left edge and toolbar button groups keep uneven left-only gaps. */
+html[dir="rtl"] .ql-editor {
+  text-align: right;
+}
+html[dir="rtl"] .ql-snow .ql-picker {
+  float: right;
+}
+html[dir="rtl"] .ql-snow.ql-toolbar button,
+html[dir="rtl"] .ql-snow .ql-toolbar button {
+  float: right;
+}
+html[dir="rtl"] .ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0;
+  margin-left: 15px;
+}
+html[dir="rtl"] .ql-snow .ql-picker-label {
+  padding-left: 2px;
+  padding-right: 8px;
+}
+html[dir="rtl"] .ql-snow .ql-picker-options {
+  right: 0;
+  left: auto;
+  text-align: right;
+}
+
+/* quill.snow.css bakes the header-picker labels in as literal English
+   content: text (no i18n hook at all) — override per language. */
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: 'عادي';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: 'عنوان 1';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: 'عنوان 2';
+}
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+html[lang="ar"] .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: 'عنوان 3';
+}
+
+/* 5. Modals & Popovers */
+html[dir="rtl"] .modal-close,
+html[dir="rtl"] [data-modal-close] {
+  inset-inline-start: 1rem !important;
+  inset-inline-end: auto !important;
+}
+
+html[dir="rtl"] .dropdown-menu,
+html[dir="rtl"] .popover-panel {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+
+@media (max-width: 1024px) {
+  html[dir="rtl"] .main-content {
+    margin-inline-start: 0 !important;
+  }
+}
+

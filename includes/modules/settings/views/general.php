@@ -52,6 +52,9 @@
                         <option value="es" <?php echo ($settings['app_language'] ?? 'en') === 'es' ? 'selected' : ''; ?>>
                             <?php echo e(t('Spanish')); ?>
                         </option>
+                        <option value="ar" <?php echo ($settings['app_language'] ?? 'en') === 'ar' ? 'selected' : ''; ?>>
+                            <?php echo e(t('Arabic')); ?>
+                        </option>
                     </select>
                     <p class="text-xs mt-1 text-theme-muted">
                         <?php echo e(t('Default interface language for all users. Users can override this in their profile.')); ?>
@@ -106,7 +109,7 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="flex items-center space-x-3">
+                        <label class="flex items-center gap-3">
                                 <input type="checkbox" name="timer_alert_enabled" <?php echo ($settings['timer_alert_enabled'] ?? '0') === '1' ? 'checked' : ''; ?>
                                     class="w-5 h-5 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="font-medium text-theme-primary"><?php echo e(t('Enable long timer alerts')); ?></span>
@@ -129,7 +132,7 @@
                         </div>
 
                         <div>
-                            <label class="flex items-center space-x-3">
+                            <label class="flex items-center gap-3">
                                 <input type="checkbox" name="timer_alert_email" <?php echo ($settings['timer_alert_email'] ?? '1') === '1' ? 'checked' : ''; ?>
                                     class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500">
                                 <span class="text-theme-secondary"><?php echo e(t('Send email notification to user')); ?></span>

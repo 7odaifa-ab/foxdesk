@@ -349,7 +349,7 @@ date_default_timezone_set('Europe/Prague');
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?php echo function_exists('get_app_language') ? e(get_app_language()) : 'en'; ?>" dir="<?php echo function_exists('get_app_direction') ? get_app_direction() : 'ltr'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

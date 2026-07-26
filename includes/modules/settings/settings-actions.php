@@ -428,7 +428,7 @@ function settings_handle_post_request(callable $settings_audit): void
         $app_name = trim($_POST['app_name'] ?? 'FoxDesk');
         $ticket_prefix = trim($_POST['ticket_prefix'] ?? 'TK');
         $app_language = strtolower(trim($_POST['app_language'] ?? 'en'));
-        if (!in_array($app_language, ['en', 'cs', 'de', 'it', 'es'], true)) {
+        if (!in_array($app_language, array_keys(get_supported_languages()), true)) {
             $app_language = 'en';
         }
         $time_format = trim($_POST['time_format'] ?? '24');
@@ -664,7 +664,7 @@ function settings_handle_post_request(callable $settings_audit): void
         $subject = trim($_POST['template_subject'] ?? '');
         $body = trim($_POST['template_body'] ?? '');
         $lang = strtolower(trim((string) ($_POST['template_lang'] ?? 'en')));
-        if (!in_array($lang, ['en', 'cs', 'de', 'it', 'es'], true)) {
+        if (!in_array($lang, array_keys(get_supported_languages()), true)) {
             $lang = 'en';
         }
 

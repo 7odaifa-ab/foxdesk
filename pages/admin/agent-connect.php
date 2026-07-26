@@ -349,7 +349,7 @@ include BASE_PATH . '/includes/components/page-header.php';
 <div class="mb-4">
     <a href="<?php echo url('admin', ['section' => 'users', 'tab' => 'ai_agents']); ?>"
        class="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center gap-1">
-        <?php echo get_icon('arrow-left', 'w-4 h-4'); ?>
+        <?php echo get_icon('arrow-left', 'w-4 h-4 back-link-icon'); ?>
         <?php echo e(t('Back to AI agents')); ?>
     </a>
 </div>

@@ -67,6 +67,15 @@ function mailer_load_email_renderer(): void
  */
 function send_ticket_notification_email($to, $subject, $body, array $payload = [], $force_delivery = false)
 {
+    if (empty($payload['language']) && function_exists('db_fetch_one')) {
+        try {
+            $recipient = db_fetch_one("SELECT language FROM users WHERE email = ? LIMIT 1", [$to]);
+            $payload['language'] = $recipient['language'] ?? 'en';
+        } catch (Throwable $e) {
+            $payload['language'] = 'en';
+        }
+    }
+    $payload['language'] = normalize_email_template_language($payload['language'] ?? 'en');
     mailer_load_email_renderer();
     if (function_exists('foxdesk_email_normalize_subject')) {
         $subject = foxdesk_email_normalize_subject($subject);
@@ -360,9 +369,14 @@ function send_password_reset_email($to, $name, $reset_link)
     $body = str_replace('{app_name}', $app_name, $body);
     $subject = str_replace('{app_name}', $app_name, $subject);
 
-    $result = send_email($to, $subject, $body, false, true);
-
-    return $result;
+    return send_ticket_notification_email($to, $subject, $body, [
+        'language' => $lang,
+        'eyebrow' => 'Password reset',
+        'title' => $subject,
+        'cta_label' => 'Reset password',
+        'cta_url' => $reset_link,
+        'reason' => 'You are receiving this because a password reset was requested.',
+    ], true);
 }
 
 /**
@@ -743,7 +757,7 @@ function ensure_email_templates_language_schema()
  */
 function normalize_email_template_language($lang)
 {
-    $allowed = ['en', 'cs', 'de', 'it', 'es'];
+    $allowed = function_exists('get_supported_languages') ? array_keys(get_supported_languages()) : ['en', 'cs', 'de', 'it', 'es', 'ar'];
     $lang = strtolower(trim((string) $lang));
     return in_array($lang, $allowed, true) ? $lang : 'en';
 }
@@ -760,14 +774,16 @@ function get_email_template_phrase($key, $lang = 'en')
             'cs' => 'neuvedeno',
             'de' => 'nicht angegeben',
             'it' => 'non specificato',
-            'es' => 'no especificado'
+            'es' => 'no especificado',
+            'ar' => 'غير محدد'
         ],
         'none' => [
             'en' => 'none',
             'cs' => 'žádné',
             'de' => 'keine',
             'it' => 'nessuno',
-            'es' => 'ninguno'
+            'es' => 'ninguno',
+            'ar' => 'لا يوجد'
         ]
     ];
 
@@ -902,6 +918,22 @@ function get_builtin_email_template($key, $lang = 'en')
         ]
     ];
 
+    $arabic_templates = [
+        'status_change' => ['subject' => 'تم تحديث حالة التذكرة #{ticket_id}: {ticket_title}', 'body' => "مرحباً،\n\nتم تغيير حالة تذكرتك \"{ticket_title}\".\n\nالحالة السابقة: {old_status}\nالحالة الجديدة: {new_status}\n\nالتعليق:\n{comment_text}\n\nالوقت المستغرق: {time_spent}\n\nعرض التذكرة: {ticket_url}\n\nمع التحية،\n{app_name}"],
+        'new_comment' => ['subject' => 'رد على التذكرة #{ticket_id}: {ticket_title}', 'body' => "مرحباً،\n\nتمت إضافة تعليق جديد إلى تذكرتك \"{ticket_title}\".\n\nمن: {commenter_name}\nالوقت المستغرق: {time_spent}\nالمرفقات: {attachments}\n\n---\n{comment_text}\n---\n\nعرض التعليق: {comment_url}\n\nمع التحية،\n{app_name}"],
+        'new_ticket' => ['subject' => 'تذكرة جديدة #{ticket_id}: {ticket_title}', 'body' => "مرحباً،\n\nتم إنشاء تذكرة جديدة.\n\nالموضوع: {ticket_title}\nالنوع: {ticket_type}\nالأولوية: {priority}\nمن: {user_name} ({user_email})\n\nعرض التذكرة: {ticket_url}\n\nمع التحية،\n{app_name}"],
+        'password_reset' => ['subject' => 'إعادة تعيين كلمة المرور', 'body' => "مرحباً،\n\nلقد طلبت إعادة تعيين كلمة المرور. اضغط على الرابط أدناه:\n{reset_link}\n\nهذا الرابط صالح لمدة ساعة واحدة.\n\nإذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذه الرسالة.\n\nمع التحية،\n{app_name}"],
+        'ticket_confirmation' => ['subject' => 'تم استلام التذكرة #{ticket_code}: {ticket_title}', 'body' => "مرحباً،\n\nتم استلام تذكرتك رقم #{ticket_code} \"{ticket_title}\" بنجاح.\nسنطلعك على مستجدات حالتها.\n\nعرض التذكرة: {ticket_url}\n\nمع التحية،\n{app_name}"],
+        'ticket_assignment' => ['subject' => 'تم إسناد التذكرة إليك #{ticket_code}: {ticket_title}', 'body' => "مرحباً {agent_name}،\n\nتم إسناد تذكرة إليك لمعالجتها:\n\nالتذكرة: #{ticket_code}\nالموضوع: {ticket_title}\nأسندها: {assigner_name}\n\nعرض التذكرة: {ticket_url}\n\nمع التحية،\n{app_name}"],
+        'recurring_task_assignment' => ['subject' => 'تم إسناد مهمة متكررة جديدة: {ticket_title}', 'body' => "مرحباً {recipient_name}،\n\nأنشأت مهمة متكررة تذكرة جديدة لك.\n\nالتذكرة: #{ticket_code}\nالعنوان: {ticket_title}\nالوصف: {ticket_description}\nتاريخ الاستحقاق: {due_date}\n\nعرض التذكرة: {ticket_url}\n\nمع التحية،\n{app_name}"],
+        'long_timer_alert' => ['subject' => 'المؤقت يعمل لفترة طويلة - التذكرة #{ticket_code}', 'body' => "عزيزي {user_name}،\n\nيعمل مؤقت تسجيل الوقت منذ {elapsed_time} على التذكرة \"{ticket_title}\".\n\nبدأ في: {started_at}\nالتذكرة: #{ticket_code} - {ticket_title}\n\nيرجى التحقق مما إذا كنت قد نسيت إيقاف المؤقت.\n\nعرض التذكرة: {ticket_url}\n\nمع خالص التحية،\n\nفريق {app_name}"],
+        'welcome_email' => ['subject' => 'مرحباً بك في {app_name}', 'body' => "مرحباً {name}،\n\nتم إنشاء حسابك.\n\nالبريد الإلكتروني: {email}\nكلمة المرور: {password}\n\nتسجيل الدخول: {login_url}\n\nبعد تسجيل الدخول، يمكنك تغيير كلمة المرور من إعدادات ملفك الشخصي.\n\nمع التحية،\n{app_name}"],
+    ];
+    foreach ($arabic_templates as $template_key => $template) {
+        if (isset($templates[$template_key])) {
+            $templates[$template_key]['ar'] = $template;
+        }
+    }
     if (empty($templates[$key])) {
         return null;
     }
@@ -973,6 +1005,7 @@ function save_email_template($key, $subject, $body, $lang = 'en')
 {
     ensure_email_templates_language_schema();
 
+    $lang = normalize_email_template_language($lang);
     $existing = db_fetch_one("SELECT id FROM email_templates WHERE template_key = ? AND language = ?", [$key, $lang]);
 
     if ($existing) {
@@ -1263,6 +1296,16 @@ function send_due_date_reminder($ticket, $is_overdue = false)
             'label_status' => 'Estado',
             'label_view_ticket' => 'Ver ticket'
         ]
+    ];
+    $copy['ar'] = [
+        'subject_overdue' => 'متأخرة: {ticket_code} - {title}',
+        'subject_due_soon' => 'اقترب موعد الاستحقاق: {ticket_code} - {title}',
+        'body_overdue' => 'هذه التذكرة متأخرة الآن.',
+        'body_due_soon' => 'اقترب موعد استحقاق هذه التذكرة.',
+        'label_ticket' => 'التذكرة',
+        'label_due_date' => 'تاريخ الاستحقاق',
+        'label_status' => 'الحالة',
+        'label_view_ticket' => 'عرض التذكرة',
     ];
     $i18n = $copy[$lang] ?? $copy['en'];
 

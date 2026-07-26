@@ -319,7 +319,7 @@ include BASE_PATH . '/includes/header.php';
                                 <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end space-x-1">
+                                <div class="flex items-center justify-end gap-1">
                                     <!-- Run Now -->
                                     <form method="POST" class="inline" onsubmit="return confirm('<?php echo e(t('Run this task now? A new ticket will be created immediately.')); ?>');">
                                         <?php echo csrf_field(); ?>

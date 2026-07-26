@@ -147,7 +147,7 @@
                                 <?php foreach ($users as $u): ?>
                                         <tr class="tr-hover">
                                             <td class="px-4 py-2.5 admin-responsive-primary" data-label="<?php echo e(t('Name')); ?>">
-                                                <div class="flex items-center space-x-2">
+                                                <div class="flex items-center gap-2">
                                                     <?php echo render_user_avatar($u, 'sm'); ?>
                                                     <div class="admin-cell-main">
                                                         <span class="admin-cell-title text-sm text-theme-primary"><?php echo e($u['first_name'] . ' ' . $u['last_name']); ?></span>

@@ -27,7 +27,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo e(get_app_language()); ?>">
+<html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -44,6 +44,8 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
     <script>
         window.csrfToken = <?php echo json_encode(csrf_token()); ?>;
         window.appName = <?php echo json_encode($app_name); ?>;
+        window.appDirection = <?php echo json_encode(get_app_direction()); ?>;
+        window.isRTL = <?php echo is_rtl() ? 'true' : 'false'; ?>;
         window.originalPageTitle = <?php echo json_encode(($page_title ?? t('Dashboard')) . ' - ' . $app_name); ?>;
         window.appNotificationPrefs = {
             inAppEnabled: <?php echo $in_app_notifications_enabled ? 'true' : 'false'; ?>,
@@ -210,10 +212,10 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
         onclick="toggleSidebar()" role="presentation"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full z-50 flex flex-col" role="complementary" aria-label="<?php echo e(t('Sidebar navigation')); ?>">
+    <aside id="sidebar" class="sidebar fixed top-0 h-full z-50 flex flex-col" role="complementary" aria-label="<?php echo e(t('Sidebar navigation')); ?>">
         <!-- Logo - Fixed at top -->
         <div class="sidebar-brand-row p-3 flex-shrink-0 flex items-center justify-between">
-            <a href="<?php echo url('work'); ?>" class="sidebar-brand-link flex items-center space-x-3 group" title="<?php echo e($app_name); ?>">
+            <a href="<?php echo url('work'); ?>" class="sidebar-brand-link flex items-center gap-3 group" title="<?php echo e($app_name); ?>">
                 <?php $app_logo = get_setting('app_logo', ''); ?>
                 <?php if ($app_logo): ?>
                     <img src="<?php echo e(upload_url($app_logo)); ?>" alt="<?php echo e($app_name); ?>"
@@ -250,10 +252,8 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
             window.syncSidebarCompactLayout = function() {
                 var compact = document.body.classList.contains('sidebar-compact') && window.innerWidth >= 1025;
                 var sidebar = document.getElementById('sidebar');
-                var mainContent = document.getElementById('main-content');
                 var compactWidth = window.getAppShellVar('--app-sidebar-compact-width', '76px');
                 if (sidebar) sidebar.style.width = compact ? compactWidth : '';
-                if (mainContent) mainContent.style.marginLeft = compact ? compactWidth : '';
             };
             document.addEventListener('DOMContentLoaded', function() {
                 window.syncSidebarCompactLayout();
@@ -413,7 +413,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
                 class="w-full flex items-center gap-3 p-1.5 rounded-xl transition-all cursor-pointer sidebar-hover"
                 aria-expanded="false" aria-controls="sidebar-user-menu" aria-haspopup="true">
                 <?php echo render_user_avatar($user, 'lg', 'ring-2 ring-blue-500/20'); ?>
-                <div class="flex-1 min-w-0 text-left">
+                <div class="flex-1 min-w-0">
                     <p class="font-medium text-sm truncate text-theme-primary">
                         <?php echo e($user['first_name'] . ' ' . $user['last_name']); ?>
                     </p>
@@ -423,7 +423,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
             </button>
 
             <!-- User Dropdown Menu (appears above) -->
-            <div id="sidebar-user-menu" class="hidden absolute bottom-full left-4 right-4 mb-2 py-2 rounded-xl shadow-lg z-50"
+            <div id="sidebar-user-menu" class="hidden absolute bottom-full mb-2 rounded-xl shadow-lg z-50"
                 role="menu" aria-label="<?php echo e(t('User menu')); ?>">
 
                 <!-- Profile -->
@@ -448,7 +448,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
                 <a href="<?php echo url('admin', ['section' => 'migration-export']); ?>" role="menuitem"
                     class="sidebar-user-menu__item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors sidebar-hover">
                     <?php echo get_icon('cloud-upload-alt', 'w-4 h-4'); ?>
-                    <span>Cloud migration</span>
+                    <span><?php echo e(t('Cloud migration')); ?></span>
                 </a>
                 <?php endif; ?>
 
@@ -476,7 +476,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
             <h1 class="text-lg font-semibold truncate flex-1 mx-4 text-theme-primary">
                 <?php echo e($page_title ?? t('Dashboard')); ?>
             </h1>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center gap-2">
                 <!-- Notification Bell (Mobile) -->
                 <div class="relative">
                     <button onclick="toggleNotificationPanel()" id="mobile-notif-btn"
@@ -510,12 +510,12 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
                             <p class="text-xs truncate text-theme-muted"><?php echo e($user['email']); ?></p>
                         </div>
                         <a href="<?php echo url('profile'); ?>" role="menuitem"
-                            class="sidebar-user-menu__item flex items-center space-x-3 px-4 py-2.5 text-sm transition-colors sidebar-hover">
+                            class="sidebar-user-menu__item flex items-center gap-3 px-4 py-2.5 text-sm transition-colors sidebar-hover">
                             <?php echo get_icon('user', 'w-4 opacity-70'); ?>
                             <span><?php echo e(t('My profile')); ?></span>
                         </a>
                         <a href="<?php echo url('logout'); ?>" role="menuitem"
-                            class="flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
                             <?php echo get_icon('sign-out-alt', 'w-4 opacity-70'); ?>
                             <span><?php echo e(t('Sign out')); ?></span>
                         </a>
@@ -530,7 +530,7 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
                 <h1 class="text-lg font-semibold text-theme-primary"><?php echo e($page_title ?? t('Dashboard')); ?></h1>
                 <span class="app-shell-context"><?php echo e(t('Workspace')); ?></span>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-4">
                 <form action="<?php echo url('tickets'); ?>" method="get" class="header-search-form relative">
                     <input type="hidden" name="page" value="tickets">
                     <input type="text" name="search" id="header-search" placeholder="<?php echo e(t('Search...')); ?>"

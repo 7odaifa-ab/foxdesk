@@ -19,6 +19,8 @@ function app_shell_user(array $user): array
         'email' => (string) ($user['email'] ?? ''),
         'role' => (string) ($user['role'] ?? ''),
         'language' => function_exists('get_app_language') ? get_app_language() : 'en',
+        'dir' => function_exists('get_app_direction') ? get_app_direction() : 'ltr',
+        'is_rtl' => function_exists('is_rtl') ? is_rtl() : false,
         'is_admin' => is_admin(),
         'is_platform_admin' => function_exists('is_platform_admin') ? is_platform_admin() : false,
     ];

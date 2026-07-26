@@ -39,7 +39,7 @@ require_once BASE_PATH . '/includes/header.php';
         <div class="client-hero__summary min-w-0">
             <div class="client-hero__meta">
                 <a href="<?php echo url('admin', ['section' => 'organizations']); ?>" class="client-back-link">
-                    <?php echo get_icon('arrow-left', 'w-3.5 h-3.5'); ?>
+                    <?php echo get_icon('arrow-left', 'w-3.5 h-3.5 back-link-icon'); ?>
                     <?php echo e(t('Clients')); ?>
                 </a>
                 <span><?php echo !empty($org['is_active']) ? e(t('Active')) : e(t('Inactive')); ?></span>

@@ -41,7 +41,7 @@
         if (window.appNotificationPrefs && window.appNotificationPrefs.inAppEnabled === false) return;
 
         var toast = document.createElement('div');
-        toast.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg text-sm font-medium z-50 transition-opacity duration-300 ' + (type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white');
+        toast.className = 'app-toast-fallback fixed bottom-4 px-4 py-2 rounded-lg shadow-lg text-sm font-medium z-50 transition-opacity duration-300 ' + (type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white');
         toast.textContent = message;
         document.body.appendChild(toast);
         setTimeout(function () {
@@ -216,7 +216,7 @@
                 var row = document.createElement('div');
                 row.className = 'flex items-center justify-between rounded-lg px-4 py-2';
                 row.style.background = 'var(--surface-secondary)';
-                row.innerHTML = '<div class="flex items-center space-x-3 min-w-0">' +
+                row.innerHTML = '<div class="flex items-center gap-3 min-w-0">' +
                     getIcon(fileIconName(file.type), 'td-text-muted flex-shrink-0 w-4 h-4') +
                     '<span class="text-sm truncate" style="color: var(--text-secondary)"></span>' +
                     '<span class="text-xs flex-shrink-0" style="color: var(--text-muted)">' + escapeHtml(formatFileSize(file.size)) + '</span>' +

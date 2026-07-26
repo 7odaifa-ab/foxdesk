@@ -25,13 +25,7 @@ $error = '';
 $info_message = '';
 $show_2fa_form = !empty($_SESSION['2fa_pending']);
 $current_lang = get_app_language();
-$lang_options = [
-    'en' => t('English'),
-    'cs' => t('Czech'),
-    'de' => t('German'),
-    'it' => t('Italian'),
-    'es' => t('Spanish')
-];
+$lang_options = array_map(fn($item) => t($item['name']), get_supported_languages());
 $lang_params = ['page' => 'login'];
 if (isset($_GET['reset'])) {
     $lang_params['reset'] = $_GET['reset'];
@@ -190,7 +184,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo e(get_app_language()); ?>">
+<html lang="<?php echo e(get_app_language()); ?>" dir="<?php echo get_app_direction(); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -375,7 +369,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
                 <div class="flex items-center justify-center mt-6">
                     <a href="<?php echo url('login', ['cancel2fa' => '1']); ?>"
                         class="text-sm transition-colors text-theme-muted">
-                        &larr; <?php echo e(t('Back to sign in')); ?>
+                        <span class="back-link-icon" aria-hidden="true">&larr;</span> <?php echo e(t('Back to sign in')); ?>
                     </a>
                 </div>
 

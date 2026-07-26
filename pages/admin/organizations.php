@@ -893,7 +893,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                     // Remove from list with animation
                     memberRow.style.transition = 'opacity 0.2s, transform 0.2s';
                     memberRow.style.opacity = '0';
-                    memberRow.style.transform = 'translateX(-10px)';
+                    memberRow.style.transform = 'translateX(var(--fd-inline-remove-x, -10px))';
                     setTimeout(() => {
                         memberRow.remove();
 

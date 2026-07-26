@@ -5,5 +5,6 @@ return [
     'de' => require __DIR__ . '/lang/de.php',
     'it' => require __DIR__ . '/lang/it.php',
     'es' => require __DIR__ . '/lang/es.php',
+    'ar' => require __DIR__ . '/lang/ar.php',
 ];
 

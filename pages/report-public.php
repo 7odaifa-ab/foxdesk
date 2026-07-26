@@ -104,7 +104,7 @@ $extract_report_tags = static function ($value) {
 };
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $template['report_language'] ?? 'en'; ?>">
+<html lang="<?php echo $template['report_language'] ?? 'en'; ?>" dir="<?php echo get_app_direction($template['report_language'] ?? 'en'); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -455,7 +455,7 @@ $extract_report_tags = static function ($value) {
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-center space-x-4 mb-5 no-print">
+        <div class="flex justify-center gap-4 mb-5 no-print">
             <button onclick="window.print()" class="fd-button fd-button--primary">
                 <?php echo get_icon('print', 'mr-2 inline-block'); ?><?php echo e(t('Print / Save as PDF')); ?>
             </button>
