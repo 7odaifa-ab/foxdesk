@@ -207,7 +207,7 @@ function time_activity_weekly_chart(int $viewer_user_id, bool $include_team = fa
         $date = date('Y-m-d', strtotime('-' . $i . ' days'));
         $days[$date] = [
             'key' => $date,
-            'label' => function_exists('format_date_localized') ? format_date_localized($date, 'm/d') : date('m/d', strtotime($date)),
+            'label' => function_exists('format_date_localized') ? format_date_localized($date, 'd.m.') : date('d.m.', strtotime($date)),
             'full_label' => function_exists('format_date_localized') ? format_date_localized($date, 'l, j. F') : date('l, M j', strtotime($date)),
             'minutes' => 0,
             'users' => [],
@@ -309,7 +309,7 @@ function time_activity_period_chart(int $viewer_user_id, bool $include_team, arr
         $date = date('Y-m-d', $cursor);
         $days[$date] = [
             'key' => $date,
-            'label' => function_exists('format_date_localized') ? format_date_localized($date, 'm/d') : date('m/d', $cursor),
+            'label' => function_exists('format_date_localized') ? format_date_localized($date, 'd.m.') : date('d.m.', $cursor),
             'full_label' => function_exists('format_date_localized') ? format_date_localized($date, 'l, j. F') : date('l, M j', $cursor),
             'minutes' => 0,
             'users' => [],

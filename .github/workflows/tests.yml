@@ -16,8 +16,14 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: RTL support contract test
-        run: php tests/rtl-support-contract-test.php
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
 
-      - name: Translation quality contract test
-        run: php tests/translation-quality-contract-test.php
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Localization and RTL contracts
+        run: npm run test:i18n
