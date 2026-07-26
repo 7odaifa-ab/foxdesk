@@ -247,7 +247,7 @@ window.FoxDeskTicketDetailConfig = <?php echo json_encode($ticket_detail_js_conf
 <?php if (function_exists('can_view_timeline') && can_view_timeline($user)): ?>
 <!-- Timeline Modal -->
 <div id="timeline-overlay" onclick="closeTimeline()" style="display:none; position:fixed; inset:0; z-index:50; background:rgba(0,0,0,0.5);">
-    <div onclick="event.stopPropagation()" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:100%; max-width:640px; max-height:85vh; border-radius: var(--fd-radius-card); box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); display:flex; flex-direction:column; background:var(--surface-primary); color:var(--text-primary);">
+    <div onclick="event.stopPropagation()" style="position:absolute; top:50%; inset-inline-start:50%; transform:translate(-50%,-50%); width:100%; max-width:640px; max-height:85vh; border-radius: var(--fd-radius-card); box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); display:flex; flex-direction:column; background:var(--surface-primary); color:var(--text-primary);">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border-light);">
             <h2 style="font-size:16px; font-weight:600; display:flex; align-items:center; gap:8px;">
                 <?php echo get_icon('history', 'w-5 h-5'); ?>

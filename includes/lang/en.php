@@ -1,4 +1,7 @@
 <?php
+
+// Generated from locales/catalogs/en.json by bin/i18n-catalogs.php.
+// Edit the JSON source and run npm run i18n:build.
 return [
     '-- Myself --' => '-- Myself --',
     '-- No organization --' => '-- No client --',
@@ -654,8 +657,6 @@ return [
     'Ticket title' => 'Ticket title',
     'Duration' => 'Duration',
     'No active share link exists yet.' => 'No active share link exists yet.',
-
-    // Recurring Tasks
     'Recurring Tasks' => 'Recurring Tasks',
     'Automatically create tickets on a recurring schedule' => 'Automatically create tickets on a recurring schedule',
     'Create Recurring Task' => 'Create Recurring Task',
@@ -685,7 +686,6 @@ return [
     'Frequency' => 'Frequency',
     'Daily' => 'Daily',
     'Monthly' => 'Monthly',
-
     'Recurrence Interval' => 'Recurrence Interval',
     'Day of Week' => 'Day of Week',
     'Day of Month' => 'Day of Month',
@@ -719,8 +719,6 @@ return [
     'October' => 'October',
     'November' => 'November',
     'December' => 'December',
-
-    // Reports & Report Builder
     'Client Reports' => 'Client Reports',
     'View Reports' => 'View Reports',
     'Create New Report' => 'Create New Report',
@@ -777,15 +775,11 @@ return [
     'Today' => 'Today',
     'Past 7 days' => 'Past 7 days',
     'Past 30 days' => 'Past 30 days',
-
-    // Password validation messages
     'Password must be at least 12 characters long.' => 'Password must be at least 12 characters long.',
     'Password must contain at least one uppercase letter.' => 'Password must contain at least one uppercase letter.',
     'Password must contain at least one lowercase letter.' => 'Password must contain at least one lowercase letter.',
     'Password must contain at least one number.' => 'Password must contain at least one number.',
     'Password must contain at least one special character.' => 'Password must contain at least one special character.',
-
-    // Impersonation
     'You are currently viewing as' => 'You are currently viewing as',
     'Stop Impersonating' => 'Stop Impersonating',
     'Log in as user' => 'Log in as user',
@@ -969,8 +963,6 @@ return [
     'Please enter a valid date range.' => 'Please enter a valid date range.',
     'From Date must be before To Date.' => 'From Date must be before To Date.',
     'Unknown error' => 'Unknown error',
-
-    // API
     'API' => 'API',
     'API tokens' => 'API tokens',
     'API tokens allow external tools and AI agents to interact with your helpdesk. Each token inherits the permissions of the user it belongs to.' => 'API tokens allow external tools and AI agents to interact with your helpdesk. Each token inherits the permissions of the user it belongs to.',
@@ -1001,15 +993,11 @@ return [
     'Add a comment. JSON body: ticket_hash or ticket_id, content (required), is_internal (boolean).' => 'Add a comment. JSON body: ticket_hash or ticket_id, content (required), is_internal (boolean).',
     'Change ticket status. JSON body: ticket_hash or ticket_id, status_id or status (name).' => 'Change ticket status. JSON body: ticket_hash or ticket_id, status_id or status (name).',
     'Log a time entry. JSON body: ticket_hash or ticket_id, duration_minutes (required), summary, is_billable.' => 'Log a time entry. JSON body: ticket_hash or ticket_id, duration_minutes (required), summary, is_billable.',
-
-    // v0.3.0 — AI-assisted time tracking
     'AI' => 'AI',
     'Timer' => 'Timer',
     'Source' => 'Source',
     'Entries' => 'Entries',
     'Ticket creation' => 'Ticket creation',
-
-    // v0.3.1 — Multi-agent AI system
     'AI Agents' => 'AI Agents',
     'AI agent' => 'AI agent',
     'Add AI agent' => 'Add AI agent',
@@ -1037,13 +1025,10 @@ return [
     'Choose what this token can do.' => 'Choose what this token can do.',
     'Tickets and replies' => 'Tickets and replies',
     'Read, create, update tickets, and add replies.' => 'Read, create, update tickets, and add replies.',
-    'Time tracking' => 'Time tracking',
     'Read and log time entries.' => 'Read and log time entries.',
-    'Attachments' => 'Attachments',
     'Read and upload ticket attachments.' => 'Read and upload ticket attachments.',
     'Reports' => 'Reports',
     'Read report and billing review data.' => 'Read report and billing review data.',
-    'Notifications' => 'Notifications',
     'Read and update notifications.' => 'Read and update notifications.',
     'Save access' => 'Save access',
     'Save access and create token' => 'Save access and create token',
@@ -1051,8 +1036,6 @@ return [
     'Create token with access' => 'Create token with access',
     'Revoke token' => 'Revoke token',
     'API token generated. Copy it now.' => 'API token generated. Copy it now.',
-
-    // Agent Connect
     'Agent Connect' => 'Agent Connect',
     'Connect' => 'Connect',
     'Connection instructions for AI tools' => 'Connection instructions for AI tools',
@@ -1088,8 +1071,6 @@ return [
     'Leave Start and End empty to log quick minutes ending now. If both are filled, the exact range is used instead.' => 'Leave Start and End empty to log quick minutes ending now. If both are filled, the exact range is used instead.',
     'Token:' => 'Token:',
     'API Base:' => 'API Base:',
-
-    // v0.3.7 — Keys previously used via t() but never added to language files
     'Time tracking alerts' => 'Time tracking alerts',
     'Enable long timer alerts' => 'Enable long timer alerts',
     'Alert threshold (hours)' => 'Alert threshold (hours)',
@@ -1129,8 +1110,6 @@ return [
     'Please select a client, agent, and hourly rate.' => 'Please select a client, agent, and hourly rate.',
     'Optional' => 'Optional',
     'Can view time entries' => 'Can view time entries',
-
-    // v0.3.11 — Dashboard redesign
     'New today' => 'New today',
     'New tickets' => 'New tickets',
     'Deadlines' => 'Deadlines',
@@ -1148,8 +1127,6 @@ return [
     'needs attention' => 'needs attention',
     'Total' => 'Total',
     'No tickets due this week' => 'No tickets due this week',
-
-    // Missing keys
     'By priority' => 'By priority',
     'Default to internal' => 'Default to internal',
     'Name or email...' => 'Name or email...',
@@ -1190,8 +1167,6 @@ return [
     'Logo' => 'Logo',
     'Favicon' => 'Favicon',
     'Import from Markdown' => 'Import from Markdown',
-
-    // Auto-update system
     'Automatic updates' => 'Automatic updates',
     'Manual update' => 'Manual update',
     'Kanban board' => 'Kanban board',
@@ -1218,8 +1193,6 @@ return [
     'Dismiss' => 'Dismiss',
     'Collapse sidebar' => 'Collapse sidebar',
     'Expand sidebar' => 'Expand sidebar',
-
-    // Pseudo-cron (background tasks)
     'Background tasks' => 'Background tasks',
     'Automatically run email ingestion, recurring tasks, and maintenance on page loads — no server cron required.' => 'Automatically run email ingestion, recurring tasks, and maintenance on page loads — no server cron required.',
     'Enable background tasks' => 'Enable background tasks',
@@ -1229,8 +1202,6 @@ return [
     'every 60 min' => 'every 60 min',
     'every 24 hours' => 'every 24 hours',
     'Tasks run in the background on page loads. No server cron job needed.' => 'Tasks run in the background on page loads. No server cron job needed.',
-
-    // Help panel
     'Add comments at the bottom of any ticket. You can also attach files by dragging them into the comment box or using the attachment button.' => 'Add comments at the bottom of any ticket. You can also attach files by dragging them into the comment box or using the attachment button.',
     'Add, edit, and deactivate users from the Users section. You can also import users in bulk via CSV.' => 'Add, edit, and deactivate users from the Users section. You can also import users in bulk via CSV.',
     'Assign tickets to yourself or other agents from the ticket detail page. Use bulk actions to assign multiple tickets at once.' => 'Assign tickets to yourself or other agents from the ticket detail page. Use bulk actions to assign multiple tickets at once.',
@@ -1254,7 +1225,6 @@ return [
     'Managing users' => 'Managing users',
     'Navigation' => 'Navigation',
     'Open in new tab' => 'Open in new tab',
-    'Reports' => 'Reports',
     'Set up recurring tasks to automatically create tickets on a schedule. Useful for maintenance, reviews, and periodic check-ins.' => 'Set up recurring tasks to automatically create tickets on a schedule. Useful for maintenance, reviews, and periodic check-ins.',
     'Hold Ctrl (or Cmd on Mac) and click a ticket row to open it in a new tab.' => 'Hold Ctrl (or Cmd on Mac) and click a ticket row to open it in a new tab.',
     'Shortcuts' => 'Shortcuts',
@@ -1272,8 +1242,6 @@ return [
     'View logged time reports under Reports > Time Tracking. Filter by agent, date range, or ticket to analyze time spent.' => 'View logged time reports under Reports > Time Tracking. Filter by agent, date range, or ticket to analyze time spent.',
     'Viewing and filtering' => 'Viewing and filtering',
     'Your Profile' => 'Your Profile',
-
-    // Allowed senders
     'Allowed Senders' => 'Allowed Senders',
     'Add Sender' => 'Add Sender',
     'Email or Domain' => 'Email or Domain',
@@ -1306,7 +1274,6 @@ return [
     'Invalid billing adjustment.' => 'Invalid billing adjustment.',
     'Billable item adjustment updated.' => 'Billable item adjustment updated.',
     'Discount' => 'Discount',
-    'Total' => 'Total',
     'Value' => 'Value',
     'Save billing' => 'Save billing',
     'Are you sure?' => 'Are you sure?',
@@ -1397,7 +1364,6 @@ return [
     'Access' => 'Access',
     'No clients selected' => 'No clients selected',
     'Own tickets only' => 'Own tickets only',
-
     'Work overview' => 'Worked time',
     'Now' => 'Now',
     'Current work' => 'In progress now',
@@ -1413,12 +1379,10 @@ return [
     'Selected' => 'Selected',
     'Last activity' => 'Last activity',
     'No team time yet.' => 'No team time yet.',
-    'No activity' => 'No activity',
     'Last ticket' => 'Last ticket',
     'Last 5 tickets' => 'Last 5 tickets',
     'All work' => 'Search',
     'My work log' => 'My entries',
-    'Work log' => 'Work log',
     'Work log range' => 'Work log range',
     'What was done' => 'What was done',
     'Showing latest {shown} of {total} entries.' => 'Showing latest {shown} of {total} entries.',
@@ -1440,7 +1404,6 @@ return [
     'Choose a client first' => 'Choose a client first',
     'Pick one client above to preview work, adjust billing, and create a report.' => 'Pick one client above to preview work, adjust billing, and create a report.',
     'Items' => 'Items',
-    'Entries' => 'Entries',
     'Name, language, time and invoice defaults.' => 'Name, language, time and invoice defaults.',
     'Sending, inbound mail, and delivery checks.' => 'Sending, inbound mail, and delivery checks.',
     'Customer-facing notification text.' => 'Customer-facing notification text.',
@@ -1454,8 +1417,6 @@ return [
     'Work logged' => 'Work logged',
     'work records' => 'work records',
     'No public comment was added for this time entry.' => 'No public comment was added for this time entry.',
-
-    // Canonical Agent API operating instructions
     'Agent instructions: FoxDesk tickets' => 'Agent instructions: FoxDesk tickets',
     'Basic rules' => 'Basic rules',
     'Use only the FoxDesk Agent API. Never use a web browser.' => 'Use only the FoxDesk Agent API. Never use a web browser.',
@@ -1516,8 +1477,6 @@ return [
     'time_entries is empty.' => 'time_entries is empty.',
     'No duplicate active ticket was created.' => 'No duplicate active ticket was created.',
     'Cancel an incorrect ticket only after the correct replacement has been created and verified.' => 'Cancel an incorrect ticket only after the correct replacement has been created and verified.',
-
-    // Permanent ticket deletion
     'Permanently delete ticket' => 'Permanently delete ticket',
     'This action cannot be undone. Check what will be removed before you continue.' => 'This action cannot be undone. Check what will be removed before you continue.',
     'To confirm, type {reference}' => 'To confirm, type {reference}',
@@ -1529,8 +1488,6 @@ return [
     'Bulk permanent deletion is not available. Open one ticket and confirm its code.' => 'Bulk permanent deletion is not available. Open one ticket and confirm its code.',
     'Ticket could not be archived.' => 'Ticket could not be archived.',
     'Time entries' => 'Time entries',
-
-    // Link preview cards
     'Google Drive file' => 'Google Drive file',
     'Google Docs' => 'Google Docs',
     'Google Sheets' => 'Google Sheets',
@@ -1550,8 +1507,6 @@ return [
     'Failed to restore comment.' => 'Failed to restore comment.',
     'Attachment restored.' => 'Attachment restored.',
     'Failed to restore attachment.' => 'Failed to restore attachment.',
-
-    // Settings: General extras
     'Login page welcome text' => 'Login page welcome text',
     'This text appears on the login screen below the application name.' => 'This text appears on the login screen below the application name.',
     'Example: TK-10001, REQ-10001 (letters only). Only affects new tickets — existing tickets keep their current prefix.' => 'Example: TK-10001, REQ-10001 (letters only). Only affects new tickets — existing tickets keep their current prefix.',
@@ -1561,14 +1516,10 @@ return [
     'Square image recommended. Formats: JPG, PNG, GIF, WebP, SVG. Max 2 MB.' => 'Square image recommended. Formats: JPG, PNG, GIF, WebP, SVG. Max 2 MB.',
     'Please select an ICO, PNG, or GIF file' => 'Please select an ICO, PNG, or GIF file',
     'Please select a JPG, PNG, GIF, WebP, or SVG file' => 'Please select a JPG, PNG, GIF, WebP, or SVG file',
-
-    // Settings: Email extras
     'When enabled, the system will automatically create tickets from incoming emails. Requires a cron job or background tasks to be active.' => 'When enabled, the system will automatically create tickets from incoming emails. Requires a cron job or background tasks to be active.',
     'When enabled, anyone can create tickets by sending an email — not just addresses in the allowlist below.' => 'When enabled, anyone can create tickets by sending an email — not just addresses in the allowlist below.',
     'Turning this off will stop all email notifications for all users — including ticket updates, status changes, and new ticket alerts.' => 'Turning this off will stop all email notifications for all users — including ticket updates, status changes, and new ticket alerts.',
     'Currently off. No email notifications are being sent. Turn on to enable notifications for ticket updates, comments, and new tickets.' => 'Currently off. No email notifications are being sent. Turn on to enable notifications for ticket updates, comments, and new tickets.',
-
-    // Settings: Logs
     'System Logs' => 'System Logs',
     'Are you sure you want to clear all logs?' => 'Are you sure you want to clear all logs?',
     'Clear all logs' => 'Clear all logs',
@@ -1578,8 +1529,6 @@ return [
     'No logs found.' => 'No logs found.',
     'Showing {start} to {end} of {total} entries' => 'Showing {start} to {end} of {total} entries',
     'Prev' => 'Prev',
-
-    // Settings: Security — two-factor authentication
     'Two-factor authentication' => 'Two-factor authentication',
     'Require users to set up an authenticator app (Google Authenticator, Authy, 1Password) before accessing the system.' => 'Require users to set up an authenticator app (Google Authenticator, Authy, 1Password) before accessing the system.',
     'Admins' => 'Admins',
@@ -1599,8 +1548,6 @@ return [
     'users will be immediately forced to set up 2FA. They won\'t be able to use the system until they scan a QR code with their authenticator app.' => 'users will be immediately forced to set up 2FA. They won\'t be able to use the system until they scan a QR code with their authenticator app.',
     'All users in this role already have 2FA enabled. New users will be required to set it up on first login.' => 'All users in this role already have 2FA enabled. New users will be required to set it up on first login.',
     'The forced setup requirement will be removed. Users who already have 2FA will keep it — it won\'t be disabled.' => 'The forced setup requirement will be removed. Users who already have 2FA will keep it — it won\'t be disabled.',
-
-    // Settings: System — operations, updates, backups
     'Operations overview' => 'Operations overview',
     'Check updates' => 'Check updates',
     'Create a new backup?' => 'Create a new backup?',
@@ -1646,8 +1593,6 @@ return [
     'Backup created: {version}' => 'Backup created: {version}',
     'Please select a .zip file' => 'Please select a .zip file',
     'Cloud migration' => 'Cloud migration',
-
-    // Admin areas overview (includes/components/admin-settings-tabs.php)
     'Admin areas' => 'Admin areas',
     'Settings sections' => 'Settings sections',
     'Team & access' => 'Team & access',
@@ -1665,8 +1610,6 @@ return [
     'Admin activity and audit trail.' => 'Admin activity and audit trail.',
     'Workflow' => 'Workflow',
     'Security' => 'Security',
-
-    // Help panel (includes/help-panel.php)
     'Help' => 'Help',
     'Quick Start' => 'Quick Start',
     'Use the sidebar to navigate between sections. Press Ctrl+K to open the command palette for quick access to any page or ticket.' => 'Use the sidebar to navigate between sections. Press Ctrl+K to open the command palette for quick access to any page or ticket.',
@@ -1686,8 +1629,6 @@ return [
     'Set up recurring tasks to automatically create tickets on a schedule (daily, weekly, monthly). Useful for regular maintenance or check-in tasks.' => 'Set up recurring tasks to automatically create tickets on a schedule (daily, weekly, monthly). Useful for regular maintenance or check-in tasks.',
     'Configure your app name, logo, email settings, and more from Settings. Set up SMTP for email notifications.' => 'Configure your app name, logo, email settings, and more from Settings. Set up SMTP for email notifications.',
     'Customize ticket statuses, priorities, and types to match your workflow. Drag to reorder, set colors, and rename as needed.' => 'Customize ticket statuses, priorities, and types to match your workflow. Drag to reorder, set colors, and rename as needed.',
-
-    // Ticket detail: edit ticket, comments, activity timeline
     'Edit ticket' => 'Edit ticket',
     'Description...' => 'Description...',
     'Optional work description...' => 'Optional work description...',
@@ -1833,4 +1774,11 @@ return [
     'Own tickets' => 'Own tickets',
     'Organization' => 'Organization',
     'AI agents' => 'AI agents',
+    'Language not supported.' => 'Language not supported.',
+    'comment.count_zero' => '{count} comments',
+    'comment.count_one' => '{count} comment',
+    'comment.count_two' => '{count} comments',
+    'comment.count_few' => '{count} comments',
+    'comment.count_many' => '{count} comments',
+    'comment.count_other' => '{count} comments',
 ];

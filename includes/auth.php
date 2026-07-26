@@ -111,14 +111,9 @@ function refresh_user_session()
         $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_avatar'] = $user['avatar'] ?? '';
-        $allowed_langs = array_keys(get_supported_languages());
-        $lang = strtolower(trim((string) ($user['language'] ?? '')));
-        if (!in_array($lang, $allowed_langs, true)) {
-            $lang = strtolower(trim((string) get_setting('app_language', 'en')));
-            if (!in_array($lang, $allowed_langs, true)) {
-                $lang = 'en';
-            }
-        }
+        $lang = normalize_locale_tag($user['language'] ?? null)
+            ?? normalize_locale_tag(get_setting('app_language', 'en'))
+            ?? 'en';
         $_SESSION['lang'] = $lang;
         unset($_SESSION['lang_override']);
     }
@@ -163,14 +158,9 @@ function login($email, $password)
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
         $_SESSION['user_role'] = $user['role'];
-        $allowed_langs = array_keys(get_supported_languages());
-        $lang = strtolower(trim((string) ($user['language'] ?? '')));
-        if (!in_array($lang, $allowed_langs, true)) {
-            $lang = strtolower(trim((string) get_setting('app_language', 'en')));
-            if (!in_array($lang, $allowed_langs, true)) {
-                $lang = 'en';
-            }
-        }
+        $lang = normalize_locale_tag($user['language'] ?? null)
+            ?? normalize_locale_tag(get_setting('app_language', 'en'))
+            ?? 'en';
         $_SESSION['lang'] = $lang;
         unset($_SESSION['lang_override']);
         return true;
@@ -321,14 +311,9 @@ function validate_remember_token()
     $_SESSION['user_name']  = $user['first_name'] . ' ' . $user['last_name'];
     $_SESSION['user_role']  = $user['role'];
 
-    $allowed_langs = array_keys(get_supported_languages());
-    $lang = strtolower(trim((string) ($user['language'] ?? '')));
-    if (!in_array($lang, $allowed_langs, true)) {
-        $lang = strtolower(trim((string) get_setting('app_language', 'en')));
-        if (!in_array($lang, $allowed_langs, true)) {
-            $lang = 'en';
-        }
-    }
+    $lang = normalize_locale_tag($user['language'] ?? null)
+        ?? normalize_locale_tag(get_setting('app_language', 'en'))
+        ?? 'en';
     $_SESSION['lang'] = $lang;
     unset($_SESSION['lang_override']);
 

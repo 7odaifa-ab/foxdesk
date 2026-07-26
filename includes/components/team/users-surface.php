@@ -299,11 +299,9 @@
                         <div>
                             <label class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Language')); ?></label>
                             <select name="language" class="form-select">
-                                <option value="en"><?php echo e(t('English')); ?></option>
-                                <option value="cs"><?php echo e(t('Czech')); ?></option>
-                                <option value="de"><?php echo e(t('German')); ?></option>
-                                <option value="it"><?php echo e(t('Italian')); ?></option>
-                                <option value="es"><?php echo e(t('Spanish')); ?></option>
+                                <?php foreach (get_supported_languages() as $code => $language): ?>
+                                    <option value="<?php echo e($code); ?>"><?php echo e(foxdesk_locale_option_label($code)); ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 

@@ -55,7 +55,7 @@ foreach ($component_attachments as $_att) {
         <a href="<?php echo e(attachment_download_url($_f)); ?>" target="_blank"
            class="fd-attachment-file">
             <?php echo get_icon(get_file_icon($_f['mime_type']), 'w-3.5 h-3.5 flex-shrink-0'); ?>
-            <span class="truncate max-w-[140px]"><?php echo e($_f['original_name']); ?></span>
+            <bdi class="truncate max-w-[140px]"><?php echo e($_f['original_name']); ?></bdi>
             <span class="text-xs text-theme-muted"><?php echo format_file_size($_f['file_size']); ?></span>
         </a>
     <?php endforeach; ?>

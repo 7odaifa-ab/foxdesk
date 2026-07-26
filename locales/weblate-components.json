@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "shared-self-hosted",
+    "name": "Shared web and self-hosted",
+    "file_format": "i18nextv4",
+    "filemask": "locales/catalogs/*.json",
+    "template": "locales/catalogs/en.json",
+    "new_lang": "none",
+    "language_regex": "^(en|cs|de|es|it|ar|fr|pt_BR|pt_PT|pl|nl|tr|ru|uk|ja|zh_Hans|zh_Hant|ko|he|fa|ur|hi|id|vi)$",
+    "repo": "https://github.com/lukashanes/foxdesk.git",
+    "branch": "main",
+    "vcs": "github"
+  }
+]

@@ -33,10 +33,10 @@
                         <span class="px-1.5 py-0.5 fd-rounded-pill text-[11px] font-medium bg-theme-tertiary text-theme-secondary"><?php echo e(t('Archived')); ?></span>
                     <?php endif; ?>
                     <?php if (!empty($ticket['organization_name'])): ?>
-                        <span><?php echo e($ticket['organization_name']); ?></span>
+                        <bdi><?php echo e($ticket['organization_name']); ?></bdi>
                     <?php endif; ?>
                 </div>
-                <h1 class="ticket-work-panel__title" title="<?php echo e($ticket['title']); ?>"><?php echo e($ticket['title']); ?></h1>
+                <h1 class="ticket-work-panel__title" dir="auto" title="<?php echo e($ticket['title']); ?>"><?php echo e($ticket['title']); ?></h1>
             </div>
             <div class="ticket-work-panel__actions" aria-label="<?php echo e(t('Primary actions')); ?>">
                 <?php foreach ($ticket_primary_actions as $action): ?>
@@ -80,7 +80,7 @@
         <?php if (!empty($ticket['description']) || !empty($initial_attachments)): ?>
                 <div class="card card-body">
                     <?php if (!empty($ticket['description'])): ?>
-                            <div class="prose max-w-none rich-content text-theme-secondary">
+                            <div class="prose max-w-none rich-content text-theme-secondary" dir="auto">
                                 <?php echo render_content($ticket['description']); ?>
                             </div>
                     <?php endif; ?>
@@ -203,7 +203,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="font-semibold text-theme-primary"><?php echo e(t('Activity')); ?>
-                    (<?php echo count($comments); ?> <?php echo e(t('comments')); ?>)</h3>
+                    (<?php echo e(tn('comment.count', count($comments))); ?>)</h3>
                 <?php if ($time_tracking_available && $total_time_minutes > 0 && can_view_time($user)): ?>
                         <span
                             class="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-700 rounded flex items-center gap-1">
@@ -328,7 +328,7 @@
                                                     </div>
 
                                                     <!-- Comment body -->
-                                                    <div class="break-words rich-content text-sm"
+                                                    <div class="break-words rich-content text-sm" dir="auto"
                                                         id="comment-content-<?php echo $comment['id']; ?>"
                                                         style="color: var(--text-secondary);">
                                                         <?php echo render_content($comment['content']); ?>

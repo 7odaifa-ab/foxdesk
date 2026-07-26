@@ -33,9 +33,9 @@ assert_rtl($supported['ar']['rtl'] === true, 'Arabic language metadata must spec
 
 // 2. Test Translations Loader
 $translations = include $root . '/includes/translations.php';
-assert_rtl(isset($translations['ar']), 'includes/translations.php must load Arabic translations');
-assert_rtl(is_array($translations['ar']), 'Arabic translations must be an array');
-assert_rtl(isset($translations['ar']['Dashboard']), 'Arabic translations must translate "Dashboard"');
+assert_rtl(array_keys($translations) === ['en'], 'Compatibility loader must load only the active locale and English fallback.');
+$arabicTranslations = foxdesk_translation_catalog('ar');
+assert_rtl(isset($arabicTranslations['Dashboard']), 'Arabic catalog must translate "Dashboard"');
 
 // 3. Test App Shell Integration
 if (!function_exists('is_admin')) {
@@ -85,14 +85,15 @@ assert_rtl(str_contains($theme_css, '--fd-inline-exit-x: -20px;'), 'RTL toast ex
 assert_rtl(str_contains($theme_css, '--fd-chevron-expanded-turn: -90deg;'), 'RTL accordion chevrons must rotate in the mirrored direction');
 assert_rtl(str_contains($theme_css, 'var(--fd-inline-nudge-x)'), 'Shared horizontal hover animations must use directional variables');
 
-// 6. Test admin settings language picker exposes Arabic
+// 6. Test admin settings language picker derives Arabic from the registry
 $general_settings_view = file_get_contents($root . '/includes/modules/settings/views/general.php');
 assert_rtl($general_settings_view !== false, 'Unable to read includes/modules/settings/views/general.php');
-assert_rtl(str_contains($general_settings_view, 'value="ar"'), 'Admin General settings language picker must offer Arabic');
+assert_rtl(str_contains($general_settings_view, 'get_supported_languages()'), 'Admin General settings language picker must use the locale registry.');
+assert_rtl(str_contains($general_settings_view, 'foxdesk_locale_option_label'), 'Admin General settings language picker must render native locale labels.');
 
 $settings_actions = file_get_contents($root . '/includes/modules/settings/settings-actions.php');
 assert_rtl($settings_actions !== false, 'Unable to read includes/modules/settings/settings-actions.php');
-assert_rtl(str_contains($settings_actions, 'get_supported_languages()'), 'Settings language whitelist must derive from get_supported_languages() so it cannot drift out of sync');
+assert_rtl(str_contains($settings_actions, 'normalize_locale_tag('), 'Settings language whitelist must validate against the locale registry so it cannot drift out of sync');
 
 $app_header_js = file_get_contents($root . '/assets/js/app-header.js');
 assert_rtl($app_header_js !== false, 'Unable to read app-header.js');

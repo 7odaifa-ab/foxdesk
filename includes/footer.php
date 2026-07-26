@@ -193,7 +193,7 @@ if ('serviceWorker' in navigator) {
              style="max-width:90vw; max-height:85vh; width:auto; height:auto; object-fit:contain; border-radius: var(--fd-radius-control); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);">
         <div id="lightbox-name" style="text-align:center; color:#fff; font-size:0.875rem; margin-top:0.5rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;"></div>
         <button onclick="closeImagePreview();"
-                style="position:absolute; top:-0.75rem; right:-0.75rem; width:2rem; height:2rem; border-radius:50%; background:rgba(0,0,0,0.6); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.25rem; line-height:1; transition:background 0.15s;"
+                style="position:absolute; top:-0.75rem; inset-inline-end:-0.75rem; width:2rem; height:2rem; border-radius:50%; background:rgba(0,0,0,0.6); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.25rem; line-height:1; transition:background 0.15s;"
                 onmouseover="this.style.background='rgba(0,0,0,0.85)'" onmouseout="this.style.background='rgba(0,0,0,0.6)'">&times;</button>
     </div>
 </div>

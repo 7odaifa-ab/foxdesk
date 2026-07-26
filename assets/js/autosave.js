@@ -33,6 +33,7 @@ window.FoxDeskAutosave = (function() {
         this.submitted = false;
         this.intervalId = null;
         this._boundBeforeUnload = null;
+        this._compositionDepth = 0;
     }
 
     AutosaveInstance.prototype.init = function() {
@@ -41,13 +42,32 @@ window.FoxDeskAutosave = (function() {
         // Attach change listeners to all fields
         this.fields.forEach(function(field) {
             if (field.type === 'quill' && field.editorKey && self.quillEditors[field.editorKey]) {
+                var editor = self.quillEditors[field.editorKey];
+                if (editor.root) {
+                    editor.root.addEventListener('compositionstart', function() {
+                        self._compositionDepth++;
+                    });
+                    editor.root.addEventListener('compositionend', function() {
+                        self._compositionDepth = Math.max(0, self._compositionDepth - 1);
+                        self.dirty = true;
+                    });
+                }
                 self.quillEditors[field.editorKey].on('text-change', function() {
-                    self.dirty = true;
+                    if (self._compositionDepth === 0) self.dirty = true;
                 });
             } else {
                 var el = document.querySelector(field.selector);
                 if (el) {
-                    el.addEventListener('input', function() { self.dirty = true; });
+                    el.addEventListener('compositionstart', function() {
+                        self._compositionDepth++;
+                    });
+                    el.addEventListener('compositionend', function() {
+                        self._compositionDepth = Math.max(0, self._compositionDepth - 1);
+                        self.dirty = true;
+                    });
+                    el.addEventListener('input', function(event) {
+                        if (!event.isComposing && self._compositionDepth === 0) self.dirty = true;
+                    });
                     el.addEventListener('change', function() { self.dirty = true; });
                 }
             }
@@ -68,7 +88,7 @@ window.FoxDeskAutosave = (function() {
 
         // Periodic save
         this.intervalId = setInterval(function() {
-            if (self.dirty && !self.submitted) {
+            if (self.dirty && !self.submitted && self._compositionDepth === 0) {
                 self.save();
                 self.dirty = false;
             }

@@ -1,4 +1,7 @@
 <?php
+
+// Generated from locales/catalogs/es.json by bin/i18n-catalogs.php.
+// Edit the JSON source and run npm run i18n:build.
 return [
     '-- Myself --' => '-- Yo mismo --',
     '-- No organization --' => '-- Sin cliente --',
@@ -553,8 +556,6 @@ return [
     'or drop files here' => 'o suelta archivos aquí',
     'selected' => 'seleccionados',
     '{count} tickets' => '{count} tickets',
-
-    // Recurring Tasks
     'Recurring Tasks' => 'Tareas recurrentes',
     'Recurring tasks' => 'Tareas recurrentes',
     'Automatically create tickets on a recurring schedule' => 'Crear tickets automáticamente en un horario recurrente',
@@ -619,8 +620,6 @@ return [
     'October' => 'Octubre',
     'November' => 'Noviembre',
     'December' => 'Diciembre',
-
-    // Reports & Report Builder
     'Client Reports' => 'Informes de clientes',
     'View Reports' => 'Ver informes',
     'Create New Report' => 'Crear nuevo informe',
@@ -673,8 +672,6 @@ return [
     'Report created successfully!' => '¡Informe creado correctamente!',
     'View Report' => 'Ver informe',
     'Failed to create report. Please try again.' => 'Error al crear el informe. Inténtalo de nuevo.',
-
-    // Additional UI Elements
     'Position' => 'Cargo',
     'Set as default priority' => 'Establecer como prioridad predeterminada',
     'Set as default type' => 'Establecer como tipo predeterminado',
@@ -726,8 +723,6 @@ return [
     'Stop & Log' => 'Detener y registrar',
     'Ticket access' => 'Acceso al ticket',
     'Time range' => 'Rango de tiempo',
-
-    // Password validation messages
     'Password must be at least 12 characters long.' => 'La contraseña debe tener al menos 12 caracteres.',
     'Password must contain at least one uppercase letter.' => 'La contraseña debe contener al menos una letra mayúscula.',
     'Password must contain at least one lowercase letter.' => 'La contraseña debe contener al menos una letra minúscula.',
@@ -857,8 +852,6 @@ return [
     'Please enter a report title.' => 'Por favor, introduce un título del informe.',
     'Please enter a valid date range.' => 'Introduce un rango de fechas válido.',
     'From Date must be before To Date.' => 'La fecha de inicio debe ser anterior a la fecha de fin.',
-
-    // v0.1.2 — Dashboard, Logs, Reports, Notifications
     'Archived users cannot be impersonated.' => 'Los usuarios archivados no pueden ser suplantados.',
     'Backup download failed: {error}' => 'Error al descargar la copia de seguridad: {error}',
     'Backup file not available.' => 'Archivo de copia de seguridad no disponible.',
@@ -925,8 +918,6 @@ return [
     'by' => 'por',
     'by {name}' => 'por {name}',
     'entries' => 'entradas',
-
-    // API
     'API' => 'API',
     'API tokens' => 'Tokens de API',
     'API tokens allow external tools and AI agents to interact with your helpdesk. Each token inherits the permissions of the user it belongs to.' => 'Los tokens de API permiten que herramientas externas y agentes de IA interactúen con su helpdesk. Cada token hereda los permisos del usuario al que pertenece.',
@@ -959,15 +950,11 @@ return [
     'Add a comment. JSON body: ticket_hash or ticket_id, content (required), is_internal (boolean).' => 'Agregar un comentario. Cuerpo JSON: ticket_hash o ticket_id, content (obligatorio), is_internal (booleano).',
     'Change ticket status. JSON body: ticket_hash or ticket_id, status_id or status (name).' => 'Cambiar estado del ticket. Cuerpo JSON: ticket_hash o ticket_id, status_id o status (nombre).',
     'Log a time entry. JSON body: ticket_hash or ticket_id, duration_minutes (required), summary, is_billable.' => 'Registrar entrada de tiempo. Cuerpo JSON: ticket_hash o ticket_id, duration_minutes (obligatorio), summary, is_billable.',
-
-    // v0.3.0 — AI-assisted time tracking
     'AI' => 'IA',
     'Timer' => 'Temporizador',
     'Source' => 'Fuente',
     'Entries' => 'Entradas',
     'Ticket creation' => 'Creación de ticket',
-
-    // v0.3.1 — Multi-agent AI system
     'AI Agents' => 'Agentes IA',
     'AI agent' => 'Agente IA',
     'Add AI agent' => 'Añadir agente IA',
@@ -991,8 +978,6 @@ return [
     'Generate new' => 'Generar nuevo',
     'No active token' => 'Sin token activo',
     'No token' => 'Sin token',
-
-    // Agent Connect
     'Agent Connect' => 'Conectar agente',
     'Connect' => 'Conectar',
     'Connection instructions for AI tools' => 'Instrucciones de conexión para herramientas de IA',
@@ -1026,8 +1011,6 @@ return [
     'Leave Start and End empty to log quick minutes ending now. If both are filled, the exact range is used instead.' => 'Deja Inicio y Fin vacíos para registrar minutos rápidos hasta ahora. Si ambos campos están completos, se usará en su lugar el rango exacto.',
     'Token:' => 'Token:',
     'API Base:' => 'URL base API:',
-
-    // v0.3.7 — Missing keys
     'By priority' => 'Por prioridad',
     'Time tracking alerts' => 'Alertas de seguimiento de tiempo',
     'Enable long timer alerts' => 'Activar alertas de temporizador prolongado',
@@ -1049,8 +1032,6 @@ return [
     'Show' => 'Mostrar',
     'Rate' => 'Tarifa',
     'Can view time entries' => 'Puede ver registros de tiempo',
-
-    // v0.3.11 — Dashboard redesign
     'New today' => 'Nuevos hoy',
     'New tickets' => 'Tickets nuevos',
     'Deadlines' => 'Vencimientos',
@@ -1068,8 +1049,6 @@ return [
     'needs attention' => 'necesita atención',
     'Total' => 'Total',
     'No tickets due this week' => 'No hay tickets con vencimiento esta semana',
-
-    // Missing keys
     'Default to internal' => 'Interno por defecto',
     'Name or email...' => 'Nombre o correo...',
     'Add attachments' => 'Agregar archivos adjuntos',
@@ -1106,8 +1085,6 @@ return [
     'Logo' => 'Logotipo',
     'Favicon' => 'Favicon',
     'Import from Markdown' => 'Importar desde Markdown',
-
-    // Auto-update system
     'Automatic updates' => 'Actualizaciones automáticas',
     'Manual update' => 'Actualización manual',
     'Kanban board' => 'Tablero Kanban',
@@ -1132,8 +1109,6 @@ return [
     'Update package downloaded and validated. Please confirm to apply.' => 'Paquete descargado y validado. Confirme para instalar.',
     'Update check failed: {error}' => 'Error al comprobar actualizaciones: {error}',
     'Dismiss' => 'Descartar',
-
-    // Pseudo-cron (background tasks)
     'Background tasks' => 'Tareas en segundo plano',
     'Automatically run email ingestion, recurring tasks, and maintenance on page loads — no server cron required.' => 'Ejecuta automáticamente la recepción de correos, tareas recurrentes y mantenimiento al cargar páginas — sin necesidad de cron en el servidor.',
     'Enable background tasks' => 'Habilitar tareas en segundo plano',
@@ -1143,8 +1118,6 @@ return [
     'every 60 min' => 'cada 60 min',
     'every 24 hours' => 'cada 24 horas',
     'Tasks run in the background on page loads. No server cron job needed.' => 'Las tareas se ejecutan en segundo plano al cargar páginas. No se necesita cron en el servidor.',
-
-    // Help panel
     'Add comments at the bottom of any ticket. You can also attach files by dragging them into the comment box or using the attachment button.' => 'Agregue comentarios en la parte inferior de cualquier ticket. También puede adjuntar archivos arrastrándolos al cuadro de comentarios o usando el botón de adjuntar.',
     'Add, edit, and deactivate users from the Users section. You can also import users in bulk via CSV.' => 'Agregue, edite y desactive usuarios desde la sección Usuarios. También puede importar usuarios de forma masiva mediante CSV.',
     'Assign tickets to yourself or other agents from the ticket detail page. Use bulk actions to assign multiple tickets at once.' => 'Asigne tickets a usted mismo o a otros agentes desde la página de detalle del ticket. Use acciones masivas para asignar múltiples tickets a la vez.',
@@ -1186,8 +1159,6 @@ return [
     'View logged time reports under Reports > Time Tracking. Filter by agent, date range, or ticket to analyze time spent.' => 'Vea los informes de tiempo registrado en Informes > Seguimiento de tiempo. Filtre por agente, rango de fechas o ticket para analizar el tiempo dedicado.',
     'Viewing and filtering' => 'Visualización y filtrado',
     'Your Profile' => 'Su perfil',
-
-    // Allowed senders
     'Allowed Senders' => 'Remitentes permitidos',
     'Add Sender' => 'Añadir remitente',
     'Email or Domain' => 'Email o dominio',
@@ -1218,8 +1189,6 @@ return [
     'Time entry' => 'Entrada de tiempo',
     'No time entries in the last 30 days.' => 'No hay entradas de tiempo en los últimos 30 días.',
     'Agent was not found or is not available in this workspace.' => 'No se encontró el agente o no está disponible en este espacio de trabajo.',
-
-    // Link preview cards
     'Google Drive file' => 'Archivo de Google Drive',
     'Google Docs' => 'Google Docs',
     'Google Sheets' => 'Google Sheets',
@@ -1229,8 +1198,6 @@ return [
     'OneDrive file' => 'Archivo de OneDrive',
     'Figma design' => 'Diseño de Figma',
     'Image' => 'Imagen',
-
-    // Added translation parity keys.
     'API access' => 'Acceso a la API',
     'Create a scoped key for assistants, CLI tools, or automations.' => 'Crea una clave con permisos limitados para asistentes, herramientas CLI o automatizaciones.',
     'Copy this API key now. It will not be shown again.' => 'Copia esta clave API ahora. No se volverá a mostrar.',
@@ -1459,8 +1426,6 @@ return [
     'Work logged' => 'Trabajo registrado',
     'work records' => 'registros de trabajo',
     'No public comment was added for this time entry.' => 'No se agregó ningún comentario público a este registro de tiempo.',
-
-    // Instrucciones canónicas de Agent API
     'Agent instructions: FoxDesk tickets' => 'Instrucciones para agentes: tickets de FoxDesk',
     'Basic rules' => 'Reglas básicas',
     'Use only the FoxDesk Agent API. Never use a web browser.' => 'Usa únicamente la FoxDesk Agent API. No uses nunca un navegador web.',
@@ -1542,8 +1507,6 @@ return [
     'Failed to restore comment.' => 'No se pudo restaurar el comentario.',
     'Attachment restored.' => 'Archivo adjunto restaurado.',
     'Failed to restore attachment.' => 'No se pudo restaurar el archivo adjunto.',
-
-    // Settings: General extras
     'Login page welcome text' => 'Texto de bienvenida de la página de inicio de sesión',
     'This text appears on the login screen below the application name.' => 'Este texto aparece en la pantalla de inicio de sesión debajo del nombre de la aplicación.',
     'Example: TK-10001, REQ-10001 (letters only). Only affects new tickets — existing tickets keep their current prefix.' => 'Ejemplo: TK-10001, REQ-10001 (solo letras). Solo afecta a los tickets nuevos — los existentes conservan su prefijo actual.',
@@ -1553,14 +1516,10 @@ return [
     'Square image recommended. Formats: JPG, PNG, GIF, WebP, SVG. Max 2 MB.' => 'Se recomienda una imagen cuadrada. Formatos: JPG, PNG, GIF, WebP, SVG. Máx. 2 MB.',
     'Please select an ICO, PNG, or GIF file' => 'Seleccione un archivo ICO, PNG o GIF',
     'Please select a JPG, PNG, GIF, WebP, or SVG file' => 'Seleccione un archivo JPG, PNG, GIF, WebP o SVG',
-
-    // Settings: Email extras
     'When enabled, the system will automatically create tickets from incoming emails. Requires a cron job or background tasks to be active.' => 'Si se activa, el sistema creará automáticamente tickets a partir de correos entrantes. Requiere una tarea cron o tareas en segundo plano activas.',
     'When enabled, anyone can create tickets by sending an email — not just addresses in the allowlist below.' => 'Si se activa, cualquiera puede crear tickets enviando un correo — no solo las direcciones de la lista de permitidos.',
     'Turning this off will stop all email notifications for all users — including ticket updates, status changes, and new ticket alerts.' => 'Desactivarlo detendrá todas las notificaciones por correo para todos los usuarios — incluyendo actualizaciones de tickets, cambios de estado y alertas de tickets nuevos.',
     'Currently off. No email notifications are being sent. Turn on to enable notifications for ticket updates, comments, and new tickets.' => 'Actualmente desactivado. No se envían notificaciones por correo. Actívelo para habilitar notificaciones de actualizaciones, comentarios y tickets nuevos.',
-
-    // Settings: Logs
     'System Logs' => 'Registros del sistema',
     'Are you sure you want to clear all logs?' => '¿Seguro que desea borrar todos los registros?',
     'Clear all logs' => 'Borrar todos los registros',
@@ -1570,8 +1529,6 @@ return [
     'No logs found.' => 'No se encontraron registros.',
     'Showing {start} to {end} of {total} entries' => 'Mostrando {start} a {end} de {total} entradas',
     'Prev' => 'Anterior',
-
-    // Settings: Security — two-factor authentication
     'Two-factor authentication' => 'Autenticación de dos factores',
     'Require users to set up an authenticator app (Google Authenticator, Authy, 1Password) before accessing the system.' => 'Exigir a los usuarios configurar una app de autenticación (Google Authenticator, Authy, 1Password) antes de acceder al sistema.',
     'Admins' => 'Administradores',
@@ -1591,8 +1548,6 @@ return [
     'users will be immediately forced to set up 2FA. They won\'t be able to use the system until they scan a QR code with their authenticator app.' => 'usuarios serán obligados de inmediato a configurar 2FA. No podrán usar el sistema hasta escanear un código QR con su app de autenticación.',
     'All users in this role already have 2FA enabled. New users will be required to set it up on first login.' => 'Todos los usuarios de este rol ya tienen 2FA activado. Los nuevos usuarios deberán configurarlo en su primer inicio de sesión.',
     'The forced setup requirement will be removed. Users who already have 2FA will keep it — it won\'t be disabled.' => 'Se eliminará el requisito de configuración obligatoria. Los usuarios que ya tengan 2FA lo conservarán — no se desactivará.',
-
-    // Settings: System — operations, updates, backups
     'Operations overview' => 'Resumen de operaciones',
     'Check updates' => 'Buscar actualizaciones',
     'Create a new backup?' => '¿Crear una nueva copia de seguridad?',
@@ -1638,8 +1593,6 @@ return [
     'Backup created: {version}' => 'Copia de seguridad creada: {version}',
     'Please select a .zip file' => 'Seleccione un archivo .zip',
     'Cloud migration' => 'Migración a la nube',
-
-    // Admin areas overview
     'Admin areas' => 'Áreas de administración',
     'Settings sections' => 'Secciones de configuración',
     'Team & access' => 'Equipo y acceso',
@@ -1657,8 +1610,6 @@ return [
     'Admin activity and audit trail.' => 'Actividad de administración y registro de auditoría.',
     'Workflow' => 'Flujo de trabajo',
     'Security' => 'Seguridad',
-
-    // Help panel
     'Help' => 'Ayuda',
     'Quick Start' => 'Inicio rápido',
     'Use the sidebar to navigate between sections. Press Ctrl+K to open the command palette for quick access to any page or ticket.' => 'Use la barra lateral para navegar entre secciones. Presione Ctrl+K para abrir la paleta de comandos y acceder rápidamente a cualquier página o ticket.',
@@ -1678,8 +1629,6 @@ return [
     'Set up recurring tasks to automatically create tickets on a schedule (daily, weekly, monthly). Useful for regular maintenance or check-in tasks.' => 'Configure tareas recurrentes para crear tickets automáticamente según un calendario (diario, semanal, mensual). Útil para tareas de mantenimiento o seguimiento regular.',
     'Configure your app name, logo, email settings, and more from Settings. Set up SMTP for email notifications.' => 'Configure el nombre de la aplicación, el logotipo, los ajustes de correo y más desde Configuración. Configure SMTP para las notificaciones por correo.',
     'Customize ticket statuses, priorities, and types to match your workflow. Drag to reorder, set colors, and rename as needed.' => 'Personalice los estados, prioridades y tipos de ticket según su flujo de trabajo. Arrastre para reordenar, defina colores y cambie el nombre según sea necesario.',
-
-    // Ticket detail: edit ticket, comments, activity timeline
     'Edit ticket' => 'Editar ticket',
     'Description...' => 'Descripción...',
     'Optional work description...' => 'Descripción del trabajo (opcional)...',
@@ -1825,4 +1774,11 @@ return [
     'Own tickets' => 'Tickets propios',
     'Organization' => 'Organización',
     'AI agents' => 'Agentes de IA',
+    'Language not supported.' => 'El idioma no es compatible.',
+    'comment.count_zero' => '{count} comentarios',
+    'comment.count_one' => '{count} comentario',
+    'comment.count_two' => '{count} comentarios',
+    'comment.count_few' => '{count} comentarios',
+    'comment.count_many' => '{count} comentarios',
+    'comment.count_other' => '{count} comentarios',
 ];

@@ -26,6 +26,27 @@ function app_shell_user(array $user): array
     ];
 }
 
+function app_shell_locale(): array
+{
+    $active = function_exists('get_app_language') ? get_app_language() : 'en';
+    $supported = [];
+    foreach (function_exists('foxdesk_available_locales') ? foxdesk_available_locales() : [] as $tag => $metadata) {
+        $supported[] = [
+            'tag' => $tag,
+            'native_name' => (string) ($metadata['nativeName'] ?? $tag),
+            'english_name' => (string) ($metadata['englishName'] ?? $tag),
+            'direction' => (string) ($metadata['direction'] ?? 'ltr'),
+            'state' => (string) ($metadata['state'] ?? 'draft'),
+        ];
+    }
+
+    return [
+        'active' => $active,
+        'direction' => function_exists('get_app_direction') ? get_app_direction($active) : 'ltr',
+        'supported' => $supported,
+    ];
+}
+
 function app_shell_navigation(array $user): array
 {
     $is_client_user = ($user['role'] ?? '') === 'user';
@@ -170,6 +191,7 @@ function app_shell_payload(array $user): array
         'generated_at' => date('c'),
         'home_page' => function_exists('foxdesk_authenticated_home_page') ? foxdesk_authenticated_home_page() : 'work',
         'user' => app_shell_user($user),
+        'locale' => app_shell_locale(),
         'navigation' => app_shell_navigation($user),
         'capabilities' => app_shell_capabilities($user),
         'work_queues' => app_shell_work_queues($user),

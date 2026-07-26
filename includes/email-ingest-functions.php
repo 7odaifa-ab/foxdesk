@@ -1174,10 +1174,9 @@ function email_ingest_send_requester_notifications($ticket_id, $ticket_created, 
     }
 
     $settings = get_settings();
-    $lang = strtolower(trim((string) ($user['language'] ?? 'en')));
-    if ($lang === '') {
-        $lang = 'en';
-    }
+    $lang = function_exists('normalize_locale_tag')
+        ? (normalize_locale_tag($user['language'] ?? 'en') ?? 'en')
+        : strtolower(trim((string) ($user['language'] ?? 'en')));
 
     $ticket_code = email_ingest_ticket_code((int) $ticket['id']);
     $ticket_param = !empty($ticket['hash']) ? 't=' . urlencode($ticket['hash']) : 'id=' . (int) $ticket['id'];

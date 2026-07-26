@@ -1,4 +1,5 @@
 node_modules/
+locales/.translation-cache/
 build/
 playwright-report/
 test-results/

@@ -222,7 +222,13 @@ function upload_file($file, $allowed_types = null, $max_size = null, string $vis
         mkdir($upload_path, 0755, true);
     }
 
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $original_name = basename(str_replace('\\', '/', (string) ($file['name'] ?? '')));
+    $original_name = foxdesk_strip_bidi_controls(foxdesk_normalize_unicode($original_name));
+    $original_name = mb_substr(trim($original_name), 0, 255);
+    if ($original_name === '') {
+        $original_name = 'attachment';
+    }
+    $ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
 
     // Block dangerous file extensions regardless of MIME type
     $blocked_extensions = ['php', 'phtml', 'php3', 'php4', 'php5', 'phar', 'shtml', 'cgi', 'pl', 'py', 'rb', 'sh', 'bat', 'cmd', 'exe', 'com', 'msi', 'jsp', 'asp', 'aspx', 'htaccess'];
@@ -241,7 +247,7 @@ function upload_file($file, $allowed_types = null, $max_size = null, string $vis
 
     return [
         'filename' => $relative_filename,
-        'original_name' => $file['name'],
+        'original_name' => $original_name,
         'mime_type' => $mime_type,
         'file_size' => $file['size']
     ];

@@ -16,12 +16,15 @@ $primary_color = $settings['primary_color'] ?? '#3b82f6';
 $bg_color = '#1e293b';
 
 header('Content-Type: application/manifest+json');
-header('Cache-Control: public, max-age=3600');
+header('Cache-Control: private, max-age=3600');
+header('Vary: Cookie, Accept-Language');
 
 echo json_encode([
+    'lang' => get_app_language(),
+    'dir' => get_app_direction(),
     'name' => $app_name,
     'short_name' => $app_name,
-    'description' => $app_name . ' - Helpdesk',
+    'description' => $app_name . ' - ' . t('Helpdesk'),
     'start_url' => 'index.php?page=dashboard',
     'display' => 'standalone',
     'background_color' => $bg_color,

@@ -9,18 +9,18 @@
 
 function foxdesk_agent_instruction_languages(): array
 {
-    return ['en', 'cs', 'de', 'es', 'it'];
+    return array_keys(get_supported_languages());
 }
 
 function foxdesk_agent_instruction_language(?string $requested, ?array $user = null): string
 {
-    $requested = strtolower(trim((string) $requested));
-    if (in_array($requested, foxdesk_agent_instruction_languages(), true)) {
+    $requested = normalize_locale_tag($requested);
+    if ($requested !== null && in_array($requested, foxdesk_agent_instruction_languages(), true)) {
         return $requested;
     }
 
-    $user_language = strtolower(trim((string) ($user['language'] ?? '')));
-    return in_array($user_language, foxdesk_agent_instruction_languages(), true)
+    $user_language = normalize_locale_tag($user['language'] ?? null);
+    return $user_language !== null && in_array($user_language, foxdesk_agent_instruction_languages(), true)
         ? $user_language
         : 'en';
 }

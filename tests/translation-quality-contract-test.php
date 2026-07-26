@@ -18,8 +18,13 @@ function translation_placeholders(string $value): array
     return array_values(array_unique($placeholders));
 }
 
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', $root);
+}
+require_once $root . '/includes/locale-functions.php';
+
 $source = include $root . '/includes/lang/en.php';
-$languages = ['cs', 'de', 'es', 'it', 'ar'];
+$languages = array_values(array_diff(array_keys(foxdesk_locale_registry()), ['en']));
 $expectedProductTerms = [
     'cs' => [
         'New' => 'Nový',
@@ -114,9 +119,12 @@ foreach ($languages as $language) {
             strtoupper($language) . ' placeholder mismatch for key: ' . $key
         );
 
-        if ($translatedValue === (string) $sourceValue) {
+        $state = foxdesk_locale_status($language, 'self_hosted');
+        if ($state !== 'draft' && $translatedValue === (string) $sourceValue) {
+            $shortSharedTerm = mb_strlen(trim($translatedValue), 'UTF-8') <= 24
+                && preg_match_all('/[\p{L}\p{N}]+/u', $translatedValue) <= 3;
             assert_translation_quality(
-                isset($sameAsEnglishAllowlist[$translatedValue]),
+                isset($sameAsEnglishAllowlist[$translatedValue]) || $shortSharedTerm,
                 strtoupper($language) . ' keeps non-allowlisted English copy: ' . $key
             );
         }

@@ -1,4 +1,7 @@
 <?php
+
+// Generated from locales/catalogs/ar.json by bin/i18n-catalogs.php.
+// Edit the JSON source and run npm run i18n:build.
 return [
     '-- Myself --' => '-- أنا --',
     '-- No organization --' => '-- بدون عميل --',
@@ -654,8 +657,6 @@ return [
     'Ticket title' => 'عنوان التذكرة',
     'Duration' => 'المدة',
     'No active share link exists yet.' => 'لا يوجد رابط مشاركة نشط بعد.',
-
-    // Recurring Tasks
     'Recurring Tasks' => 'المهام المتكررة',
     'Automatically create tickets on a recurring schedule' => 'إنشاء تذاكر تلقائياً وفق جدول متكرر',
     'Create Recurring Task' => 'إنشاء مهمة متكررة',
@@ -685,7 +686,6 @@ return [
     'Frequency' => 'التكرار',
     'Daily' => 'يومي',
     'Monthly' => 'شهري',
-
     'Recurrence Interval' => 'فاصل التكرار',
     'Day of Week' => 'يوم الأسبوع',
     'Day of Month' => 'يوم الشهر',
@@ -719,8 +719,6 @@ return [
     'October' => 'أكتوبر',
     'November' => 'نوفمبر',
     'December' => 'ديسمبر',
-
-    // Reports & Report Builder
     'Client Reports' => 'تقارير العملاء',
     'View Reports' => 'عرض التقارير',
     'Create New Report' => 'إنشاء تقرير جديد',
@@ -777,15 +775,11 @@ return [
     'Today' => 'اليوم',
     'Past 7 days' => 'آخر 7 أيام',
     'Past 30 days' => 'آخر 30 يوماً',
-
-    // Password validation messages
     'Password must be at least 12 characters long.' => 'يجب أن تتكون كلمة المرور من 12 حرفاً على الأقل.',
     'Password must contain at least one uppercase letter.' => 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل.',
     'Password must contain at least one lowercase letter.' => 'يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.',
     'Password must contain at least one number.' => 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.',
     'Password must contain at least one special character.' => 'يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل.',
-
-    // Impersonation
     'You are currently viewing as' => 'أنت حالياً تتصفح باسم',
     'Stop Impersonating' => 'إيقاف انتحال الصفة',
     'Log in as user' => 'تسجيل الدخول كهذا المستخدم',
@@ -969,8 +963,6 @@ return [
     'Please enter a valid date range.' => 'يرجى إدخال نطاق تاريخ صالح.',
     'From Date must be before To Date.' => 'يجب أن يكون "من تاريخ" قبل "إلى تاريخ".',
     'Unknown error' => 'خطأ غير معروف',
-
-    // API
     'API' => 'API',
     'API tokens' => 'رموز API',
     'API tokens allow external tools and AI agents to interact with your helpdesk. Each token inherits the permissions of the user it belongs to.' => 'تتيح رموز API للأدوات الخارجية ووكلاء الذكاء الاصطناعي التفاعل مع نظام الدعم الخاص بك. يرث كل رمز صلاحيات المستخدم الذي يخصه.',
@@ -1001,15 +993,11 @@ return [
     'Add a comment. JSON body: ticket_hash or ticket_id, content (required), is_internal (boolean).' => 'إضافة تعليق. نص JSON: ticket_hash أو ticket_id، content (مطلوب)، is_internal (منطقي).',
     'Change ticket status. JSON body: ticket_hash or ticket_id, status_id or status (name).' => 'تغيير حالة التذكرة. نص JSON: ticket_hash أو ticket_id، status_id أو status (الاسم).',
     'Log a time entry. JSON body: ticket_hash or ticket_id, duration_minutes (required), summary, is_billable.' => 'تسجيل قيد وقت. نص JSON: ticket_hash أو ticket_id، duration_minutes (مطلوب)، summary، is_billable.',
-
-    // v0.3.0 — AI-assisted time tracking
     'AI' => 'الذكاء الاصطناعي',
     'Timer' => 'المؤقت',
     'Source' => 'المصدر',
     'Entries' => 'القيود',
     'Ticket creation' => 'إنشاء التذكرة',
-
-    // v0.3.1 — Multi-agent AI system
     'AI Agents' => 'وكلاء الذكاء الاصطناعي',
     'AI agent' => 'وكيل ذكاء اصطناعي',
     'Add AI agent' => 'إضافة وكيل ذكاء اصطناعي',
@@ -1037,13 +1025,10 @@ return [
     'Choose what this token can do.' => 'اختر ما يمكن لهذا الرمز فعله.',
     'Tickets and replies' => 'التذاكر والردود',
     'Read, create, update tickets, and add replies.' => 'قراءة التذاكر وإنشاؤها وتحديثها وإضافة ردود عليها.',
-    'Time tracking' => 'تتبع الوقت',
     'Read and log time entries.' => 'قراءة قيود الوقت وتسجيلها.',
-    'Attachments' => 'المرفقات',
     'Read and upload ticket attachments.' => 'قراءة مرفقات التذاكر ورفعها.',
     'Reports' => 'التقارير',
     'Read report and billing review data.' => 'قراءة بيانات التقارير ومراجعات الفوترة.',
-    'Notifications' => 'الإشعارات',
     'Read and update notifications.' => 'قراءة الإشعارات وتحديثها.',
     'Save access' => 'حفظ الصلاحيات',
     'Save access and create token' => 'حفظ الصلاحيات وإنشاء رمز',
@@ -1051,8 +1036,6 @@ return [
     'Create token with access' => 'إنشاء رمز بصلاحيات محددة',
     'Revoke token' => 'إلغاء الرمز',
     'API token generated. Copy it now.' => 'تم توليد رمز API. انسخه الآن.',
-
-    // Agent Connect
     'Agent Connect' => 'ربط الوكيل',
     'Connect' => 'ربط',
     'Connection instructions for AI tools' => 'تعليمات الربط لأدوات الذكاء الاصطناعي',
@@ -1088,8 +1071,6 @@ return [
     'Leave Start and End empty to log quick minutes ending now. If both are filled, the exact range is used instead.' => 'اترك حقلي البداية والنهاية فارغين لتسجيل دقائق سريعة تنتهي الآن. إذا تم ملء الحقلين، سيُستخدم النطاق الدقيق بدلاً من ذلك.',
     'Token:' => 'الرمز:',
     'API Base:' => 'رابط API الأساسي:',
-
-    // v0.3.7 — Keys previously used via t() but never added to language files
     'Time tracking alerts' => 'تنبيهات تتبع الوقت',
     'Enable long timer alerts' => 'تفعيل تنبيهات المؤقت الطويل',
     'Alert threshold (hours)' => 'حد التنبيه (ساعات)',
@@ -1129,8 +1110,6 @@ return [
     'Please select a client, agent, and hourly rate.' => 'يرجى اختيار عميل ووكيل وسعر الساعة.',
     'Optional' => 'اختياري',
     'Can view time entries' => 'يمكنه عرض قيود الوقت',
-
-    // v0.3.11 — Dashboard redesign
     'New today' => 'جديد اليوم',
     'New tickets' => 'تذاكر جديدة',
     'Deadlines' => 'المواعيد النهائية',
@@ -1148,8 +1127,6 @@ return [
     'needs attention' => 'تحتاج إلى اهتمام',
     'Total' => 'الإجمالي',
     'No tickets due this week' => 'لا توجد تذاكر مستحقة هذا الأسبوع',
-
-    // Missing keys
     'By priority' => 'حسب الأولوية',
     'Default to internal' => 'افتراضياً داخلي',
     'Name or email...' => 'الاسم أو البريد الإلكتروني...',
@@ -1190,8 +1167,6 @@ return [
     'Logo' => 'الشعار',
     'Favicon' => 'أيقونة الموقع',
     'Import from Markdown' => 'استيراد من Markdown',
-
-    // Auto-update system
     'Automatic updates' => 'التحديثات التلقائية',
     'Manual update' => 'تحديث يدوي',
     'Kanban board' => 'لوحة كانبان',
@@ -1218,8 +1193,6 @@ return [
     'Dismiss' => 'إغلاق',
     'Collapse sidebar' => 'طي الشريط الجانبي',
     'Expand sidebar' => 'توسيع الشريط الجانبي',
-
-    // Pseudo-cron (background tasks)
     'Background tasks' => 'المهام الخلفية',
     'Automatically run email ingestion, recurring tasks, and maintenance on page loads — no server cron required.' => 'تشغيل استيراد البريد والمهام المتكررة والصيانة تلقائياً عند تحميل الصفحات — دون الحاجة إلى cron على الخادم.',
     'Enable background tasks' => 'تفعيل المهام الخلفية',
@@ -1229,8 +1202,6 @@ return [
     'every 60 min' => 'كل 60 دقيقة',
     'every 24 hours' => 'كل 24 ساعة',
     'Tasks run in the background on page loads. No server cron job needed.' => 'تعمل المهام في الخلفية عند تحميل الصفحات. لا حاجة إلى مهمة cron على الخادم.',
-
-    // Help panel
     'Add comments at the bottom of any ticket. You can also attach files by dragging them into the comment box or using the attachment button.' => 'أضف تعليقات أسفل أي تذكرة. يمكنك أيضاً إرفاق ملفات بسحبها إلى مربع التعليق أو باستخدام زر المرفقات.',
     'Add, edit, and deactivate users from the Users section. You can also import users in bulk via CSV.' => 'أضف المستخدمين وعدّلهم وعطّلهم من قسم المستخدمين. يمكنك أيضاً استيراد المستخدمين بشكل جماعي عبر CSV.',
     'Assign tickets to yourself or other agents from the ticket detail page. Use bulk actions to assign multiple tickets at once.' => 'عيّن التذاكر لنفسك أو لوكلاء آخرين من صفحة تفاصيل التذكرة. استخدم الإجراءات الجماعية لتعيين عدة تذاكر دفعة واحدة.',
@@ -1254,7 +1225,6 @@ return [
     'Managing users' => 'إدارة المستخدمين',
     'Navigation' => 'التنقل',
     'Open in new tab' => 'فتح في تبويب جديد',
-    'Reports' => 'التقارير',
     'Set up recurring tasks to automatically create tickets on a schedule. Useful for maintenance, reviews, and periodic check-ins.' => 'أعِدّ مهاماً متكررة لإنشاء التذاكر تلقائياً وفق جدول زمني. مفيد للصيانة والمراجعات والمتابعات الدورية.',
     'Hold Ctrl (or Cmd on Mac) and click a ticket row to open it in a new tab.' => 'اضغط باستمرار على Ctrl (أو Cmd في ماك) وانقر على صف تذكرة لفتحه في تبويب جديد.',
     'Shortcuts' => 'الاختصارات',
@@ -1272,8 +1242,6 @@ return [
     'View logged time reports under Reports > Time Tracking. Filter by agent, date range, or ticket to analyze time spent.' => 'اعرض تقارير الوقت المسجَّل ضمن التقارير > تتبع الوقت. صفِّ حسب الوكيل أو نطاق التاريخ أو التذكرة لتحليل الوقت المستغرق.',
     'Viewing and filtering' => 'العرض والتصفية',
     'Your Profile' => 'ملفك الشخصي',
-
-    // Allowed senders
     'Allowed Senders' => 'المرسلون المسموح بهم',
     'Add Sender' => 'إضافة مرسل',
     'Email or Domain' => 'البريد الإلكتروني أو النطاق',
@@ -1306,7 +1274,6 @@ return [
     'Invalid billing adjustment.' => 'تعديل فوترة غير صالح.',
     'Billable item adjustment updated.' => 'تم تحديث تعديل العنصر القابل للفوترة.',
     'Discount' => 'الخصم',
-    'Total' => 'الإجمالي',
     'Value' => 'القيمة',
     'Save billing' => 'حفظ الفوترة',
     'Are you sure?' => 'هل أنت متأكد؟',
@@ -1397,7 +1364,6 @@ return [
     'Access' => 'الصلاحيات',
     'No clients selected' => 'لم يتم تحديد عملاء',
     'Own tickets only' => 'تذاكري فقط',
-
     'Work overview' => 'الوقت المسجَّل',
     'Now' => 'الآن',
     'Current work' => 'قيد التنفيذ الآن',
@@ -1413,12 +1379,10 @@ return [
     'Selected' => 'محدد',
     'Last activity' => 'آخر نشاط',
     'No team time yet.' => 'لا يوجد وقت للفريق بعد.',
-    'No activity' => 'لا يوجد نشاط',
     'Last ticket' => 'آخر تذكرة',
     'Last 5 tickets' => 'آخر 5 تذاكر',
     'All work' => 'بحث',
     'My work log' => 'قيودي',
-    'Work log' => 'سجل العمل',
     'Work log range' => 'نطاق سجل العمل',
     'What was done' => 'ما تم إنجازه',
     'Showing latest {shown} of {total} entries.' => 'عرض أحدث {shown} من أصل {total} قيد.',
@@ -1440,7 +1404,6 @@ return [
     'Choose a client first' => 'اختر عميلاً أولاً',
     'Pick one client above to preview work, adjust billing, and create a report.' => 'اختر عميلاً واحداً أعلاه لمعاينة العمل وضبط الفوترة وإنشاء تقرير.',
     'Items' => 'العناصر',
-    'Entries' => 'القيود',
     'Name, language, time and invoice defaults.' => 'الاسم واللغة وإعدادات الوقت والفاتورة الافتراضية.',
     'Sending, inbound mail, and delivery checks.' => 'الإرسال والبريد الوارد وفحوصات التسليم.',
     'Customer-facing notification text.' => 'نص الإشعارات الموجَّهة للعملاء.',
@@ -1454,8 +1417,6 @@ return [
     'Work logged' => 'العمل المسجَّل',
     'work records' => 'سجلات العمل',
     'No public comment was added for this time entry.' => 'لم تتم إضافة تعليق عام لقيد الوقت هذا.',
-
-    // Canonical Agent API operating instructions
     'Agent instructions: FoxDesk tickets' => 'تعليمات الوكيل: تذاكر FoxDesk',
     'Basic rules' => 'القواعد الأساسية',
     'Use only the FoxDesk Agent API. Never use a web browser.' => 'استخدم فقط FoxDesk Agent API. لا تستخدم متصفح ويب أبداً.',
@@ -1474,6 +1435,15 @@ return [
     'A day-by-day work breakdown.' => 'تفصيل العمل يوماً بيوم.',
     'A detailed work agenda.' => 'جدول عمل تفصيلي.',
     'A timer or time entry.' => 'مؤقت أو قيد وقت.',
+    'Dates, clock times, or durations unless the user explicitly requested them in the text.' => 'التواريخ أو الأوقات أو المدد الزمنية إلا إذا طلبها المستخدم صراحةً في النص.',
+    'Multi-day work intake and preview' => 'إدخال العمل متعدد الأيام ومعاينته',
+    'Before writing multi-day or multi-entry work, collect any missing choices and show a complete preview.' => 'قبل كتابة عمل متعدد الأيام أو متعدد القيود، اجمع أي خيارات ناقصة وأظهر معاينة كاملة.',
+    'One main ticket with work comments, or multiple tickets for distinct deliverables?' => 'تذكرة رئيسية واحدة مع تعليقات عمل، أم عدة تذاكر لمخرجات منفصلة؟',
+    'What exact total worked time should be recorded?' => 'ما إجمالي وقت العمل الدقيق الذي يجب تسجيله؟',
+    'Which work dates or date range should be used?' => 'ما تواريخ العمل أو نطاق التاريخ الذي يجب استخدامه؟',
+    'Are the durations actual, or may the approved total be allocated naturally across entries?' => 'هل المدد فعلية، أم يمكن توزيع الإجمالي المعتمد بشكل طبيعي على القيود؟',
+    'Should entries be public and billable?' => 'هل يجب أن تكون القيود عامة وقابلة للفوترة؟',
+    'Do not write anything until the user approves the complete preview.' => 'لا تكتب أي شيء حتى يوافق المستخدم على المعاينة الكاملة.',
     'Daily entries' => 'القيود اليومية',
     'Tracked work entries' => 'قيود العمل المسجَّلة',
     'Use agent-add-update for a comment without tracked time.' => 'استخدم agent-add-update لتعليق بدون وقت مسجَّل.',
@@ -1486,6 +1456,12 @@ return [
     'Add one separate comment for each workday.' => 'أضف تعليقاً منفصلاً لكل يوم عمل.',
     'Keep daily comments in chronological order.' => 'حافظ على ترتيب التعليقات اليومية زمنياً.',
     'Include the date, approved minutes, and the specific work completed.' => 'أدرج التاريخ والدقائق المعتمدة والعمل المحدد المُنجز.',
+    'Add one separate work entry for each workday.' => 'أضف قيد عمل منفصلاً لكل يوم عمل.',
+    'Keep daily work entries in chronological order.' => 'حافظ على ترتيب قيود العمل اليومية زمنياً.',
+    'Describe only the specific work completed; keep dates and time out of the comment text.' => 'صف فقط العمل المحدد المُنجز؛ لا تُدرج التواريخ والوقت في نص التعليق.',
+    'Put the work date in worked_on. Use started_at and ended_at only when exact times are known.' => 'ضع تاريخ العمل في worked_on. استخدم started_at و ended_at فقط عند معرفة الأوقات الدقيقة.',
+    'Record realistic minute-level durations based on the actual or approved work.' => 'سجّل مدداً واقعية بالدقائق بناءً على العمل الفعلي أو المعتمد.',
+    'Do not round work into artificial blocks like 60 or 120 minutes unless that is the real approved duration.' => 'لا تُقرِّب العمل إلى كتل مصطنعة مثل 60 أو 120 دقيقة إلا إذا كانت هذه هي المدة المعتمدة الفعلية.',
     'Do not send duration_minutes, started_at, ended_at, or any other time fields.' => 'لا ترسل duration_minutes أو started_at أو ended_at أو أي حقول وقت أخرى.',
     'Minutes belong only in the comment text; do not create a timer or time entry for this workflow.' => 'الدقائق تنتمي فقط إلى نص التعليق؛ لا تنشئ مؤقتاً أو قيد وقت لهذا الإجراء.',
     'Set skip_notification to true when the client should not receive an email.' => 'اضبط skip_notification إلى true عندما لا يجب أن يتلقى العميل بريداً إلكترونياً.',
@@ -1501,8 +1477,6 @@ return [
     'time_entries is empty.' => 'قائمة time_entries فارغة.',
     'No duplicate active ticket was created.' => 'لم يتم إنشاء تذكرة نشطة مكررة.',
     'Cancel an incorrect ticket only after the correct replacement has been created and verified.' => 'ألغِ التذكرة الخاطئة فقط بعد إنشاء البديل الصحيح والتحقق منه.',
-
-    // Permanent ticket deletion
     'Permanently delete ticket' => 'حذف التذكرة نهائياً',
     'This action cannot be undone. Check what will be removed before you continue.' => 'لا يمكن التراجع عن هذا الإجراء. تحقق مما سيتم إزالته قبل المتابعة.',
     'To confirm, type {reference}' => 'للتأكيد، اكتب {reference}',
@@ -1514,8 +1488,6 @@ return [
     'Bulk permanent deletion is not available. Open one ticket and confirm its code.' => 'الحذف النهائي الجماعي غير متاح. افتح تذكرة واحدة وأكّد رمزها.',
     'Ticket could not be archived.' => 'تعذر أرشفة التذكرة.',
     'Time entries' => 'قيود الوقت',
-
-    // Link preview cards
     'Google Drive file' => 'ملف Google Drive',
     'Google Docs' => 'Google Docs',
     'Google Sheets' => 'Google Sheets',
@@ -1535,8 +1507,6 @@ return [
     'Failed to restore comment.' => 'فشلت استعادة التعليق.',
     'Attachment restored.' => 'تمت استعادة المرفق.',
     'Failed to restore attachment.' => 'فشلت استعادة المرفق.',
-
-    // Settings: General extras
     'Login page welcome text' => 'نص الترحيب في صفحة تسجيل الدخول',
     'This text appears on the login screen below the application name.' => 'يظهر هذا النص في شاشة تسجيل الدخول أسفل اسم التطبيق.',
     'Example: TK-10001, REQ-10001 (letters only). Only affects new tickets — existing tickets keep their current prefix.' => 'مثال: TK-10001، REQ-10001 (أحرف فقط). يؤثر فقط على التذاكر الجديدة — تحتفظ التذاكر الحالية ببادئتها الحالية.',
@@ -1546,14 +1516,10 @@ return [
     'Square image recommended. Formats: JPG, PNG, GIF, WebP, SVG. Max 2 MB.' => 'يُوصى بصورة مربعة. الصيغ: JPG، PNG، GIF، WebP، SVG. الحد الأقصى 2 ميجابايت.',
     'Please select an ICO, PNG, or GIF file' => 'يرجى اختيار ملف ICO أو PNG أو GIF',
     'Please select a JPG, PNG, GIF, WebP, or SVG file' => 'يرجى اختيار ملف JPG أو PNG أو GIF أو WebP أو SVG',
-
-    // Settings: Email extras
     'When enabled, the system will automatically create tickets from incoming emails. Requires a cron job or background tasks to be active.' => 'عند التفعيل، سينشئ النظام تذاكر تلقائياً من رسائل البريد الواردة. يتطلب تفعيل مهمة cron أو المهام الخلفية.',
     'When enabled, anyone can create tickets by sending an email — not just addresses in the allowlist below.' => 'عند التفعيل، يمكن لأي شخص إنشاء تذاكر بإرسال بريد إلكتروني — وليس فقط العناوين الموجودة في قائمة السماح أدناه.',
     'Turning this off will stop all email notifications for all users — including ticket updates, status changes, and new ticket alerts.' => 'تعطيل هذا سيوقف جميع إشعارات البريد الإلكتروني لجميع المستخدمين — بما في ذلك تحديثات التذاكر وتغييرات الحالة وتنبيهات التذاكر الجديدة.',
     'Currently off. No email notifications are being sent. Turn on to enable notifications for ticket updates, comments, and new tickets.' => 'معطّل حالياً. لا تُرسل أي إشعارات بريد إلكتروني. فعّله لتمكين الإشعارات الخاصة بتحديثات التذاكر والتعليقات والتذاكر الجديدة.',
-
-    // Settings: Logs
     'System Logs' => 'سجلات النظام',
     'Are you sure you want to clear all logs?' => 'هل أنت متأكد من مسح جميع السجلات؟',
     'Clear all logs' => 'مسح جميع السجلات',
@@ -1563,8 +1529,6 @@ return [
     'No logs found.' => 'لم يتم العثور على سجلات.',
     'Showing {start} to {end} of {total} entries' => 'عرض {start} إلى {end} من أصل {total} قيد',
     'Prev' => 'السابق',
-
-    // Settings: Security — two-factor authentication
     'Two-factor authentication' => 'المصادقة الثنائية',
     'Require users to set up an authenticator app (Google Authenticator, Authy, 1Password) before accessing the system.' => 'اطلب من المستخدمين إعداد تطبيق مصادقة (Google Authenticator أو Authy أو 1Password) قبل الوصول إلى النظام.',
     'Admins' => 'المسؤولون',
@@ -1584,8 +1548,6 @@ return [
     'users will be immediately forced to set up 2FA. They won\'t be able to use the system until they scan a QR code with their authenticator app.' => 'مستخدمين سيُلزَمون فوراً بإعداد المصادقة الثنائية. لن يتمكنوا من استخدام النظام حتى يمسحوا رمز QR بتطبيق المصادقة الخاص بهم.',
     'All users in this role already have 2FA enabled. New users will be required to set it up on first login.' => 'جميع المستخدمين في هذا الدور لديهم بالفعل المصادقة الثنائية مفعّلة. سيُطلب من المستخدمين الجدد إعدادها عند أول تسجيل دخول.',
     'The forced setup requirement will be removed. Users who already have 2FA will keep it — it won\'t be disabled.' => 'سيُزال شرط الإعداد الإلزامي. سيحتفظ المستخدمون الذين لديهم بالفعل المصادقة الثنائية بها — لن يتم تعطيلها.',
-
-    // Settings: System — operations, updates, backups
     'Operations overview' => 'نظرة عامة على العمليات',
     'Check updates' => 'التحقق من التحديثات',
     'Create a new backup?' => 'إنشاء نسخة احتياطية جديدة؟',
@@ -1631,8 +1593,6 @@ return [
     'Backup created: {version}' => 'تم إنشاء نسخة احتياطية: {version}',
     'Please select a .zip file' => 'يرجى اختيار ملف .zip',
     'Cloud migration' => 'الترحيل إلى السحابة',
-
-    // Admin areas overview
     'Admin areas' => 'أقسام الإدارة',
     'Settings sections' => 'أقسام الإعدادات',
     'Team & access' => 'الفريق والصلاحيات',
@@ -1650,8 +1610,6 @@ return [
     'Admin activity and audit trail.' => 'نشاط الإدارة وسجل التدقيق.',
     'Workflow' => 'سير العمل',
     'Security' => 'الأمان',
-
-    // Help panel
     'Help' => 'مساعدة',
     'Quick Start' => 'البداية السريعة',
     'Use the sidebar to navigate between sections. Press Ctrl+K to open the command palette for quick access to any page or ticket.' => 'استخدم الشريط الجانبي للتنقل بين الأقسام. اضغط Ctrl+K لفتح لوحة الأوامر للوصول السريع إلى أي صفحة أو تذكرة.',
@@ -1671,8 +1629,6 @@ return [
     'Set up recurring tasks to automatically create tickets on a schedule (daily, weekly, monthly). Useful for regular maintenance or check-in tasks.' => 'أعِدّ مهاماً متكررة لإنشاء التذاكر تلقائياً وفق جدول زمني (يومي، أسبوعي، شهري). مفيدة لمهام الصيانة أو المتابعة الدورية.',
     'Configure your app name, logo, email settings, and more from Settings. Set up SMTP for email notifications.' => 'اضبط اسم تطبيقك والشعار وإعدادات البريد وغيرها من الإعدادات. أعِدّ SMTP لإشعارات البريد الإلكتروني.',
     'Customize ticket statuses, priorities, and types to match your workflow. Drag to reorder, set colors, and rename as needed.' => 'خصّص حالات التذاكر وأولوياتها وأنواعها لتناسب سير عملك. اسحب لإعادة الترتيب، وحدد الألوان، وأعد التسمية حسب الحاجة.',
-
-    // Ticket detail: edit ticket, comments, activity timeline
     'Edit ticket' => 'تعديل التذكرة',
     'Description...' => 'الوصف...',
     'Optional work description...' => 'وصف العمل (اختياري)...',
@@ -1818,21 +1774,11 @@ return [
     'Own tickets' => 'تذاكري',
     'Organization' => 'المؤسسة',
     'AI agents' => 'وكلاء الذكاء الاصطناعي',
-
-    // Agent work-log planner
-    'Dates, clock times, or durations unless the user explicitly requested them in the text.' => 'التواريخ أو الأوقات أو المدد الزمنية إلا إذا طلبها المستخدم صراحةً في النص.',
-    'Multi-day work intake and preview' => 'إدخال العمل متعدد الأيام ومعاينته',
-    'Before writing multi-day or multi-entry work, collect any missing choices and show a complete preview.' => 'قبل كتابة عمل متعدد الأيام أو متعدد القيود، اجمع أي خيارات ناقصة وأظهر معاينة كاملة.',
-    'One main ticket with work comments, or multiple tickets for distinct deliverables?' => 'تذكرة رئيسية واحدة مع تعليقات عمل، أم عدة تذاكر لمخرجات منفصلة؟',
-    'What exact total worked time should be recorded?' => 'ما إجمالي وقت العمل الدقيق الذي يجب تسجيله؟',
-    'Which work dates or date range should be used?' => 'ما تواريخ العمل أو نطاق التاريخ الذي يجب استخدامه؟',
-    'Are the durations actual, or may the approved total be allocated naturally across entries?' => 'هل المدد فعلية، أم يمكن توزيع الإجمالي المعتمد بشكل طبيعي على القيود؟',
-    'Should entries be public and billable?' => 'هل يجب أن تكون القيود عامة وقابلة للفوترة؟',
-    'Do not write anything until the user approves the complete preview.' => 'لا تكتب أي شيء حتى يوافق المستخدم على المعاينة الكاملة.',
-    'Add one separate work entry for each workday.' => 'أضف قيد عمل منفصلاً لكل يوم عمل.',
-    'Keep daily work entries in chronological order.' => 'حافظ على ترتيب قيود العمل اليومية زمنياً.',
-    'Describe only the specific work completed; keep dates and time out of the comment text.' => 'صف فقط العمل المحدد المُنجز؛ لا تُدرج التواريخ والوقت في نص التعليق.',
-    'Put the work date in worked_on. Use started_at and ended_at only when exact times are known.' => 'ضع تاريخ العمل في worked_on. استخدم started_at و ended_at فقط عند معرفة الأوقات الدقيقة.',
-    'Record realistic minute-level durations based on the actual or approved work.' => 'سجّل مدداً واقعية بالدقائق بناءً على العمل الفعلي أو المعتمد.',
-    'Do not round work into artificial blocks like 60 or 120 minutes unless that is the real approved duration.' => 'لا تُقرِّب العمل إلى كتل مصطنعة مثل 60 أو 120 دقيقة إلا إذا كانت هذه هي المدة المعتمدة الفعلية.',
+    'Language not supported.' => 'اللغة غير مدعومة.',
+    'comment.count_zero' => '{count} تعليق',
+    'comment.count_one' => '{count} تعليق',
+    'comment.count_two' => '{count} تعليقان',
+    'comment.count_few' => '{count} تعليقات',
+    'comment.count_many' => '{count} تعليقًا',
+    'comment.count_other' => '{count} تعليق',
 ];

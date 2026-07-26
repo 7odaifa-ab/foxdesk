@@ -531,10 +531,13 @@ if (file_exists(__DIR__ . '/pseudo-cron.php')) {
                 <span class="app-shell-context"><?php echo e(t('Workspace')); ?></span>
             </div>
             <div class="flex items-center gap-4">
-                <form action="<?php echo url('tickets'); ?>" method="get" class="header-search-form relative">
+                <form action="<?php echo url('tickets'); ?>" method="get" class="header-search-form relative"
+                    onsubmit="var input=this.querySelector('input[name=search]'); if(input && (input.dataset.composing==='1')){event.preventDefault();}">
                     <input type="hidden" name="page" value="tickets">
                     <input type="text" name="search" id="header-search" placeholder="<?php echo e(t('Search...')); ?>"
-                        class="form-input pr-4 header-search-input">
+                        class="form-input pr-4 header-search-input"
+                        oncompositionstart="this.dataset.composing='1'"
+                        oncompositionend="this.dataset.composing='0'">
                     <span class="header-search-icon absolute top-1/2 transform -translate-y-1/2">
                         <?php echo get_icon('search', 'w-4 h-4'); ?>
                     </span>

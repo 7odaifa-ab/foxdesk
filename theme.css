@@ -4,7 +4,7 @@ font-family: 'Inter';
 font-style: normal;
 font-weight: 100 900;
 font-display: swap;
-src: url(assets/fonts/inter-latin-ext.woff2) format('woff2');
+src: url(../fonts/inter-latin-ext.woff2) format('woff2');
 unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
@@ -12,8 +12,88 @@ font-family: 'Inter';
 font-style: normal;
 font-weight: 100 900;
 font-display: swap;
-src: url(assets/fonts/inter-latin.woff2) format('woff2');
+src: url(../fonts/inter-latin.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-display: swap;
+src: url(../fonts/inter-cyrillic-400.woff2) format('woff2');
+unicode-range: U+0400-052F, U+1C80-1C8F, U+2DE0-2DFF, U+A640-A69F;
+}
+@font-face {
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-display: swap;
+src: url(../fonts/inter-cyrillic-700.woff2) format('woff2');
+unicode-range: U+0400-052F, U+1C80-1C8F, U+2DE0-2DFF, U+A640-A69F;
+}
+@font-face {
+font-family: 'Noto Sans Arabic';
+font-style: normal;
+font-weight: 400;
+font-display: swap;
+src: url(../fonts/noto-sans-arabic-400.woff2) format('woff2');
+unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+font-family: 'Noto Sans Arabic';
+font-style: normal;
+font-weight: 700;
+font-display: swap;
+src: url(../fonts/noto-sans-arabic-700.woff2) format('woff2');
+unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+font-family: 'Noto Sans Hebrew';
+font-style: normal;
+font-weight: 400;
+font-display: swap;
+src: url(../fonts/noto-sans-hebrew-400.woff2) format('woff2');
+unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+font-family: 'Noto Sans Hebrew';
+font-style: normal;
+font-weight: 700;
+font-display: swap;
+src: url(../fonts/noto-sans-hebrew-700.woff2) format('woff2');
+unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+@font-face {
+font-family: 'Noto Nastaliq Urdu';
+font-style: normal;
+font-weight: 400;
+font-display: swap;
+src: url(../fonts/noto-nastaliq-urdu-400.woff2) format('woff2');
+unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+font-family: 'Noto Nastaliq Urdu';
+font-style: normal;
+font-weight: 700;
+font-display: swap;
+src: url(../fonts/noto-nastaliq-urdu-700.woff2) format('woff2');
+unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08FF, U+FB50-FDFF, U+FE70-FEFC;
+}
+@font-face {
+font-family: 'Noto Sans Devanagari';
+font-style: normal;
+font-weight: 400;
+font-display: swap;
+src: url(../fonts/noto-sans-devanagari-400.woff2) format('woff2');
+unicode-range: U+0900-097F, U+A8E0-A8FF;
+}
+@font-face {
+font-family: 'Noto Sans Devanagari';
+font-style: normal;
+font-weight: 700;
+font-display: swap;
+src: url(../fonts/noto-sans-devanagari-700.woff2) format('woff2');
+unicode-range: U+0900-097F, U+A8E0-A8FF;
 }
 @view-transition {
 navigation: auto;
@@ -170,6 +250,57 @@ navigation: auto;
 --hig-gray5: var(--corp-slate-100);
 --hig-gray6: var(--corp-slate-50);
 --hig-bg: var(--corp-slate-100);
+}
+
+:lang(ar),
+:lang(fa) {
+font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+:lang(he) {
+font-family: "Noto Sans Hebrew", Arial, sans-serif;
+}
+
+:lang(ur) {
+font-family: "Noto Nastaliq Urdu", "Noto Sans Arabic", Tahoma, serif;
+line-height: 1.8;
+}
+
+:lang(hi) {
+font-family: "Noto Sans Devanagari", "Nirmala UI", Mangal, sans-serif;
+}
+
+:lang(ja) {
+font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans CJK JP", sans-serif;
+line-break: strict;
+word-break: normal;
+}
+
+:lang(zh-Hans) {
+font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+line-break: auto;
+word-break: normal;
+}
+
+:lang(zh-Hant) {
+font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
+line-break: auto;
+word-break: normal;
+}
+
+:lang(ko) {
+font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif;
+line-break: auto;
+word-break: normal;
+}
+
+code,
+pre,
+.ticket-code,
+[data-technical-identifier] {
+direction: ltr;
+unicode-bidi: isolate;
+overflow-wrap: anywhere;
 }
 [data-theme="dark"] {
 --surface-primary: #1a222c;
@@ -1364,9 +1495,7 @@ min-width: 1rem;
 height: 1rem;
 font-size: 0.625rem;
 }
-body.sidebar-compact #sidebar .px-2\.5 {
-padding-left: 0.5rem;
-padding-right: 0.5rem;
+body.sidebar-compact #sidebar .px-2\.5 {padding-inline-start: 0.5rem;padding-inline-end: 0.5rem;
 }
 body.sidebar-compact #sidebar-user-menu {
 inset-inline-start: 4.75rem;
@@ -3060,11 +3189,11 @@ color: var(--text-primary);
 font-size: 0.75rem;
 font-weight: 650;
 line-height: 1.25;
-text-align: right;
+text-align: end;
 }
 .ticket-side-value--control,
 .ticket-side-row--stack .ticket-side-value {
-text-align: left;
+text-align: start;
 }
 .ticket-side-value--mono {
 font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -3783,12 +3912,10 @@ visibility: hidden;
 }
 .btn-loading::after {
 content: "";
-position: absolute;
-left: 50%;
+position: absolute;inset-inline-start: 50%;
 top: 50%;
 width: 1em;
-height: 1em;
-margin-left: -0.5em;
+height: 1em;margin-inline-start: -0.5em;
 margin-top: -0.5em;
 border: 2px solid currentColor;
 border-right-color: transparent;
@@ -4211,8 +4338,7 @@ font-size: 0.875rem;
 .tooltip::after {
 content: attr(data-tooltip);
 position: absolute;
-bottom: 100%;
-left: 50%;
+bottom: 100%;inset-inline-start: 50%;
 transform: translateX(-50%) translateY(-8px);
 padding: 0.5rem 0.75rem;
 background: var(--corp-slate-900);
@@ -4318,9 +4444,7 @@ background: var(--worklog-row-hover);
 transform: translateX(var(--fd-inline-nudge-x));
 }
 .worklog__row--running {
-background: rgba(34, 197, 94, 0.05);
-border-left: 3px solid var(--green-500);
-padding-left: calc(1rem - 3px);
+background: rgba(34, 197, 94, 0.05);border-inline-start: 3px solid var(--green-500);padding-inline-start: calc(1rem - 3px);
 }
 .worklog__cell {
 min-width: 0;
@@ -4367,8 +4491,7 @@ display: inline-block;
 width: 6px;
 height: 6px;
 border-radius: 50%;
-background: var(--green-500);
-margin-right: 6px;
+background: var(--green-500);margin-inline-end: 6px;
 vertical-align: middle;
 }
 .worklog__cell--billable {
@@ -4379,7 +4502,7 @@ justify-content: center;
 font-size: 0.875rem;
 font-weight: 700;
 font-variant-numeric: tabular-nums;
-text-align: right;
+text-align: end;
 color: var(--text-primary);
 }
 .worklog__cell--duration.text-green-600 {
@@ -4494,7 +4617,7 @@ flex: 0 0 auto;
 .worklog__cell--client {
 order: 2;
 flex: 1;
-text-align: right;
+text-align: end;
 }
 .worklog__cell--billable {
 order: 3;
@@ -4762,7 +4885,7 @@ flex: 0 0 auto;
 gap: 2px;
 color: var(--text-secondary);
 font-size: var(--type-sm);
-text-align: right;
+text-align: end;
 }
 .report-ticket-summary__totals strong {
 color: var(--text-primary);
@@ -4785,8 +4908,7 @@ margin-bottom: 0;
 }
 .report-comment-body ul,
 .report-comment-body ol {
-margin: var(--space-2) 0;
-padding-left: var(--space-5);
+margin: var(--space-2) 0;padding-inline-start: var(--space-5);
 }
 .report-comment-body p {
 margin: 0 0 var(--space-2);
@@ -4972,8 +5094,7 @@ position: relative;
 .tooltip::after {
 content: attr(data-tooltip);
 position: absolute;
-bottom: 100%;
-left: 50%;
+bottom: 100%;inset-inline-start: 50%;
 transform: translateX(-50%) translateY(-4px);
 padding: 0.5rem 0.75rem;
 background: var(--corp-slate-900);
@@ -5220,8 +5341,7 @@ font-size: 0.95rem;
 font-weight: 600;
 line-height: 1.2;
 }
-.workflow-card-header span svg {
-margin-right: 0.5rem;
+.workflow-card-header span svg {margin-inline-end: 0.5rem;
 }
 .workflow-card-header p {
 margin: 0;
@@ -5438,9 +5558,7 @@ color: var(--text-primary);
 }
 .chip-select__dropdown {
 position: absolute;
-z-index: 30;
-left: 0;
-right: 0;
+z-index: 30;inset-inline-start: 0;inset-inline-end: 0;
 max-height: 220px;
 overflow-y: auto;
 background: var(--surface-primary);
@@ -5516,8 +5634,7 @@ flex: 1;
 overflow-y: auto;
 display: flex;
 flex-direction: column;
-gap: 0.5rem;
-padding-right: 0.5rem;
+gap: 0.5rem;padding-inline-end: 0.5rem;
 }
 /* Scoped to .accordion-item: statuses.php reuses the bare .status-item class
    name for an unrelated plain flex row, and this column layout (meant for
@@ -6197,8 +6314,7 @@ display: none;
 }
 .kanban-drag-ghost {
 position: fixed;
-top: -9999px;
-left: -9999px;
+top: -9999px;inset-inline-start: -9999px;
 z-index: 9999;
 max-width: 280px;
 overflow: hidden;
@@ -6223,9 +6339,7 @@ transition: height 0.2s ease;
 display: grid;
 grid-template-columns: repeat(var(--kanban-column-count, 1), minmax(0, 1fr));
 gap: 1rem;
-overflow-x: visible;
-padding-left: 0;
-padding-right: 0;
+overflow-x: visible;padding-inline-start: 0;padding-inline-end: 0;
 align-items: start;
 }
 .kanban-board--centered {
@@ -6271,8 +6385,7 @@ padding: 0.625rem;
 align-items: flex-start;
 flex-direction: column;
 }
-.ticket-filter-summary__clear {
-margin-left: 0;
+.ticket-filter-summary__clear {margin-inline-start: 0;
 }
 }
 .ticket-detail-page {
@@ -6506,7 +6619,7 @@ color: var(--text-muted);
 .client-profile-value {
 margin: 0;
 color: var(--text-primary);
-text-align: right;
+text-align: end;
 overflow-wrap: anywhere;
 }
 .client-profile-value--strong {
@@ -6601,8 +6714,7 @@ background: var(--surface-primary);
 flex: 1;
 padding: 8px 14px;
 }
-.report-metric + .report-metric {
-border-left: 1px solid var(--border-light);
+.report-metric + .report-metric {border-inline-start: 1px solid var(--border-light);
 }
 .report-metric__label {
 margin-bottom: 2px;
@@ -6715,7 +6827,7 @@ color: var(--text-primary);
 flex-wrap: wrap;
 max-width: 100%;
 justify-content: flex-end;
-text-align: right;
+text-align: end;
 }
 .report-billing-note__body span {
 max-width: 100%;
@@ -6739,7 +6851,7 @@ flex-direction: column;
 width: 100%;
 display: block;
 justify-content: flex-start;
-text-align: left;
+text-align: start;
 }
 .report-billing-note__body span {
 display: block;
@@ -6755,8 +6867,7 @@ white-space: normal;
 flex-direction: column;
 }
 .report-source-strip > div,
-.report-detail-totals > div {
-border-left: 0 !important;
+.report-detail-totals > div {border-inline-start: 0 !important;
 border-top: 1px solid var(--border-light);
 }
 .report-source-strip > div:first-child,
@@ -6778,16 +6889,13 @@ border-radius: var(--fd-radius-control);
 background: var(--surface-primary);
 }
 .report-detail-totals > div {
-flex: 1;
-border-left: 1px solid var(--border-light);
+flex: 1;border-inline-start: 1px solid var(--border-light);
 }
-.report-detail-totals > div:first-child {
-border-left: 0;
+.report-detail-totals > div:first-child {border-inline-start: 0;
 }
 .report-source-card {
 flex: 1;
-padding: 6px 12px;
-border-left: 3px solid var(--report-source-color, var(--primary));
+padding: 6px 12px;border-inline-start: 3px solid var(--report-source-color, var(--primary));
 border-radius: var(--fd-radius-control);
 background: var(--surface-secondary);
 }
@@ -6958,8 +7066,7 @@ flex-wrap: nowrap;
 flex: 1;
 min-width: 0;
 }
-.report-filter-field__hint {
-margin-left: 4px;
+.report-filter-field__hint {margin-inline-start: 4px;
 color: var(--text-muted);
 font-size: 0.625rem;
 font-weight: 400;
@@ -7042,8 +7149,7 @@ flex-direction: column;
 display: grid !important;
 grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: 0.25rem !important;
-width: 100%;
-margin-left: 0 !important;
+width: 100%;margin-inline-start: 0 !important;
 }
 }
 /* Reports: collapsible filter chevron */
@@ -7235,7 +7341,7 @@ white-space: nowrap;
 color: var(--text-muted);
 font-size: 0.75rem;
 line-height: 1.35;
-text-align: right;
+text-align: end;
 white-space: nowrap;
 }
 .workspace-ticket-row__side span {
@@ -7439,8 +7545,7 @@ align-items: flex-start;
 gap: 0.75rem;
 padding: 0.75rem 1rem;
 cursor: pointer;
-transition: background 0.15s;
-border-left: 3px solid transparent;
+transition: background 0.15s;border-inline-start: 3px solid transparent;
 }
 .notif-item:hover {
 background: var(--surface-hover, rgba(0,0,0,0.03));
@@ -7553,8 +7658,7 @@ display: inline-block;
 width: 6px;
 height: 6px;
 border-radius: 50%;
-background: var(--accent-primary, #3b82f6);
-margin-right: 4px;
+background: var(--accent-primary, #3b82f6);margin-inline-end: 4px;
 vertical-align: middle;
 }
 .notif-group-header {
@@ -7800,13 +7904,11 @@ scroll-snap-align: start;
 grid-template-columns: 1fr;
 }
 .workspace-ticket-row__side {
-text-align: left;
+text-align: start;
 }
 }
 @media (max-width: 560px) {
-.workspace-queue-rail {
-margin-right: -1rem;
-border-right: 0;
+.workspace-queue-rail {margin-inline-end: -1rem;border-inline-end: 0;
 border-radius: var(--fd-radius-card) 0 0 var(--fd-radius-card);
 }
 .workspace-ticket-row__title {
@@ -8168,8 +8270,7 @@ outline-offset: 3px;
 }
 .work-week-chart__tooltip {
 position: absolute;
-z-index: 20;
-left: 50%;
+z-index: 20;inset-inline-start: 50%;
 bottom: calc(100% + 0.65rem);
 display: grid;
 gap: 0.18rem;
@@ -8524,7 +8625,7 @@ max-width: none;
 }
 .work-activity-item {
 grid-template-columns: minmax(0, 1fr);
-text-align: left;
+text-align: start;
 }
 .work-activity-duration {
 justify-self: start;
@@ -8935,4 +9036,3 @@ html[dir="rtl"] .popover-panel {
     margin-inline-start: 0 !important;
   }
 }
-

@@ -883,7 +883,7 @@ function copyBlock(id, btn) {
     } else { fbCopy(text, btn); }
 }
 function fbCopy(text, btn) {
-    var ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px';
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.insetInlineStart='-9999px';
     document.body.appendChild(ta); ta.select();
     try { document.execCommand('copy'); showDone(btn); } catch(e) { alert('<?php echo e(t('Copy failed. Please select the text manually and copy.')); ?>'); }
     document.body.removeChild(ta);

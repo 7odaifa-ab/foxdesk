@@ -1,10 +1,6 @@
 <?php
 define('BASE_PATH', dirname(__DIR__));
-
-function get_supported_languages(): array
-{
-    return ['en' => ['rtl' => false], 'cs' => ['rtl' => false], 'de' => ['rtl' => false], 'it' => ['rtl' => false], 'es' => ['rtl' => false], 'ar' => ['rtl' => true]];
-}
+require_once BASE_PATH . '/includes/locale-functions.php';
 
 function schema_require(): void {}
 function db_fetch_one(): ?array { return null; }

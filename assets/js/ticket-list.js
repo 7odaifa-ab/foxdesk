@@ -183,6 +183,7 @@
         var debounceTimer = null;
         var activeIdx = -1;
         var items = [];
+        var isComposing = false;
 
         function closeSuggestions() {
             suggestBox.classList.remove('active');
@@ -254,9 +255,10 @@
             activeIdx = -1;
         }
 
-        searchInput.addEventListener('input', function() {
+        function requestSuggestions() {
             clearTimeout(debounceTimer);
-            var value = this.value.trim();
+            if (isComposing) return;
+            var value = searchInput.value.trim();
             if (value.length < 2) {
                 closeSuggestions();
                 return;
@@ -275,9 +277,23 @@
                     })
                     .catch(closeSuggestions);
             }, 300);
+        }
+
+        searchInput.addEventListener('compositionstart', function() {
+            isComposing = true;
+            clearTimeout(debounceTimer);
+        });
+        searchInput.addEventListener('compositionend', function() {
+            isComposing = false;
+            requestSuggestions();
+        });
+        searchInput.addEventListener('input', function(event) {
+            if (event.isComposing) return;
+            requestSuggestions();
         });
 
         searchInput.addEventListener('keydown', function(event) {
+            if (isComposing || event.isComposing || event.keyCode === 229) return;
             if (!suggestBox.classList.contains('active') || !items.length) {
                 if (event.key === 'Escape') closeSuggestions();
                 return;

@@ -274,8 +274,8 @@ require_once BASE_PATH . '/includes/header.php';
                             <tr>
                                 <th><?php echo e(t('User')); ?></th>
                                 <th><?php echo e(t('Role')); ?></th>
-                                <th style="text-align:right;"><?php echo e(t('Views')); ?></th>
-                                <th style="text-align:right;"><?php echo e(t('Pages')); ?></th>
+                                <th style="text-align:end;"><?php echo e(t('Views')); ?></th>
+                                <th style="text-align:end;"><?php echo e(t('Pages')); ?></th>
                                 <th><?php echo e(t('Last Active')); ?></th>
                             </tr>
                         </thead>
@@ -296,8 +296,8 @@ require_once BASE_PATH . '/includes/header.php';
                                         </a>
                                     </td>
                                     <td><span class="act-role-badge <?php echo $role_class; ?>"><?php echo e($ua['role']); ?></span></td>
-                                    <td style="text-align:right; font-variant-numeric: tabular-nums;"><?php echo number_format($ua['views']); ?></td>
-                                    <td style="text-align:right; font-variant-numeric: tabular-nums;"><?php echo $ua['pages_used']; ?></td>
+                                    <td style="text-align:end; font-variant-numeric: tabular-nums;"><?php echo foxdesk_format_number($ua['views']); ?></td>
+                                    <td style="text-align:end; font-variant-numeric: tabular-nums;"><?php echo foxdesk_format_number($ua['pages_used']); ?></td>
                                     <td class="whitespace-nowrap" style="color: var(--text-muted); font-size: 0.75rem;">
                                         <?php echo e(notification_time_ago($ua['last_active'])); ?>
                                     </td>

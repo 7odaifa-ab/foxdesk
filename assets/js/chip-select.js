@@ -30,6 +30,7 @@
         this.name      = cfg.name;
         this.selected  = [];
         this.activeIdx = -1;
+        this.isComposing = false;
         this.allowCreate  = cfg.allowCreate || false;
         this.noMatchText  = cfg.noMatchText || 'No matches';
 
@@ -56,13 +57,23 @@
         this.wrap.addEventListener('click', function () { self.input.focus(); });
 
         // Filter dropdown on input
-        this.input.addEventListener('input', function () { self._render(); });
+        this.input.addEventListener('compositionstart', function () {
+            self.isComposing = true;
+        });
+        this.input.addEventListener('compositionend', function () {
+            self.isComposing = false;
+            self._render();
+        });
+        this.input.addEventListener('input', function (event) {
+            if (!self.isComposing && !event.isComposing) self._render();
+        });
 
         // Show dropdown on focus
         this.input.addEventListener('focus', function () { self._render(); });
 
         // Keyboard navigation
         this.input.addEventListener('keydown', function (e) {
+            if (self.isComposing || e.isComposing || e.keyCode === 229) return;
             if (e.key === 'Backspace' && self.input.value === '' && self.selected.length) {
                 self._removeById(self.selected[self.selected.length - 1]);
                 return;

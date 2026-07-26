@@ -372,7 +372,7 @@ $extract_report_tags = static function ($value) {
                                 <span class="report-ticket-summary__main">
                                     <span class="report-ticket-summary__icon" aria-hidden="true"><?php echo get_icon('chevron-right'); ?></span>
                                     <span>
-                                        <span class="report-ticket-summary__title"><?php echo e($ticket['title']); ?></span>
+                                        <span class="report-ticket-summary__title" dir="auto"><?php echo e($ticket['title']); ?></span>
                                         <span class="report-ticket-summary__meta">
                                             <?php echo e($ticket['code']); ?> · <?php echo e((string) $ticket['entries_count']); ?> <?php echo e(t('work records')); ?>
                                         </span>
