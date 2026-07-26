@@ -26,6 +26,9 @@ $assert(str_contains($router, "'app-shell' => 'api_app_shell'"), 'app-shell rout
 $assert(str_contains($handler, 'function api_app_shell()'), 'api_app_shell handler is missing.');
 $assert(str_contains($handler, 'app_shell_payload($user)'), 'api_app_shell must delegate to app_shell_payload().');
 $assert(str_contains($module, 'function app_shell_payload'), 'App shell payload helper is missing.');
+$assert(str_contains($module, 'function app_shell_locale'), 'App shell locale helper is missing.');
+$assert(str_contains($module, "'locale' => app_shell_locale()"), 'App shell payload must expose active and supported locales.');
+$assert(str_contains($module, "'direction' =>"), 'App shell locale payload must expose text direction.');
 $assert(str_contains($module, 'function app_shell_navigation'), 'App shell navigation helper is missing.');
 $assert(str_contains($module, 'function app_shell_capabilities'), 'App shell capabilities helper is missing.');
 $assert(str_contains($module, 'function app_shell_work_queues'), 'App shell work queue helper is missing.');

@@ -67,7 +67,7 @@ for file in "${top_level_files[@]}"; do
   copy_if_exists "$file"
 done
 
-for dir in assets bin includes pages migrations; do
+for dir in assets bin includes locales pages migrations; do
   copy_dir_if_exists "$dir"
 done
 

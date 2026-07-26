@@ -49,6 +49,11 @@ try {
     foreach ($split((string) file_get_contents($root . '/includes/schema.sql')) as $statement) {
         $db->exec($statement);
     }
+    // Recreate the previous stable schema so the locale-width migration is
+    // exercised instead of only checking a clean install that is already wide.
+    $db->exec("ALTER TABLE users MODIFY language VARCHAR(5) DEFAULT 'en'");
+    $db->exec("ALTER TABLE email_templates MODIFY language VARCHAR(5) DEFAULT 'en'");
+    $db->exec("ALTER TABLE report_templates MODIFY report_language VARCHAR(5) DEFAULT 'en'");
     $db->exec("INSERT INTO statuses (id, name, slug, color, sort_order, is_default, is_closed) VALUES
         (10, 'Done', 'done', '#34c759', 5, 0, 1),
         (11, 'Cancelled', 'cancelled', '#ff3b30', 6, 0, 1)");
@@ -91,6 +96,21 @@ try {
             if (!$stmt->fetchColumn()) {
                 throw new RuntimeException("Missing {$table}.{$column} after install/migration.");
             }
+        }
+    }
+    foreach ([
+        ['users', 'language'],
+        ['email_templates', 'language'],
+        ['report_templates', 'report_language'],
+    ] as [$table, $column]) {
+        $stmt = $db->prepare(
+            'SELECT CHARACTER_MAXIMUM_LENGTH
+             FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
+        );
+        $stmt->execute([$table, $column]);
+        if ((int) $stmt->fetchColumn() !== 35) {
+            throw new RuntimeException("{$table}.{$column} was not widened to VARCHAR(35).");
         }
     }
     foreach (['recurring_task_runs', 'ticket_history', 'agent_client_billable_rates', 'push_subscriptions', 'pending_deletions'] as $table) {

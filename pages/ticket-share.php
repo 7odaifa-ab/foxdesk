@@ -99,7 +99,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                 <span>&middot;</span>
                 <span><?php echo e(t('Expires: {date}', ['date' => $expires_label])); ?></span>
             </div>
-            <h1 class="text-xl lg:text-2xl font-semibold text-gray-800 mt-1"><?php echo e($ticket['title']); ?></h1>
+            <h1 class="text-xl lg:text-2xl font-semibold text-gray-800 mt-1" dir="auto"><?php echo e($ticket['title']); ?></h1>
             <div class="mt-2 text-sm text-gray-500 flex items-center gap-2">
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                     style="background-color: <?php echo e($ticket['status_color']); ?>20; color: <?php echo e($ticket['status_color']); ?>">
@@ -109,7 +109,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
             </div>
 
             <?php if (!empty($ticket['description'])): ?>
-                <div class="mt-4 text-gray-700">
+                <div class="mt-4 text-gray-700" dir="auto">
                     <?php echo render_content($ticket['description']); ?>
                 </div>
             <?php endif; ?>
@@ -131,12 +131,12 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                                    style="max-width: 180px;">
                                     <img src="<?php echo $_share_url; ?>" alt="<?php echo e($attachment['original_name']); ?>"
                                          class="w-full h-28 object-cover" loading="lazy">
-                                    <div class="px-2 py-1 text-xs text-gray-600 truncate"><?php echo e($attachment['original_name']); ?></div>
+                                    <div class="px-2 py-1 text-xs text-gray-600 truncate"><bdi><?php echo e($attachment['original_name']); ?></bdi></div>
                                 </a>
                             <?php else: ?>
                                 <a href="<?php echo $_share_url; ?>" target="_blank"
                                     class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition">
-                                    <span class="truncate max-w-[180px]"><?php echo e($attachment['original_name']); ?></span>
+                                    <bdi class="truncate max-w-[180px]"><?php echo e($attachment['original_name']); ?></bdi>
                                     <span class="text-gray-400 text-xs"><?php echo format_file_size($attachment['file_size']); ?></span>
                                 </a>
                             <?php endif; ?>
@@ -149,7 +149,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
         <div class="card">
             <div class="px-4 lg:px-6 py-4 border-b">
                 <h3 class="font-semibold text-gray-800"><?php echo e(t('Comments')); ?>
-                    (<?php echo count($comments); ?>)</h3>
+                    (<?php echo e(tn('comment.count', count($comments))); ?>)</h3>
             </div>
 
             <?php if (empty($comments)): ?>
@@ -182,7 +182,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                                         <span
                                             class="text-sm text-gray-500"><?php echo format_date($comment['created_at']); ?></span>
                                     </div>
-                                    <div class="text-gray-700 break-words">
+                                    <div class="text-gray-700 break-words" dir="auto">
                                         <?php echo render_content($comment['content']); ?>
                                     </div>
 
@@ -200,7 +200,7 @@ $expires_label = !empty($share['expires_at']) ? format_date($share['expires_at']
                                                 <?php else: ?>
                                                     <a href="<?php echo $_share_c_url; ?>" target="_blank"
                                                         class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded px-2 py-1 text-xs text-gray-600 transition">
-                                                        <span class="truncate max-w-[140px]"><?php echo e($attachment['original_name']); ?></span>
+                                                        <bdi class="truncate max-w-[140px]"><?php echo e($attachment['original_name']); ?></bdi>
                                                     </a>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>

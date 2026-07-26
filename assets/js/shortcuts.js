@@ -51,6 +51,7 @@
     var paletteItems = [];
     var paletteSelected = 0;
     var searchTimeout = null;
+    var paletteComposing = false;
 
     function buildPalette() {
         if (paletteEl) return;
@@ -81,6 +82,14 @@
         paletteInput.className = 'fd-command-input';
         paletteInput.addEventListener('input', onPaletteInput);
         paletteInput.addEventListener('keydown', onPaletteKeydown);
+        paletteInput.addEventListener('compositionstart', function() {
+            paletteComposing = true;
+            clearTimeout(searchTimeout);
+        });
+        paletteInput.addEventListener('compositionend', function() {
+            paletteComposing = false;
+            onPaletteInput();
+        });
 
         var kbdHint = document.createElement('kbd');
         kbdHint.textContent = 'ESC';
@@ -258,7 +267,8 @@
         }
     }
 
-    function onPaletteInput() {
+    function onPaletteInput(e) {
+        if (paletteComposing || (e && e.isComposing)) return;
         var q = paletteInput.value.trim().toLowerCase();
 
         if (!q) {
@@ -289,6 +299,7 @@
     }
 
     function onPaletteKeydown(e) {
+        if (paletteComposing || e.isComposing || e.keyCode === 229) return;
         if (e.key === 'ArrowDown') {
             e.preventDefault();
             paletteSelected = Math.min(paletteSelected + 1, paletteItems.length - 1);

@@ -18,7 +18,10 @@ $error = '';
 $valid_token = false;
 $token_hash = '';
 $current_lang = get_app_language();
-$lang_options = array_map(fn($item) => t($item['name']), get_supported_languages());
+$lang_options = [];
+foreach (get_supported_languages() as $code => $language) {
+    $lang_options[$code] = foxdesk_locale_option_label($code);
+}
 $lang_params = ['page' => 'reset-password'];
 if (!empty($token)) {
     $lang_params['token'] = $token;

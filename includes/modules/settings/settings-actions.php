@@ -427,10 +427,7 @@ function settings_handle_post_request(callable $settings_audit): void
     if (isset($_POST['save_general'])) {
         $app_name = trim($_POST['app_name'] ?? 'FoxDesk');
         $ticket_prefix = trim($_POST['ticket_prefix'] ?? 'TK');
-        $app_language = strtolower(trim($_POST['app_language'] ?? 'en'));
-        if (!in_array($app_language, array_keys(get_supported_languages()), true)) {
-            $app_language = 'en';
-        }
+        $app_language = normalize_locale_tag($_POST['app_language'] ?? 'en') ?? 'en';
         $time_format = trim($_POST['time_format'] ?? '24');
         if (!in_array($time_format, ['12', '24'], true)) {
             $time_format = '24';
@@ -663,10 +660,7 @@ function settings_handle_post_request(callable $settings_audit): void
         $key = $_POST['template_key'] ?? '';
         $subject = trim($_POST['template_subject'] ?? '');
         $body = trim($_POST['template_body'] ?? '');
-        $lang = strtolower(trim((string) ($_POST['template_lang'] ?? 'en')));
-        if (!in_array($lang, array_keys(get_supported_languages()), true)) {
-            $lang = 'en';
-        }
+        $lang = normalize_locale_tag($_POST['template_lang'] ?? 'en') ?? 'en';
 
         if (!empty($key) && !empty($subject) && !empty($body)) {
             require_once BASE_PATH . '/includes/mailer.php';

@@ -54,7 +54,7 @@
                                                 </span>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="kanban-card-title"><?php echo e($ticket['title']); ?></div>
+                                        <div class="kanban-card-title" dir="auto"><?php echo e($ticket['title']); ?></div>
                                         <div class="kanban-card-meta">
                                             <?php if (!empty($ticket['priority_name'])): ?>
                                                 <span class="kanban-card-priority" style="background: <?php echo e($priority_color); ?>20; color: <?php echo e($priority_color); ?>;">
@@ -138,7 +138,7 @@
                                                         </span>
                                                     <?php endif; ?>
                                                 </div>
-                                                <div class="kanban-card-title"><?php echo e($ticket['title']); ?></div>
+                                                <div class="kanban-card-title" dir="auto"><?php echo e($ticket['title']); ?></div>
                                                 <div class="kanban-card-meta">
                                                     <?php if (!empty($ticket['priority_name'])): ?>
                                                         <span class="kanban-card-priority" style="background: <?php echo e($priority_color); ?>20; color: <?php echo e($priority_color); ?>;">

@@ -845,7 +845,7 @@ function update_release_managed_root_files(): array
 
 function update_release_managed_directories(): array
 {
-    return ['assets', 'includes', 'pages'];
+    return ['assets', 'bin', 'includes', 'locales', 'migrations', 'pages'];
 }
 
 function update_release_path_is_managed(string $relative_path): bool

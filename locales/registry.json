@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "default": "en",
+  "locales": [
+    {
+      "tag": "en",
+      "slug": "en",
+      "englishName": "English",
+      "nativeName": "English",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": null,
+      "wave": 0,
+      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "stable", "website": "stable"}
+    },
+    {
+      "tag": "cs",
+      "slug": "cs",
+      "englishName": "Czech",
+      "nativeName": "Čeština",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 0,
+      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "de",
+      "slug": "de",
+      "englishName": "German",
+      "nativeName": "Deutsch",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 0,
+      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "es",
+      "slug": "es",
+      "englishName": "Spanish",
+      "nativeName": "Español",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 0,
+      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "it",
+      "slug": "it",
+      "englishName": "Italian",
+      "nativeName": "Italiano",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 0,
+      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "ar",
+      "slug": "ar",
+      "englishName": "Arabic",
+      "nativeName": "العربية",
+      "direction": "rtl",
+      "script": "Arab",
+      "fallback": "en",
+      "wave": 0,
+      "channels": {"self_hosted": "beta", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "fr",
+      "slug": "fr",
+      "englishName": "French",
+      "nativeName": "Français",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "pt-BR",
+      "slug": "pt-br",
+      "englishName": "Portuguese (Brazil)",
+      "nativeName": "Português (Brasil)",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "pt-PT",
+      "slug": "pt-pt",
+      "englishName": "Portuguese (Portugal)",
+      "nativeName": "Português (Portugal)",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "pl",
+      "slug": "pl",
+      "englishName": "Polish",
+      "nativeName": "Polski",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "nl",
+      "slug": "nl",
+      "englishName": "Dutch",
+      "nativeName": "Nederlands",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "tr",
+      "slug": "tr",
+      "englishName": "Turkish",
+      "nativeName": "Türkçe",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 1,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "ru",
+      "slug": "ru",
+      "englishName": "Russian",
+      "nativeName": "Русский",
+      "direction": "ltr",
+      "script": "Cyrl",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "uk",
+      "slug": "uk",
+      "englishName": "Ukrainian",
+      "nativeName": "Українська",
+      "direction": "ltr",
+      "script": "Cyrl",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "ja",
+      "slug": "ja",
+      "englishName": "Japanese",
+      "nativeName": "日本語",
+      "direction": "ltr",
+      "script": "Jpan",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "zh-Hans",
+      "slug": "zh-hans",
+      "englishName": "Chinese (Simplified)",
+      "nativeName": "简体中文",
+      "direction": "ltr",
+      "script": "Hans",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "zh-Hant",
+      "slug": "zh-hant",
+      "englishName": "Chinese (Traditional)",
+      "nativeName": "繁體中文",
+      "direction": "ltr",
+      "script": "Hant",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "ko",
+      "slug": "ko",
+      "englishName": "Korean",
+      "nativeName": "한국어",
+      "direction": "ltr",
+      "script": "Kore",
+      "fallback": "en",
+      "wave": 2,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "he",
+      "slug": "he",
+      "englishName": "Hebrew",
+      "nativeName": "עברית",
+      "direction": "rtl",
+      "script": "Hebr",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "fa",
+      "slug": "fa",
+      "englishName": "Persian",
+      "nativeName": "فارسی",
+      "direction": "rtl",
+      "script": "Arab",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "ur",
+      "slug": "ur",
+      "englishName": "Urdu",
+      "nativeName": "اردو",
+      "direction": "rtl",
+      "script": "Arab",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "hi",
+      "slug": "hi",
+      "englishName": "Hindi",
+      "nativeName": "हिन्दी",
+      "direction": "ltr",
+      "script": "Deva",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "id",
+      "slug": "id",
+      "englishName": "Indonesian",
+      "nativeName": "Bahasa Indonesia",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    },
+    {
+      "tag": "vi",
+      "slug": "vi",
+      "englishName": "Vietnamese",
+      "nativeName": "Tiếng Việt",
+      "direction": "ltr",
+      "script": "Latn",
+      "fallback": "en",
+      "wave": 3,
+      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+    }
+  ]
+}

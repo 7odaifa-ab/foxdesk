@@ -106,7 +106,7 @@
                 $priority_color = $ticket['priority_color'] ?? get_priority_color($ticket['priority_id'] ?? $ticket['priority'] ?? 'medium');
                 $is_overdue_mobile = is_due_date_overdue($ticket['due_date'] ?? null, !empty($ticket['is_closed']));
                 ?>
-                <div class="p-4 ticket-list-item<?php echo $is_overdue_mobile ? ' ticket-overdue' : ''; ?>" style="border-left: 5px solid <?php echo e($ticket['status_color']); ?>;">
+                <div class="p-4 ticket-list-item<?php echo $is_overdue_mobile ? ' ticket-overdue' : ''; ?>" style="border-inline-start: 5px solid <?php echo e($ticket['status_color']); ?>;">
                     <div class="flex items-start gap-3">
                         <?php if ($bulk_actions_enabled): ?>
                             <input type="checkbox" name="ticket_ids[]" value="<?php echo (int) $ticket['id']; ?>"
@@ -121,7 +121,7 @@
                                         <?php echo e(get_ticket_code($ticket['id'])); ?>
                                     </span>
                                 </div>
-                                <div class="font-medium truncate text-theme-primary"><?php echo e($ticket['title']); ?></div>
+                                <div class="font-medium truncate text-theme-primary" dir="auto"><?php echo e($ticket['title']); ?></div>
                                 <div class="text-sm mt-1 flex flex-wrap items-center gap-2 text-theme-muted">
                                     <span><?php echo format_date($ticket['created_at'], 'd.m.Y'); ?></span>
                                     <?php if (!empty($ticket['due_date'])): ?>
@@ -142,7 +142,7 @@
                                         <?php echo e($priority_name); ?>
                                     </span>
                                     <?php if (is_admin() && !empty($ticket['organization_name'])): ?>
-                                        <span class="text-xs text-theme-muted"><?php echo e($ticket['organization_name']); ?></span>
+                                        <span class="text-xs text-theme-muted"><bdi><?php echo e($ticket['organization_name']); ?></bdi></span>
                                     <?php endif; ?>
                                     <?php if ($tags_supported && !empty($ticket['tags'])): ?>
                                         <?php foreach (array_slice(get_ticket_tags_array($ticket['tags']), 0, 3) as $tag): ?>
@@ -317,7 +317,7 @@
                 </thead>
                 <tbody>
                 <?php if ((is_agent() || is_admin()) && !$is_archive): ?>
-                    <tr id="new-ticket-row" class="new-ticket-row" style="border-left: 5px solid var(--border-light); background: var(--surface-secondary); display: none;">
+                    <tr id="new-ticket-row" class="new-ticket-row" style="border-inline-start: 5px solid var(--border-light); background: var(--surface-secondary); display: none;">
                         <td class="px-3 py-1.5 whitespace-nowrap align-middle text-center">
                             <button type="button" id="new-ticket-submit-btn"
                                     class="nt-plus-btn"
@@ -406,7 +406,7 @@
                         $priority_color = $ticket['priority_color'] ?? get_priority_color($ticket['priority_id'] ?? $ticket['priority'] ?? 'medium');
                         $is_overdue = is_due_date_overdue($ticket['due_date'] ?? null, !empty($ticket['is_closed']));
                         ?>
-                        <tr class="ticket-row<?php echo $is_overdue ? ' ticket-overdue' : ''; ?>" style="border-left: 5px solid <?php echo e($ticket['status_color']); ?>;" data-href="<?php echo e(ticket_url($ticket)); ?>">
+                        <tr class="ticket-row<?php echo $is_overdue ? ' ticket-overdue' : ''; ?>" style="border-inline-start: 5px solid <?php echo e($ticket['status_color']); ?>;" data-href="<?php echo e(ticket_url($ticket)); ?>">
                             <td class="px-3 py-2.5 whitespace-nowrap align-top">
                                 <div class="flex items-center gap-1.5">
                                     <?php if ($bulk_actions_enabled): ?>
@@ -425,13 +425,14 @@
                                 <div class="flex items-center gap-1.5">
                                     <?php if (is_agent() || is_admin()): ?>
                                     <span class="ticket-subject-link truncate tl-inline-text tl-inline-edit"
+                                          dir="auto"
                                           data-ticket="<?php echo (int)$ticket['id']; ?>"
                                           data-field="subject"
                                           data-value="<?php echo e($ticket['title']); ?>"
                                           title="<?php echo e(t('Click to edit')); ?>"
                                           style="cursor: text;"><?php echo e($ticket['title']); ?></span>
                                     <?php else: ?>
-                                    <a href="<?php echo ticket_url($ticket); ?>" class="ticket-subject-link truncate">
+                                    <a href="<?php echo ticket_url($ticket); ?>" class="ticket-subject-link truncate" dir="auto">
                                         <?php echo e($ticket['title']); ?>
                                     </a>
                                     <?php endif; ?>
@@ -463,7 +464,7 @@
                                         <?php echo e(get_type_label($ticket['type'])); ?>
                                     <?php endif; ?>
                                     <?php if (!is_admin() && !empty($ticket['organization_name'])): ?>
-                                        <span class="ml-1"><?php echo e($ticket['organization_name']); ?></span>
+                                        <span class="ml-1"><bdi><?php echo e($ticket['organization_name']); ?></bdi></span>
                                     <?php endif; ?>
                                     <?php if ($tags_supported && !empty($ticket['tags'])): ?>
                                         <?php foreach (array_slice(get_ticket_tags_array($ticket['tags']), 0, 3) as $tag): ?>
@@ -566,7 +567,7 @@
                                               style="cursor:pointer; text-decoration: underline dotted; text-underline-offset: 2px;"
                                               title="<?php echo e(t('Click to change')); ?>">
                                             <?php if (!empty($ticket['organization_name'])): ?>
-                                                <?php echo e($ticket['organization_name']); ?>
+                                                <bdi><?php echo e($ticket['organization_name']); ?></bdi>
                                             <?php else: ?>
                                                 <span style="opacity:0.4;">—</span>
                                             <?php endif; ?>

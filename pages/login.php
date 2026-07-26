@@ -25,7 +25,10 @@ $error = '';
 $info_message = '';
 $show_2fa_form = !empty($_SESSION['2fa_pending']);
 $current_lang = get_app_language();
-$lang_options = array_map(fn($item) => t($item['name']), get_supported_languages());
+$lang_options = [];
+foreach (get_supported_languages() as $code => $language) {
+    $lang_options[$code] = foxdesk_locale_option_label($code);
+}
 $lang_params = ['page' => 'login'];
 if (isset($_GET['reset'])) {
     $lang_params['reset'] = $_GET['reset'];
@@ -291,7 +294,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
         <!-- Theme Toggle -->
         <button onclick="toggleTheme()"
             class="theme-toggle p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors bg-white shadow-sm border border-slate-200 lg:bg-transparent lg:shadow-none lg:border-transparent"
-            style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 50;"
+            style="position: absolute; top: 1.5rem; inset-inline-end: 1.5rem; z-index: 50;"
             title="<?php echo e(t('Toggle theme')); ?>">
             <svg class="theme-toggle__icon theme-toggle__icon--light w-5 h-5 text-slate-500" fill="none"
                 stroke="currentColor" viewBox="0 0 24 24">
@@ -447,7 +450,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['verify_2fa'])) {
                             <?php echo e(t('Language')); ?></div>
                         <select id="lang-select" name="lang"
                             class="bg-transparent text-sm border-none shadow-none focus:ring-0 cursor-pointer p-0 font-medium text-slate-700 dark:text-slate-300"
-                            style="min-width: 100px; padding-right: 0; outline: none;" onchange="this.form.submit()">
+                            style="min-width: 100px; padding-inline-end: 0; outline: none;" onchange="this.form.submit()">
                             <?php foreach ($lang_options as $code => $label): ?>
                                 <option value="<?php echo e($code); ?>" <?php echo $code === $current_lang ? 'selected' : ''; ?>>
                                     <?php echo e($label); ?>

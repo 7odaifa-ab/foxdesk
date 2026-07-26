@@ -433,10 +433,10 @@ $upgrades = [
     ['users', 'permissions', "ALTER TABLE users ADD COLUMN permissions TEXT AFTER role"],
 
     // Email templates - language column
-    ['email_templates', 'language', "ALTER TABLE email_templates ADD COLUMN language VARCHAR(5) DEFAULT 'en' AFTER template_key"],
+    ['email_templates', 'language', "ALTER TABLE email_templates ADD COLUMN language VARCHAR(35) DEFAULT 'en' AFTER template_key"],
 
     // Users - language preference
-    ['users', 'language', "ALTER TABLE users ADD COLUMN language VARCHAR(5) DEFAULT 'en' AFTER avatar"],
+    ['users', 'language', "ALTER TABLE users ADD COLUMN language VARCHAR(35) DEFAULT 'en' AFTER avatar"],
 
     // Users - contact metadata
     ['users', 'contact_phone', "ALTER TABLE users ADD COLUMN contact_phone VARCHAR(50) AFTER last_name"],
@@ -557,7 +557,7 @@ if (!$check) {
             CREATE TABLE email_templates (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 template_key VARCHAR(100) NOT NULL,
-                language VARCHAR(5) DEFAULT 'en',
+                language VARCHAR(35) DEFAULT 'en',
                 subject VARCHAR(255) NOT NULL,
                 body TEXT NOT NULL,
                 is_active TINYINT(1) DEFAULT 1,
@@ -808,7 +808,7 @@ if (!$check) {
                 organization_id INT NOT NULL,
                 created_by_user_id INT,
                 title VARCHAR(255) NOT NULL,
-                report_language VARCHAR(5) DEFAULT 'en',
+                report_language VARCHAR(35) DEFAULT 'en',
                 date_from DATE NOT NULL,
                 date_to DATE NOT NULL,
                 executive_summary TEXT,

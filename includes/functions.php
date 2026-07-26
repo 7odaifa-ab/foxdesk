@@ -4,6 +4,7 @@
  */
 
 // Load specialized function files
+require_once BASE_PATH . '/includes/locale-functions.php';
 require_once BASE_PATH . '/includes/security-helpers.php';
 require_once BASE_PATH . '/includes/settings-functions.php';
 require_once BASE_PATH . '/includes/user-functions.php';
@@ -482,53 +483,25 @@ function ticket_url($ticket, $params = [])
 }
 
 /**
- * Get all supported languages and metadata
- */
-function get_supported_languages()
-{
-    return [
-        'en' => ['name' => 'English', 'native' => 'English', 'rtl' => false],
-        'cs' => ['name' => 'Czech', 'native' => 'Čeština', 'rtl' => false],
-        'de' => ['name' => 'German', 'native' => 'Deutsch', 'rtl' => false],
-        'it' => ['name' => 'Italian', 'native' => 'Italiano', 'rtl' => false],
-        'es' => ['name' => 'Spanish', 'native' => 'Español', 'rtl' => false],
-        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'rtl' => true],
-    ];
-}
-
-/**
- * Check if the given or active language is Right-to-Left (RTL)
- */
-function is_rtl(?string $lang = null): bool
-{
-    $lang = $lang !== null ? strtolower(trim($lang)) : get_app_language();
-    $supported = get_supported_languages();
-    return !empty($supported[$lang]['rtl']);
-}
-
-/**
- * Get HTML direction attribute value ('rtl' or 'ltr')
- */
-function get_app_direction(?string $lang = null): string
-{
-    return is_rtl($lang) ? 'rtl' : 'ltr';
-}
-
-/**
  * Get active app language (default: English)
  */
 function get_app_language()
 {
-    $allowed = array_keys(get_supported_languages());
-    $normalize = static function ($value) use ($allowed) {
-        $value = strtolower(trim((string) $value));
-        return in_array($value, $allowed, true) ? $value : null;
-    };
+    $normalize = static fn($value) => normalize_locale_tag($value);
 
     $requested = isset($_GET['lang']) ? $normalize($_GET['lang']) : null;
     if ($requested !== null) {
         $_SESSION['lang'] = $requested;
         $_SESSION['lang_override'] = true;
+        if (!headers_sent()) {
+            setcookie('foxdesk_locale', $requested, [
+                'expires' => time() + 31536000,
+                'path' => '/',
+                'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+        }
 
         if (function_exists('is_logged_in') && function_exists('current_user') && is_logged_in()) {
             $session_user = current_user();
@@ -563,6 +536,18 @@ function get_app_language()
         return $session_lang;
     }
 
+    $cookie_lang = $normalize($_COOKIE['foxdesk_locale'] ?? null);
+    if ($cookie_lang !== null) {
+        $_SESSION['lang'] = $cookie_lang;
+        return $cookie_lang;
+    }
+
+    $browser_lang = foxdesk_negotiate_locale((string) ($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? ''));
+    if ($browser_lang !== null) {
+        $_SESSION['lang'] = $browser_lang;
+        return $browser_lang;
+    }
+
     $setting_lang = null;
     if (function_exists('get_setting')) {
         try {
@@ -580,16 +565,46 @@ function get_app_language()
  */
 function t($key, $replacements = [])
 {
-    static $translations = null;
-    if ($translations === null) {
-        $translations = require BASE_PATH . '/includes/translations.php';
-    }
     $lang = get_app_language();
-    $text = $translations[$lang][$key] ?? $translations['en'][$key] ?? $key;
+    $translations = foxdesk_translation_catalog($lang);
+    $fallback = $lang === 'en' ? $translations : foxdesk_translation_catalog('en');
+    $text = $translations[$key] ?? $fallback[$key] ?? $key;
     foreach ($replacements as $name => $value) {
         $text = str_replace('{' . $name . '}', $value, $text);
     }
     return $text;
+}
+
+/**
+ * Translate a pluralized UI string using CLDR plural categories.
+ *
+ * Canonical catalog keys use i18next v4 CLDR suffixes, for example:
+ * ticket.count_one / ticket.count_few / ticket.count_other.
+ * Dot suffixes remain readable for early migration compatibility.
+ */
+function tn(string $key, $count, array $replacements = []): string
+{
+    $lang = get_app_language();
+    $category = foxdesk_plural_category($lang, $count);
+    $catalog = foxdesk_translation_catalog($lang);
+    $fallback = foxdesk_translation_catalog('en');
+    $candidates = [
+        $key . '_' . $category,
+        $key . '_other',
+        $key . '.' . $category,
+        $key . '.other',
+        $key,
+    ];
+
+    $resolved = $key;
+    foreach ($candidates as $candidate) {
+        if (array_key_exists($candidate, $catalog) || array_key_exists($candidate, $fallback)) {
+            $resolved = $candidate;
+            break;
+        }
+    }
+
+    return t($resolved, array_merge(['count' => $count], $replacements));
 }
 
 /**
@@ -884,8 +899,7 @@ function format_date($date, $format = 'd.m.Y H:i')
         return '';
     }
     if ($format === null || $format === '' || $format === 'd.m.Y H:i') {
-        $time_format = get_setting('time_format', '24') === '12' ? 'g:i A' : 'H:i';
-        $format = 'd.m.Y ' . $time_format;
+        return foxdesk_format_datetime($date, true);
     }
     return date($format, strtotime($date));
 }
@@ -1004,8 +1018,7 @@ function round_minutes_nearest($minutes, $increment)
 function format_money($amount)
 {
     $currency = get_currency_label();
-    $value = number_format((float) $amount, 2, '.', ' ');
-    return $value . ' ' . $currency;
+    return foxdesk_format_currency($amount, $currency);
 }
 
 /**

@@ -15,7 +15,7 @@
                 <label class="text-sm text-theme-secondary"><?php echo e(t('Language:')); ?></label>
                 <select name="lang" onchange="this.form.submit()" class="form-select form-select-sm w-auto">
                     <?php foreach (get_supported_languages() as $code => $language): ?>
-                        <option value="<?php echo e($code); ?>" <?php echo $template_lang === $code ? 'selected' : ''; ?>><?php echo e(t($language['name'])); ?></option>
+                        <option value="<?php echo e($code); ?>" <?php echo $template_lang === $code ? 'selected' : ''; ?>><?php echo e(foxdesk_locale_option_label($code)); ?></option>
                     <?php endforeach; ?>
                 </select>
             </form>

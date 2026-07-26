@@ -757,9 +757,15 @@ function ensure_email_templates_language_schema()
  */
 function normalize_email_template_language($lang)
 {
-    $allowed = function_exists('get_supported_languages') ? array_keys(get_supported_languages()) : ['en', 'cs', 'de', 'it', 'es', 'ar'];
-    $lang = strtolower(trim((string) $lang));
-    return in_array($lang, $allowed, true) ? $lang : 'en';
+    if (!function_exists('normalize_locale_tag')
+        && defined('BASE_PATH')
+        && is_file(BASE_PATH . '/includes/locale-functions.php')) {
+        require_once BASE_PATH . '/includes/locale-functions.php';
+    }
+    if (function_exists('normalize_locale_tag')) {
+        return normalize_locale_tag($lang) ?? 'en';
+    }
+    return 'en';
 }
 
 /**

@@ -22,6 +22,7 @@ function global_search_sections(): array
 function global_search_normalize_query(string $query): string
 {
     $query = trim(preg_replace('/\s+/', ' ', $query));
+    $query = function_exists('foxdesk_normalize_unicode') ? foxdesk_normalize_unicode($query) : $query;
     return mb_substr($query, 0, 120);
 }
 

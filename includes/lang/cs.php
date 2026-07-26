@@ -1,4 +1,7 @@
 <?php
+
+// Generated from locales/catalogs/cs.json by bin/i18n-catalogs.php.
+// Edit the JSON source and run npm run i18n:build.
 return [
     '-- Myself --' => '-- Já --',
     '-- No organization --' => '-- Bez klienta --',
@@ -543,7 +546,7 @@ return [
     'Time range' => 'Časové období',
     'Time spent' => 'Strávený čas',
     'Time spent (min)' => 'Strávený čas (min)',
-    'Time tracking' => 'Sledování času',
+    'Time tracking' => 'Měření času',
     'Time tracking is not available.' => 'Sledování času není k dispozici.',
     'Timer discarded.' => 'Časovač zahozen.',
     'Timer is already running.' => 'Časovač již běží.',
@@ -579,7 +582,7 @@ return [
     'Visible to customer' => 'Viditelné pro zákazníka',
     'Welcome, {name}!' => 'Vítejte, {name}!',
     'What would you like to do?' => 'Co si přejete udělat?',
-    'Work log' => 'Pracovní výkaz',
+    'Work log' => 'Záznamy práce',
     'Write a reply...' => 'Napište odpověď...',
     'You can use variables in the subject, e.g. {ticket_title}.' => 'V předmětu můžete použít proměnné, např. {ticket_title}.',
     'You do not have permission to view this profile.' => 'Nemáte oprávnění zobrazit tento profil.',
@@ -655,8 +658,6 @@ return [
     'Stop & Log' => 'Zastavit a uložit',
     'Ticket access' => 'Přístup k požadavku',
     'New Status' => 'Nový stav',
-
-    // Recurring Tasks - Opakující se úkoly
     'Recurring tasks' => 'Opakující se úkoly',
     'Recurring Tasks' => 'Opakující se úkoly',
     'Automatically create tickets on a recurring schedule' => 'Automaticky vytvářet požadavky podle plánu',
@@ -669,7 +670,7 @@ return [
     'Schedule' => 'Rozvrh',
     'Next Run' => 'Příští spuštění',
     'Every day' => 'Každý den',
-    'Every' => 'Každý', // nebo 'Každé' depending on context, using generic
+    'Every' => 'Každý',
     'days' => 'dní',
     'weeks on' => 'týdnů v',
     'Monthly on day' => 'Měsíčně v den',
@@ -687,7 +688,6 @@ return [
     'Frequency' => 'Frekvence',
     'Daily' => 'Denně',
     'Monthly' => 'Měsíčně',
-    // 'Weekly' is already in file
     'Recurrence Interval' => 'Interval opakování',
     'Day of Week' => 'Den v týdnu',
     'Day of Month' => 'Den v měsíci',
@@ -721,8 +721,6 @@ return [
     'October' => 'Říjen',
     'November' => 'Listopad',
     'December' => 'Prosinec',
-
-    // Reports & Report Builder - Reporty
     'Client Reports' => 'Klientské reporty',
     'View Reports' => 'Zobrazit reporty',
     'Create New Report' => 'Vytvořit nový report',
@@ -775,8 +773,6 @@ return [
     'Report created successfully!' => 'Report byl úspěšně vytvořen!',
     'View Report' => 'Zobrazit report',
     'Failed to create report. Please try again.' => 'Nepodařilo se vytvořit report. Zkuste to prosím znovu.',
-
-    // Additional translations
     'Today' => 'Dnes',
     'Past 7 days' => 'Posledních 7 dní',
     'Past 30 days' => 'Posledních 30 dní',
@@ -815,15 +811,11 @@ return [
     'Helpdesk' => 'Helpdesk',
     'Logo' => 'Logo',
     'Favicon' => 'Favicon',
-
-    // Password validation messages
     'Password must be at least 12 characters long.' => 'Heslo musí mít alespoň 12 znaků.',
     'Password must contain at least one uppercase letter.' => 'Heslo musí obsahovat alespoň jedno velké písmeno.',
     'Password must contain at least one lowercase letter.' => 'Heslo musí obsahovat alespoň jedno malé písmeno.',
     'Password must contain at least one number.' => 'Heslo musí obsahovat alespoň jednu číslici.',
     'Password must contain at least one special character.' => 'Heslo musí obsahovat alespoň jeden speciální znak.',
-
-    // Impersonation
     'You are currently viewing as' => 'Právě prohlížíte jako',
     'Stop Impersonating' => 'Ukončit zosobnění',
     'Log in as user' => 'Přihlásit se jako uživatel',
@@ -836,7 +828,7 @@ return [
     'Open tickets' => 'Otevřené požadavky',
     'Normal' => 'Normální',
     'Log time' => 'Zapsat čas',
-    'No activity' => 'Bez aktivity',
+    'No activity' => 'Žádná aktivita',
     'Team Total' => 'Tým celkem',
     'My Time' => 'Můj čas',
     'Active Timers' => 'Aktivní časovače',
@@ -1004,8 +996,6 @@ return [
     'Please enter a valid date range.' => 'Zadejte platné rozmezí dat.',
     'From Date must be before To Date.' => 'Datum od musí být před datem do.',
     'Unknown error' => 'Neznámá chyba',
-
-    // API
     'API' => 'API',
     'API tokens' => 'API tokeny',
     'API tokens allow external tools and AI agents to interact with your helpdesk. Each token inherits the permissions of the user it belongs to.' => 'API tokeny umožňují externím nástrojům a AI agentům pracovat s vaším helpdeskem. Každý token dědí oprávnění uživatele, ke kterému patří.',
@@ -1038,15 +1028,11 @@ return [
     'Add a comment. JSON body: ticket_hash or ticket_id, content (required), is_internal (boolean).' => 'Přidat komentář. JSON tělo: ticket_hash nebo ticket_id, content (povinné), is_internal (boolean).',
     'Change ticket status. JSON body: ticket_hash or ticket_id, status_id or status (name).' => 'Změnit stav ticketu. JSON tělo: ticket_hash nebo ticket_id, status_id nebo status (název).',
     'Log a time entry. JSON body: ticket_hash or ticket_id, duration_minutes (required), summary, is_billable.' => 'Zaznamenat čas. JSON tělo: ticket_hash nebo ticket_id, duration_minutes (povinné), summary, is_billable.',
-
-    // v0.3.0 — AI-assisted time tracking
     'AI' => 'AI',
     'Timer' => 'Časovač',
     'Source' => 'Zdroj',
-    'Entries' => 'Záznamy',
+    'Entries' => 'Položky',
     'Ticket creation' => 'Vytvoření ticketu',
-
-    // v0.3.1 — Multi-agent AI system
     'AI Agents' => 'AI agenti',
     'AI agent' => 'AI agent',
     'Add AI agent' => 'Přidat AI agenta',
@@ -1074,13 +1060,10 @@ return [
     'Choose what this token can do.' => 'Vyberte, co tento token smí dělat.',
     'Tickets and replies' => 'Požadavky a odpovědi',
     'Read, create, update tickets, and add replies.' => 'Číst, vytvářet a upravovat požadavky a přidávat odpovědi.',
-    'Time tracking' => 'Měření času',
     'Read and log time entries.' => 'Číst a zapisovat časové záznamy.',
-    'Attachments' => 'Přílohy',
     'Read and upload ticket attachments.' => 'Číst a nahrávat přílohy požadavků.',
-    'Reports' => 'Výkazy',
+    'Reports' => 'Reporty',
     'Read report and billing review data.' => 'Číst data výkazů a fakturačních kontrol.',
-    'Notifications' => 'Oznámení',
     'Read and update notifications.' => 'Číst a upravovat oznámení.',
     'Save access' => 'Uložit přístup',
     'Save access and create token' => 'Uložit přístup a vytvořit token',
@@ -1088,8 +1071,6 @@ return [
     'Create token with access' => 'Vytvořit token s přístupem',
     'Revoke token' => 'Zneplatnit token',
     'API token generated. Copy it now.' => 'API token byl vygenerován. Zkopírujte ho teď.',
-
-    // Agent Connect
     'Agent Connect' => 'Připojení agenta',
     'Connect' => 'Připojit',
     'Connection instructions for AI tools' => 'Instrukce pro připojení AI nástrojů',
@@ -1123,8 +1104,6 @@ return [
     'Leave Start and End empty to log quick minutes ending now. If both are filled, the exact range is used instead.' => 'Ponechte Začátek a Konec prázdné pro rychlý zápis minut končící teď. Pokud vyplníte obě pole, použije se místo toho přesný rozsah.',
     'Token:' => 'Token:',
     'API Base:' => 'API Base:',
-
-    // v0.3.7 — Missing translations
     'By priority' => 'Podle priority',
     'Can view edit history' => 'Může zobrazit historii úprav',
     'Enable in-app notifications' => 'Povolit upozornění v aplikaci',
@@ -1172,8 +1151,6 @@ return [
     'Please select a client, agent, and hourly rate.' => 'Vyberte klienta, agenta a hodinovou sazbu.',
     'Optional' => 'Volitelné',
     'Can view time entries' => 'Může zobrazit časové záznamy',
-
-    // v0.3.11 — Dashboard redesign
     'New today' => 'Nové dnes',
     'New tickets' => 'Nové tikety',
     'Deadlines' => 'Termíny',
@@ -1190,8 +1167,6 @@ return [
     'Report' => 'Přehled',
     'needs attention' => 'vyžaduje pozornost',
     'Total' => 'Celkem',
-
-    // Auto-update system
     'Automatic updates' => 'Automatické aktualizace',
     'Manual update' => 'Ruční aktualizace',
     'Kanban board' => 'Kanban nástěnka',
@@ -1218,8 +1193,6 @@ return [
     'Dismiss' => 'Zavřít',
     'Collapse sidebar' => 'Zmenšit menu',
     'Expand sidebar' => 'Rozbalit menu',
-
-    // Pseudo-cron (background tasks)
     'Background tasks' => 'Úlohy na pozadí',
     'Automatically run email ingestion, recurring tasks, and maintenance on page loads — no server cron required.' => 'Automaticky spouští zpracování e-mailů, opakované úlohy a údržbu při načtení stránky — bez nutnosti nastavovat cron na serveru.',
     'Enable background tasks' => 'Povolit úlohy na pozadí',
@@ -1229,8 +1202,6 @@ return [
     'every 60 min' => 'každých 60 min',
     'every 24 hours' => 'každých 24 hodin',
     'Tasks run in the background on page loads. No server cron job needed.' => 'Úlohy se spouští na pozadí při načtení stránky. Není potřeba cron na serveru.',
-
-    // Help panel
     'Add comments at the bottom of any ticket. You can also attach files by dragging them into the comment box or using the attachment button.' => 'Přidávejte komentáře ve spodní části každého požadavku. Soubory můžete přiložit přetažením do pole komentáře nebo pomocí tlačítka pro přílohu.',
     'Add, edit, and deactivate users from the Users section. You can also import users in bulk via CSV.' => 'Přidávejte, upravujte a deaktivujte uživatele v sekci Uživatelé. Můžete také hromadně importovat uživatele přes CSV.',
     'Assign tickets to yourself or other agents from the ticket detail page. Use bulk actions to assign multiple tickets at once.' => 'Přiřaďte požadavky sobě nebo jiným agentům na stránce detailu požadavku. Pomocí hromadných akcí můžete přiřadit více požadavků najednou.',
@@ -1254,7 +1225,6 @@ return [
     'Managing users' => 'Správa uživatelů',
     'Navigation' => 'Navigace',
     'Open in new tab' => 'Otevřít v nové záložce',
-    'Reports' => 'Reporty',
     'Set up recurring tasks to automatically create tickets on a schedule. Useful for maintenance, reviews, and periodic check-ins.' => 'Nastavte opakující se úlohy pro automatické vytváření požadavků podle plánu. Užitečné pro údržbu, revize a pravidelné kontroly.',
     'Hold Ctrl (or Cmd on Mac) and click a ticket row to open it in a new tab.' => 'Podržte Ctrl (nebo Cmd na Macu) a klikněte na řádek požadavku pro otevření v nové záložce.',
     'Shortcuts' => 'Klávesové zkratky',
@@ -1272,8 +1242,6 @@ return [
     'View logged time reports under Reports > Time Tracking. Filter by agent, date range, or ticket to analyze time spent.' => 'Zobrazte reporty zaznamenaného času v Reporty > Sledování času. Filtrujte podle agenta, období nebo požadavku pro analýzu stráveného času.',
     'Viewing and filtering' => 'Zobrazení a filtrování',
     'Your Profile' => 'Váš profil',
-
-    // Allowed senders
     'Allowed Senders' => 'Povolení odesílatelé',
     'Add Sender' => 'Přidat odesílatele',
     'Email or Domain' => 'E-mail nebo doména',
@@ -1306,7 +1274,6 @@ return [
     'Invalid billing adjustment.' => 'Neplatná fakturační úprava.',
     'Billable item adjustment updated.' => 'Fakturovatelná položka upravena.',
     'Discount' => 'Sleva',
-    'Total' => 'Celkem',
     'Value' => 'Hodnota',
     'Save billing' => 'Uložit fakturaci',
     'Are you sure?' => 'Opravdu?',
@@ -1397,7 +1364,6 @@ return [
     'Access' => 'Přístup',
     'No clients selected' => 'Nejsou vybraní klienti',
     'Own tickets only' => 'Pouze vlastní požadavky',
-
     'Work overview' => 'Odpracovaný čas',
     'Now' => 'Teď',
     'Current work' => 'Právě se řeší',
@@ -1413,12 +1379,10 @@ return [
     'Selected' => 'Vybrané',
     'Last activity' => 'Poslední aktivita',
     'No team time yet.' => 'Zatím žádný čas týmu.',
-    'No activity' => 'Žádná aktivita',
     'Last ticket' => 'Poslední požadavek',
     'Last 5 tickets' => 'Posledních 5 požadavků',
     'All work' => 'Vyhledat',
     'My work log' => 'Moje záznamy',
-    'Work log' => 'Záznamy práce',
     'Work log range' => 'Rozsah záznamů',
     'What was done' => 'Co se dělalo',
     'Showing latest {shown} of {total} entries.' => 'Zobrazuji posledních {shown} z {total} položek.',
@@ -1440,7 +1404,6 @@ return [
     'Choose a client first' => 'Nejdřív vyberte klienta',
     'Pick one client above to preview work, adjust billing, and create a report.' => 'Vyberte nahoře jednoho klienta pro náhled práce, úpravu fakturace a vytvoření reportu.',
     'Items' => 'Položky',
-    'Entries' => 'Položky',
     'Name, language, time and invoice defaults.' => 'Název, jazyk, čas a výchozí fakturace.',
     'Sending, inbound mail, and delivery checks.' => 'Odesílání, příchozí pošta a kontrola doručení.',
     'Customer-facing notification text.' => 'Texty oznámení pro zákazníky.',
@@ -1454,8 +1417,6 @@ return [
     'Work logged' => 'Zapsaná práce',
     'work records' => 'záznamů práce',
     'No public comment was added for this time entry.' => 'K tomuto časovému záznamu nebyl přidán veřejný komentář.',
-
-    // Kanonické instrukce pro Agent API
     'Agent instructions: FoxDesk tickets' => 'Instrukce pro agenty: požadavky FoxDesk',
     'Basic rules' => 'Základní pravidla',
     'Use only the FoxDesk Agent API. Never use a web browser.' => 'Používejte pouze FoxDesk Agent API. Nikdy nepoužívejte webový prohlížeč.',
@@ -1516,8 +1477,6 @@ return [
     'time_entries is empty.' => 'time_entries je prázdné.',
     'No duplicate active ticket was created.' => 'Nevznikl duplicitní aktivní požadavek.',
     'Cancel an incorrect ticket only after the correct replacement has been created and verified.' => 'Chybný požadavek zrušte až po vytvoření a ověření správné náhrady.',
-
-    // Trvalé smazání požadavku
     'Permanently delete ticket' => 'Trvale smazat požadavek',
     'This action cannot be undone. Check what will be removed before you continue.' => 'Tuto akci nelze vrátit. Než budete pokračovat, zkontrolujte, co bude odstraněno.',
     'To confirm, type {reference}' => 'Pro potvrzení napište {reference}',
@@ -1529,8 +1488,6 @@ return [
     'Bulk permanent deletion is not available. Open one ticket and confirm its code.' => 'Hromadné trvalé mazání není dostupné. Otevřete jeden požadavek a potvrďte jeho kód.',
     'Ticket could not be archived.' => 'Požadavek se nepodařilo archivovat.',
     'Time entries' => 'Časové záznamy',
-
-    // Link preview cards
     'Google Drive file' => 'Soubor Google Drive',
     'Google Docs' => 'Google Docs',
     'Google Sheets' => 'Google Sheets',
@@ -1550,8 +1507,6 @@ return [
     'Failed to restore comment.' => 'Komentář se nepodařilo vrátit.',
     'Attachment restored.' => 'Příloha byla vrácena.',
     'Failed to restore attachment.' => 'Přílohu se nepodařilo vrátit.',
-
-    // Settings: General extras
     'Login page welcome text' => 'Uvítací text na přihlašovací stránce',
     'This text appears on the login screen below the application name.' => 'Tento text se zobrazí na přihlašovací obrazovce pod názvem aplikace.',
     'Example: TK-10001, REQ-10001 (letters only). Only affects new tickets — existing tickets keep their current prefix.' => 'Příklad: TK-10001, REQ-10001 (pouze písmena). Ovlivňuje pouze nové tikety — stávající si zachovají svou předponu.',
@@ -1561,14 +1516,10 @@ return [
     'Square image recommended. Formats: JPG, PNG, GIF, WebP, SVG. Max 2 MB.' => 'Doporučen čtvercový obrázek. Formáty: JPG, PNG, GIF, WebP, SVG. Max 2 MB.',
     'Please select an ICO, PNG, or GIF file' => 'Vyberte soubor ICO, PNG nebo GIF',
     'Please select a JPG, PNG, GIF, WebP, or SVG file' => 'Vyberte soubor JPG, PNG, GIF, WebP nebo SVG',
-
-    // Settings: Email extras
     'When enabled, the system will automatically create tickets from incoming emails. Requires a cron job or background tasks to be active.' => 'Po zapnutí systém automaticky vytváří tikety z příchozích e-mailů. Vyžaduje aktivní cron úlohu nebo dílčí úlohy na pozadí.',
     'When enabled, anyone can create tickets by sending an email — not just addresses in the allowlist below.' => 'Po zapnutí může tiket vytvořit e-mailem kdokoli — nejen adresy z níže uvedeného seznamu povolených.',
     'Turning this off will stop all email notifications for all users — including ticket updates, status changes, and new ticket alerts.' => 'Vypnutím zastavíte veškerá e-mailová oznámení pro všechny uživatele — včetně aktualizací tiketů, změn stavu a upozornění na nové tikety.',
     'Currently off. No email notifications are being sent. Turn on to enable notifications for ticket updates, comments, and new tickets.' => 'Aktuálně vypnuto. Neodesílají se žádná e-mailová oznámení. Zapněte pro povolení oznámení o aktualizacích tiketů, komentářích a nových tiketech.',
-
-    // Settings: Logs
     'System Logs' => 'Systémové protokoly',
     'Are you sure you want to clear all logs?' => 'Opravdu chcete vymazat všechny protokoly?',
     'Clear all logs' => 'Vymazat všechny protokoly',
@@ -1578,8 +1529,6 @@ return [
     'No logs found.' => 'Nebyly nalezeny žádné protokoly.',
     'Showing {start} to {end} of {total} entries' => 'Zobrazeno {start} až {end} z {total} záznamů',
     'Prev' => 'Předchozí',
-
-    // Settings: Security — two-factor authentication
     'Two-factor authentication' => 'Dvoufaktorové ověření',
     'Require users to set up an authenticator app (Google Authenticator, Authy, 1Password) before accessing the system.' => 'Vyžadovat od uživatelů nastavení autentizační aplikace (Google Authenticator, Authy, 1Password) před přístupem do systému.',
     'Admins' => 'Správci',
@@ -1599,8 +1548,6 @@ return [
     'users will be immediately forced to set up 2FA. They won\'t be able to use the system until they scan a QR code with their authenticator app.' => 'uživatelů bude okamžitě nuceno nastavit 2FA. Nebudou moci systém používat, dokud nenaskenují QR kód svou autentizační aplikací.',
     'All users in this role already have 2FA enabled. New users will be required to set it up on first login.' => 'Všichni uživatelé v této roli mají 2FA již aktivované. Noví uživatelé budou muset 2FA nastavit při prvním přihlášení.',
     'The forced setup requirement will be removed. Users who already have 2FA will keep it — it won\'t be disabled.' => 'Požadavek na vynucené nastavení bude odstraněn. Uživatelé, kteří již mají 2FA, si jej ponechají — nebude vypnuto.',
-
-    // Settings: System — operations, updates, backups
     'Operations overview' => 'Přehled provozu',
     'Check updates' => 'Zkontrolovat aktualizace',
     'Create a new backup?' => 'Vytvořit novou zálohu?',
@@ -1646,8 +1593,6 @@ return [
     'Backup created: {version}' => 'Záloha vytvořena: {version}',
     'Please select a .zip file' => 'Vyberte soubor .zip',
     'Cloud migration' => 'Migrace do cloudu',
-
-    // Admin areas overview
     'Admin areas' => 'Administrátorské oblasti',
     'Settings sections' => 'Sekce nastavení',
     'Team & access' => 'Tým a přístup',
@@ -1665,8 +1610,6 @@ return [
     'Admin activity and audit trail.' => 'Aktivita administrátora a auditní záznam.',
     'Workflow' => 'Pracovní postup',
     'Security' => 'Zabezpečení',
-
-    // Help panel
     'Help' => 'Nápověda',
     'Quick Start' => 'Rychlý start',
     'Use the sidebar to navigate between sections. Press Ctrl+K to open the command palette for quick access to any page or ticket.' => 'Použijte postranní panel k procházení mezi sekcemi. Stiskněte Ctrl+K pro otevření palety příkazů pro rychlý přístup k jakékoli stránce nebo tiketu.',
@@ -1686,8 +1629,6 @@ return [
     'Set up recurring tasks to automatically create tickets on a schedule (daily, weekly, monthly). Useful for regular maintenance or check-in tasks.' => 'Nastavte opakující se úkoly pro automatické vytváření tiketů podle plánu (denně, týdně, měsíčně). Užitečné pro pravidelnou údržbu nebo kontrolní úkoly.',
     'Configure your app name, logo, email settings, and more from Settings. Set up SMTP for email notifications.' => 'Nakonfigurujte název aplikace, logo, nastavení e-mailu a další v Nastavení. Nastavte SMTP pro e-mailová oznámení.',
     'Customize ticket statuses, priorities, and types to match your workflow. Drag to reorder, set colors, and rename as needed.' => 'Přizpůsobte stavy, priority a typy tiketů vašemu pracovnímu postupu. Přetažením změňte pořadí, nastavte barvy a přejmenujte dle potřeby.',
-
-    // Ticket detail: edit ticket, comments, activity timeline
     'Edit ticket' => 'Upravit tiket',
     'Description...' => 'Popis...',
     'Optional work description...' => 'Volitelný popis práce...',
@@ -1833,4 +1774,11 @@ return [
     'Own tickets' => 'Vlastní tikety',
     'Organization' => 'Organizace',
     'AI agents' => 'AI agenti',
+    'Language not supported.' => 'Jazyk není podporován.',
+    'comment.count_zero' => '{count} komentářů',
+    'comment.count_one' => '{count} komentář',
+    'comment.count_two' => '{count} komentáře',
+    'comment.count_few' => '{count} komentáře',
+    'comment.count_many' => '{count} komentářů',
+    'comment.count_other' => '{count} komentářů',
 ];

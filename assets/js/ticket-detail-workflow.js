@@ -114,6 +114,7 @@
         var hidden = document.getElementById('cc-hidden-inputs');
         var selectedUsers = [];
         var timeout = null;
+        var isComposing = false;
         if (!input || !dropdown || !selected || !hidden) return;
 
         function removeUser(userId, event) {
@@ -178,14 +179,28 @@
                 });
         }
 
-        input.addEventListener('input', function () {
-            var query = this.value.trim();
+        function requestUsers() {
+            clearTimeout(timeout);
+            if (isComposing) return;
+            var query = input.value.trim();
             if (query.length < 2) {
                 dropdown.classList.add('hidden');
                 return;
             }
-            clearTimeout(timeout);
             timeout = setTimeout(function () { searchUsers(query); }, 300);
+        }
+
+        input.addEventListener('compositionstart', function () {
+            isComposing = true;
+            clearTimeout(timeout);
+        });
+        input.addEventListener('compositionend', function () {
+            isComposing = false;
+            requestUsers();
+        });
+        input.addEventListener('input', function (event) {
+            if (event.isComposing) return;
+            requestUsers();
         });
         document.addEventListener('click', function (event) {
             if (!input.contains(event.target) && !dropdown.contains(event.target)) {

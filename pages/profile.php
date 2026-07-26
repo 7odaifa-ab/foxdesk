@@ -39,7 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             if (isset($_POST['language'])) {
-                $updates['language'] = $_POST['language'];
+                $requested_language = normalize_locale_tag($_POST['language']);
+                if ($requested_language === null) {
+                    flash(t('Language not supported.'), 'error');
+                    redirect('profile');
+                }
+                $updates['language'] = $requested_language;
+                $_SESSION['lang'] = $requested_language;
             }
 
             if ($contact_phone_column_exists) {
@@ -498,7 +504,7 @@ include BASE_PATH . '/includes/components/page-header.php';
                     <label for="profile-language" class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Language')); ?></label>
                     <select name="language" id="profile-language" class="form-select w-full sm:w-1/2">
                         <?php foreach (get_supported_languages() as $code => $lang_info): ?>
-                            <option value="<?php echo e($code); ?>" <?php echo ($user['language'] ?? 'en') === $code ? 'selected' : ''; ?>><?php echo e(t($lang_info['name'])); ?></option>
+                            <option value="<?php echo e($code); ?>" <?php echo ($user['language'] ?? 'en') === $code ? 'selected' : ''; ?>><?php echo e(foxdesk_locale_option_label($code)); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <p class="text-xs mt-1 text-theme-muted"><?php echo e(t('Changes the language of the entire application interface.')); ?></p>

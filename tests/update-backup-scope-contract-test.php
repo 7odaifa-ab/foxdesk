@@ -11,7 +11,8 @@ $assert = static function (bool $condition, string $message): void {
 
 $assert($source !== false, 'Rollback source is missing.');
 $assert(str_contains($source, 'function update_release_managed_root_files'), 'Release root-file allowlist is missing.');
-$assert(str_contains($source, "return ['assets', 'includes', 'pages'];"), 'Release directory allowlist is not explicit.');
+$assert(str_contains($source, "return ['assets', 'bin', 'includes', 'locales', 'migrations', 'pages'];"), 'Release directory allowlist is not explicit.');
+$assert(str_contains($source, "'locales'"), 'Rollback scope must preserve the locale registry and canonical catalogs.');
 $assert(str_contains($source, 'copy_release_manifest_files($temp_dir, BASE_PATH, $backup_files)'), 'Rollback does not restore from the managed manifest.');
 $assert(str_contains($source, 'update_release_path_is_managed($name)'), 'ZIP manifest is not restricted to release-managed paths.');
 

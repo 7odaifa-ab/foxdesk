@@ -15,8 +15,9 @@ if (!defined('BASE_PATH')) {
 }
 require_once $root . '/includes/functions.php';
 
-$supported = get_supported_languages();
-assert_i18n_contract(isset($supported['en']), 'English must remain the fallback locale.');
+$registry = foxdesk_locale_registry();
+assert_i18n_contract(count($registry) === 24, 'The canonical registry must contain exactly 24 product locales.');
+assert_i18n_contract(isset($registry['en']), 'English must remain the fallback locale.');
 
 $catalogFiles = glob($root . '/includes/lang/*.php') ?: [];
 $catalogLocales = [];
@@ -25,12 +26,22 @@ foreach ($catalogFiles as $catalogFile) {
 }
 sort($catalogLocales);
 
-$supportedLocales = array_keys($supported);
-sort($supportedLocales);
+$registryLocales = array_keys($registry);
+sort($registryLocales);
 assert_i18n_contract(
-    $catalogLocales === $supportedLocales,
+    $catalogLocales === $registryLocales,
     'The locale registry and includes/lang catalogs must contain the same locales.'
 );
+
+foreach (['ar', 'he', 'fa', 'ur'] as $rtlLocale) {
+    assert_i18n_contract(
+        ($registry[$rtlLocale]['direction'] ?? null) === 'rtl',
+        $rtlLocale . ' must be registered as RTL.'
+    );
+}
+foreach (['ja', 'zh-Hans', 'zh-Hant', 'ko'] as $cjkLocale) {
+    assert_i18n_contract(isset($registry[$cjkLocale]), $cjkLocale . ' must be registered.');
+}
 
 foreach (['AGENTS.md', 'CLAUDE.md'] as $instructionsFile) {
     $content = file_get_contents($root . '/' . $instructionsFile);

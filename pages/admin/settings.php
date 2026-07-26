@@ -114,10 +114,7 @@ if ($tab === 'email') {
 }
 
 // Get template language
-$template_lang = strtolower(trim((string) ($_GET['lang'] ?? get_app_language())));
-if (!in_array($template_lang, array_keys(get_supported_languages()), true)) {
-    $template_lang = 'en';
-}
+$template_lang = normalize_locale_tag($_GET['lang'] ?? get_app_language()) ?? 'en';
 
 // Get email templates for selected language
 try {

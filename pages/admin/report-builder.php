@@ -161,7 +161,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $organizations = db_fetch_all("SELECT id, name FROM organizations WHERE is_active = 1 ORDER BY name ASC");
 
 // Get available languages
-$languages = array_map(fn($item) => t($item['name']), get_supported_languages());
+$languages = [];
+foreach (get_supported_languages() as $code => $language) {
+    $languages[$code] = foxdesk_locale_option_label($code);
+}
 
 // Date presets
 $today = date('Y-m-d');

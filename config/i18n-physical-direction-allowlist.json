@@ -1,0 +1,24 @@
+{
+  "css": [
+    {
+      "file": "theme.css",
+      "selectorIncludes": "html[dir=\"rtl\"]",
+      "maxDeclarations": 46,
+      "reason": "Compatibility overrides for physical Tailwind utilities and Quill internals that cannot be expressed by changing FoxDesk component source."
+    }
+  ],
+  "scripts": [
+    {
+      "file": "assets/js/ticket-list-actions.js",
+      "pattern": ".style.left",
+      "maxMatches": 2,
+      "reason": "Viewport-coordinate placement for detached popovers; this is geometry, not reading direction."
+    },
+    {
+      "file": "assets/js/ticket-list.js",
+      "pattern": ".style.left",
+      "maxMatches": 4,
+      "reason": "Viewport-coordinate placement for detached dropdowns; this is geometry, not reading direction."
+    }
+  ]
+}

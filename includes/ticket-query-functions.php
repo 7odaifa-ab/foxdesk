@@ -29,6 +29,52 @@ function build_ticket_fulltext_query($search)
 }
 
 /**
+ * Build the ticket search fragment separately so CJK behavior and parameter
+ * ordering can be verified without weakening the surrounding access filters.
+ */
+function build_ticket_search_clause(string $search, bool $hasTags, bool $fulltextAvailable): array
+{
+    $search = trim(foxdesk_normalize_unicode($search));
+    if ($search === '') {
+        return ['sql' => '', 'params' => [], 'mode' => 'none'];
+    }
+
+    $clauses = [];
+    $params = [];
+    $useLikeFallback = foxdesk_contains_cjk($search) || !$fulltextAvailable;
+
+    if ($useLikeFallback) {
+        $pattern = foxdesk_like_contains_pattern($search);
+        $clauses[] = "t.title LIKE ? ESCAPE '='";
+        $params[] = $pattern;
+        $clauses[] = "t.description LIKE ? ESCAPE '='";
+        $params[] = $pattern;
+        if ($hasTags) {
+            $clauses[] = "t.tags LIKE ? ESCAPE '='";
+            $params[] = $pattern;
+        }
+    } else {
+        $clauses[] = 'MATCH(t.title, t.description) AGAINST (? IN BOOLEAN MODE)';
+        $params[] = build_ticket_fulltext_query($search);
+        if ($hasTags) {
+            $clauses[] = "t.tags LIKE ? ESCAPE '='";
+            $params[] = foxdesk_like_contains_pattern($search);
+        }
+    }
+
+    if (ctype_digit($search)) {
+        $clauses[] = 't.id = ?';
+        $params[] = (int) $search;
+    }
+
+    return [
+        'sql' => ' AND (' . implode(' OR ', $clauses) . ')',
+        'params' => $params,
+        'mode' => $useLikeFallback ? 'like' : 'fulltext',
+    ];
+}
+
+/**
  * Check if fulltext search is available for tickets.
  */
 function tickets_fulltext_available()
@@ -361,35 +407,13 @@ function build_ticket_where_clause($filters, &$params)
     }
 
     // Search functionality
-    if (!empty($filters['search'])) {
-        $search = trim($filters['search']);
+    if (trim((string) ($filters['search'] ?? '')) !== '') {
+        $search = trim((string) $filters['search']);
         $has_tags = ticket_tags_column_exists();
-        if (tickets_fulltext_available()) {
-            $search_query = build_ticket_fulltext_query($search);
-            $sql .= " AND (MATCH(t.title, t.description) AGAINST (? IN BOOLEAN MODE)";
-            $params[] = $search_query;
-            if ($has_tags) {
-                $sql .= " OR t.tags LIKE ?";
-                $params[] = '%' . $search . '%';
-            }
-            if (ctype_digit($search)) {
-                $sql .= " OR t.id = ?";
-                $params[] = (int) $search;
-            }
-            $sql .= ")";
-        } else {
-            $sql .= " AND (t.title LIKE ? OR t.description LIKE ?";
-            $params[] = '%' . $search . '%';
-            $params[] = '%' . $search . '%';
-            if ($has_tags) {
-                $sql .= " OR t.tags LIKE ?";
-                $params[] = '%' . $search . '%';
-            }
-            if (ctype_digit($search)) {
-                $sql .= " OR t.id = ?";
-                $params[] = (int) $search;
-            }
-            $sql .= ")";
+        $search_clause = build_ticket_search_clause($search, $has_tags, tickets_fulltext_available());
+        $sql .= $search_clause['sql'];
+        foreach ($search_clause['params'] as $search_param) {
+            $params[] = $search_param;
         }
     }
 

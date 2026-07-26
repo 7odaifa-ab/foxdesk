@@ -37,24 +37,11 @@
                 <div class="max-w-sm">
                     <label class="block text-sm font-medium mb-1 text-theme-secondary"><?php echo e(t('Language')); ?></label>
                     <select name="app_language" class="form-select">
-                        <option value="en" <?php echo ($settings['app_language'] ?? 'en') === 'en' ? 'selected' : ''; ?>>
-                            <?php echo e(t('English')); ?>
-                        </option>
-                        <option value="cs" <?php echo ($settings['app_language'] ?? 'en') === 'cs' ? 'selected' : ''; ?>>
-                            <?php echo e(t('Czech')); ?>
-                        </option>
-                        <option value="de" <?php echo ($settings['app_language'] ?? 'en') === 'de' ? 'selected' : ''; ?>>
-                            <?php echo e(t('German')); ?>
-                        </option>
-                        <option value="it" <?php echo ($settings['app_language'] ?? 'en') === 'it' ? 'selected' : ''; ?>>
-                            <?php echo e(t('Italian')); ?>
-                        </option>
-                        <option value="es" <?php echo ($settings['app_language'] ?? 'en') === 'es' ? 'selected' : ''; ?>>
-                            <?php echo e(t('Spanish')); ?>
-                        </option>
-                        <option value="ar" <?php echo ($settings['app_language'] ?? 'en') === 'ar' ? 'selected' : ''; ?>>
-                            <?php echo e(t('Arabic')); ?>
-                        </option>
+                        <?php foreach (get_supported_languages() as $code => $language): ?>
+                            <option value="<?php echo e($code); ?>" <?php echo ($settings['app_language'] ?? 'en') === $code ? 'selected' : ''; ?>>
+                                <?php echo e(foxdesk_locale_option_label($code)); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                     <p class="text-xs mt-1 text-theme-muted">
                         <?php echo e(t('Default interface language for all users. Users can override this in their profile.')); ?>

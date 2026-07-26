@@ -109,8 +109,12 @@ function foxdesk_render_email_body_html($body, string $direction = 'ltr'): strin
 
 function foxdesk_render_ticket_email_html(array $payload): string
 {
-    $language = strtolower(trim((string) ($payload['language'] ?? 'en')));
-    $direction = $language === 'ar' ? 'rtl' : 'ltr';
+    $language = function_exists('normalize_locale_tag')
+        ? (normalize_locale_tag($payload['language'] ?? 'en') ?? 'en')
+        : strtolower(trim((string) ($payload['language'] ?? 'en')));
+    $direction = function_exists('get_app_direction')
+        ? get_app_direction($language)
+        : ($language === 'ar' ? 'rtl' : 'ltr');
     $align = $direction === 'rtl' ? 'right' : 'left';
     $app_name = foxdesk_email_escape($payload['app_name'] ?? 'FoxDesk');
     $eyebrow = foxdesk_email_escape($payload['eyebrow'] ?? '');
