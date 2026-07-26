@@ -11,7 +11,12 @@
       "script": "Latn",
       "fallback": null,
       "wave": 0,
-      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "stable", "website": "stable"}
+      "channels": {
+        "self_hosted": "stable",
+        "saas": "stable",
+        "ios": "stable",
+        "website": "stable"
+      }
     },
     {
       "tag": "cs",
@@ -22,7 +27,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 0,
-      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "stable",
+        "saas": "stable",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "de",
@@ -33,7 +43,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 0,
-      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "stable",
+        "saas": "stable",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "es",
@@ -44,7 +59,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 0,
-      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "stable",
+        "saas": "stable",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "it",
@@ -55,7 +75,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 0,
-      "channels": {"self_hosted": "stable", "saas": "stable", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "stable",
+        "saas": "stable",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "ar",
@@ -66,7 +91,12 @@
       "script": "Arab",
       "fallback": "en",
       "wave": 0,
-      "channels": {"self_hosted": "beta", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "fr",
@@ -77,7 +107,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "pt-BR",
@@ -88,7 +123,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "pt-PT",
@@ -99,7 +139,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "pl",
@@ -110,7 +155,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "nl",
@@ -121,7 +171,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "tr",
@@ -132,7 +187,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 1,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "ru",
@@ -143,7 +203,12 @@
       "script": "Cyrl",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "uk",
@@ -154,7 +219,12 @@
       "script": "Cyrl",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "ja",
@@ -165,7 +235,12 @@
       "script": "Jpan",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "zh-Hans",
@@ -176,7 +251,12 @@
       "script": "Hans",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "zh-Hant",
@@ -187,7 +267,12 @@
       "script": "Hant",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "ko",
@@ -198,7 +283,12 @@
       "script": "Kore",
       "fallback": "en",
       "wave": 2,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "he",
@@ -209,7 +299,12 @@
       "script": "Hebr",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "fa",
@@ -220,7 +315,12 @@
       "script": "Arab",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "ur",
@@ -231,7 +331,12 @@
       "script": "Arab",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "hi",
@@ -242,7 +347,12 @@
       "script": "Deva",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "id",
@@ -253,7 +363,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     },
     {
       "tag": "vi",
@@ -264,7 +379,12 @@
       "script": "Latn",
       "fallback": "en",
       "wave": 3,
-      "channels": {"self_hosted": "draft", "saas": "draft", "ios": "draft", "website": "draft"}
+      "channels": {
+        "self_hosted": "beta",
+        "saas": "beta",
+        "ios": "beta",
+        "website": "beta"
+      }
     }
   ]
 }

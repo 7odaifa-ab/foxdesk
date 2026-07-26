@@ -25,6 +25,11 @@ changing its state:
 - the channel-specific functional, visual, accessibility, upgrade, and
   rollback gates must pass.
 
+As of 2026-07-26, every customer-visible self-hosted catalog has a non-empty
+translation for all source keys. English, Czech, German, Spanish, and Italian
+remain stable; the other 19 locales are available as AI-translated beta
+catalogs pending native-speaker and specialist review.
+
 English is the only automatic fallback. `zh-Hans` and `zh-Hant` never fall
 back to one another.
 
@@ -35,6 +40,7 @@ files in `includes/lang/` are deterministic build output.
 
 ```sh
 npm run i18n:sync-drafts
+npm run i18n:translate
 npm run i18n:validate
 npm run i18n:build
 npm run test:i18n

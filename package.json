@@ -35,6 +35,8 @@
     "i18n:validate": "sh ./bin/run-php.sh bin/i18n-catalogs.php --validate",
     "i18n:check": "sh ./bin/run-php.sh bin/i18n-catalogs.php --check",
     "i18n:audit-source": "node bin/i18n-source-audit.js",
+    "i18n:translate": "node bin/translate-catalogs.mjs",
+    "i18n:fill-empty": "node bin/fill-empty-translations.mjs",
     "test:i18n": "sh -c 'npm run i18n:validate && npm run i18n:check && npm run i18n:audit-source && sh ./bin/run-php.sh tests/i18n-development-contract-test.php && sh ./bin/run-php.sh tests/locale-registry-contract-test.php && sh ./bin/run-php.sh tests/plural-runtime-contract-test.php && sh ./bin/run-php.sh tests/cjk-ime-contract-test.php && sh ./bin/run-php.sh tests/rtl-support-contract-test.php && sh ./bin/run-php.sh tests/translation-quality-contract-test.php && sh ./bin/run-php.sh tests/email-arabic-contract-test.php && sh ./bin/run-php.sh tests/i18n-release-package-contract-test.php && npm run test:css-build'",
     "test:workflow-contract": "sh ./bin/run-php.sh tests/shared-workflow-contract-test.php",
     "test:core-ux-flow": "sh ./bin/run-php.sh tests/core-ux-flow-parity-contract-test.php",

@@ -66,9 +66,11 @@ assert_locale_contract(
 );
 
 assert_locale_contract(foxdesk_locale_status('ar', 'self_hosted') === 'beta', 'Arabic self-hosted state must remain beta until QA.');
-assert_locale_contract(foxdesk_locale_status('fr', 'self_hosted') === 'draft', 'Unreviewed French must remain draft.');
-assert_locale_contract(!isset(foxdesk_available_locales('self_hosted', false)['fr']), 'Draft locales must be hidden by default.');
-assert_locale_contract(isset(foxdesk_available_locales('self_hosted', true)['fr']), 'Draft locales must be available to explicit QA builds.');
+assert_locale_contract(
+    foxdesk_locale_status('fr', 'self_hosted') === 'beta',
+    'AI-translated French must be available as beta until native review.'
+);
+assert_locale_contract(isset(foxdesk_available_locales('self_hosted', false)['fr']), 'Beta locales must be available by default.');
 
 $pluralExpectations = [
     ['ar', 0, 'zero'],

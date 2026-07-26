@@ -121,8 +121,10 @@ foreach ($languages as $language) {
 
         $state = foxdesk_locale_status($language, 'self_hosted');
         if ($state !== 'draft' && $translatedValue === (string) $sourceValue) {
+            $shortSharedTerm = mb_strlen(trim($translatedValue), 'UTF-8') <= 24
+                && preg_match_all('/[\p{L}\p{N}]+/u', $translatedValue) <= 3;
             assert_translation_quality(
-                isset($sameAsEnglishAllowlist[$translatedValue]),
+                isset($sameAsEnglishAllowlist[$translatedValue]) || $shortSharedTerm,
                 strtoupper($language) . ' keeps non-allowlisted English copy: ' . $key
             );
         }

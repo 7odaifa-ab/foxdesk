@@ -147,6 +147,9 @@ foreach ($catalogs as $locale => $messages) {
         i18n_fail($locale . ' has extra keys: ' . implode(', ', array_slice(array_keys($extra), 0, 10)));
     }
     foreach ($english as $key => $sourceValue) {
+        if (trim((string) $messages[$key]) === '') {
+            i18n_fail($locale . ' has an empty translation for key: ' . $key);
+        }
         if (i18n_placeholders((string) $sourceValue) !== i18n_placeholders((string) $messages[$key])) {
             i18n_fail($locale . ' placeholder mismatch for key: ' . $key);
         }
