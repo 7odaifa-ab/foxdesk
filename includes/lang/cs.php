@@ -383,7 +383,7 @@ return [
     'Port' => 'Port',
     'Position' => 'Pozice',
     'Previous' => 'Předchozí',
-    'New' => 'Nová hodnota',
+    'New' => 'Nový',
     'Previous status' => 'Předchozí stav',
     'Primary organization' => 'Primární klient',
     'Priorities' => 'Priority',

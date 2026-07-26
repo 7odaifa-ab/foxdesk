@@ -20,6 +20,11 @@ function translation_placeholders(string $value): array
 
 $source = include $root . '/includes/lang/en.php';
 $languages = ['cs', 'de', 'es', 'it', 'ar'];
+$expectedProductTerms = [
+    'cs' => [
+        'New' => 'Nový',
+    ],
+];
 $sameAsEnglishAllowlist = array_fill_keys([
     'API',
     'API Base:',
@@ -94,6 +99,13 @@ foreach ($languages as $language) {
 
     assert_translation_quality($missing === [], strtoupper($language) . ' has missing translation keys: ' . implode(', ', array_keys($missing)));
     assert_translation_quality($extra === [], strtoupper($language) . ' has extra translation keys: ' . implode(', ', array_keys($extra)));
+
+    foreach ($expectedProductTerms[$language] ?? [] as $key => $expectedValue) {
+        assert_translation_quality(
+            ($translations[$key] ?? null) === $expectedValue,
+            strtoupper($language) . ' product term mismatch for ' . $key . ': expected ' . $expectedValue
+        );
+    }
 
     foreach ($source as $key => $sourceValue) {
         $translatedValue = (string) ($translations[$key] ?? '');
